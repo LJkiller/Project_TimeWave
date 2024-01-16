@@ -43,10 +43,20 @@ class Methods {
   static replaceDangerousCharacters(input) {
     let output = input
       .replaceAll('&', '&amp;')
+
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
+      
       .replaceAll('"', '&quot;')
-      .replaceAll('\'', '&#39;');
+      .replaceAll('`', '&#96;')
+
+      .replaceAll('\'', '&#39;')
+      .replaceAll('/', '&#47;')
+
+      .replaceAll('=', '&#61;')
+
+      .replaceAll('(', '&#40;')
+      .replaceAll(')', '&#41;');
     return output;
   }
 
