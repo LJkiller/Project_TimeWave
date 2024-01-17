@@ -11,7 +11,7 @@ import { handleStaticFileRoute } from './staticFileHandler.js';
 
 // Establishing MongoDB Connection.
 const mongoConn = await mongoDB.MongoClient.connect(process.env.MONGODB_CONNECTIONSTING);
-const db = mongoConn.db('carRace');
+const db = mongoConn.db('timeWave');
 
 /**
  * Method responsible of handling HTTP requests. 
