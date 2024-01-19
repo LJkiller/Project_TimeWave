@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sawcon</title>
 
     <link rel="stylesheet" href="/public/CSS/style.css">
+    <link rel="stylesheet" href="/public/CSS/index.css">
 </head>
+
 <body>
-    DEEZ%variables%NUTS
+    <header></header>
+
+    <main>
+        DEEZ%variables%NUTS
+        <a href="/home">Go home, you whore</a>
+    </main>
+
+    <footer></footer>
 </body>
+
 </html>

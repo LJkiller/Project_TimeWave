@@ -1,3 +1,86 @@
-body{
-    background-color: rgba(0,128,255,1);
+
+/*
+This file is to primarly use to set up variables,
+and do general/univeral stuff in objects.
+For instance: body.
+*/
+:root{
+
+    /*Scrollbar*/
+    --scrollbar-width: 0.75rem;
+    --primary-scrollbar-color: rgba(0,128,255,1);
+    --secondary-scrollbar-color: rgba(255,255,255,1);
+
+
+
+    /*Colors*/
+    --primary-color: rgba(0,128,255,1);
+
+	--text-link-color: rgba(0,128,255,1);
+	--text-link-highlight-color: rgba(230,230,230,1);
+
+    --wb-primary-bg-color: rgba(215,215,215,1);
+    --wb-complementary-bg-color: rgba(0,165,220,1);
+
+
+    /*Object Properties*/    
+	--sharp-border-radius: 1rem;
+    --standard-border-radius: 0.625rem;
+    --soft-border-radius: 0.406rem;
+
+	--standard-transition-style: ease-in-out;
+	--sharp-eio-transition: .1s var(--standard-transition-style);
+	--standard-eio-transition: .2s var(--standard-transition-style);
+	--soft-eio-transition: .5 var(--standard-transition-style);
 }
+
+/*#region Body*/
+
+body{
+    background-color: var(--wb-primary-bg-color);
+}
+
+/*#endregion*/
+
+/*#region Scrollbar*/
+
+::-webkit-scrollbar{
+	width: var(--scrollbar-width);
+}
+::-webkit-scrollbar-track{
+	background-color: none;
+}
+::-webkit-scrollbar-thumb{
+	background-color: none;
+	border-radius: var(--standard-border-radius);
+	background-image:
+		linear-gradient(
+			var(--primary-scrollbar-color), 
+			var(--secondary-scrollbar-color));
+}
+::-webkit-scrollbar-thumb:hover{
+	border: 3.5px solid var(--primary-scrollbar-color);
+}
+::-webkit-scrollbar-thumb:active{
+	border: none;
+	background-image:
+		linear-gradient(
+			var(--primary-scrollbar-color), 
+			var(--secondary-scrollbar-color));
+}
+
+/*#endregion*/
+
+/*#region A-element*/
+
+a{
+	transition: var(--standard-eio-transition);
+	color: var(--text-link-color);
+	text-decoration: none;
+}
+a:hover{
+	color: var(--text-link-highlight-color);
+	text-shadow: 0 0 3px var(--text-link-color);
+}
+
+/*#endregion*/

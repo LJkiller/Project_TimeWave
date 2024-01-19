@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sawcon</title>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="/public/CSS/style.css">
+    <link rel="stylesheet" href="/public/CSS/home.css">
+
+    <!--JavaScript-->
+    <script defer src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    
+    <header></header>
+
+    <main>
+        <aside id="aside-main">
+            <h1><i class="fa-solid fa-hourglass"></i>TimeWave<i class="fa-solid fa-water"></i></h1>
+            <nav>
+                <a id="home" href="/home">Home</a>
+                <a id="tides" href="/tides">Tides</a>
+                <a id="user" href="/user">Profile</a>
+                <a id="create-post" href="/create-post">Make a Splash!</a>
+            </nav>
+            <div>
+
+            </div>
+        </aside>
+        <section id="main-content">
+            <h2>Home</h2>
+            DEEZ%variables%NUTS
+        </section>
+    </main>
+
+    <footer></footer>
+</body>
+</html>

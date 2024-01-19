@@ -15,11 +15,11 @@ import ResponseManager from '../methodManagers/responseManager.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
-export async function handleIndex(db, url, pathSegments, request, response){
-    let route = 'index';
+export async function handleHome(db, url, pathSegments, request, response){
+    let route = 'home';
     ResponseManager.sendPageRoute(route);
 
-    let template = (await fs.readFile('templates/index.sawcon')).toString();
+    let template = (await fs.readFile('templates/home.sawcon')).toString();
     let balls = '';
     balls +=`
         <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>

@@ -4,6 +4,7 @@ import ResponseManager from './methodManagers/responseManager.js';
 
 // Handlers
 import { handleIndex } from './routeHandlers/indexHandler.js';
+import { handleHome } from './routeHandlers/homeHandler.js';
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -27,6 +28,9 @@ export async function handleRoute (db, url, pathSegments, request, response) {
         switch (pathSegments[0]) {
             case 'index':
                 handleIndex(db, url, pathSegments, request, response);
+                break;
+            case 'home':
+                handleHome(db, url, pathSegments, request, response);
                 break;
             default:
                 // Invalid route.
