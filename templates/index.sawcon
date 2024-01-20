@@ -6,19 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sawcon</title>
 
+    <!--CSS-->
     <link rel="stylesheet" href="/public/CSS/style.css">
     <link rel="stylesheet" href="/public/CSS/index.css">
+
+    <!--JavaScript-->
+    <script defer src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <header></header>
 
     <main>
         DEEZ%variables%NUTS
         <a href="/home">Go home, you whore</a>
     </main>
-
-    <footer></footer>
+    
 </body>
 
 </html>

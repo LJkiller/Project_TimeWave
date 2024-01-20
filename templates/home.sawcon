@@ -7,34 +7,40 @@
 
     <!--CSS-->
     <link rel="stylesheet" href="/public/CSS/style.css">
+    <link rel="stylesheet" href="/public/CSS/navbar.css">
     <link rel="stylesheet" href="/public/CSS/home.css">
 
     <!--JavaScript-->
     <script defer src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+    <script defer src="/public/JavaScript/openProfileOptions.js"></script>
 </head>
 <body>
-    
-    <header></header>
 
     <main>
         <aside id="aside-main">
-            <h1><i class="fa-solid fa-hourglass"></i>TimeWave<i class="fa-solid fa-water"></i></h1>
+            <h1><a href="/home"><i class="fa-solid fa-hourglass"></i><span> TimeWave </span><i class="fa-solid fa-water"></i></a></h1>
             <nav>
-                <a id="home" href="/home">Home</a>
-                <a id="tides" href="/tides">Tides</a>
-                <a id="user" href="/user">Profile</a>
-                <a id="create-post" href="/create-post">Make a Splash!</a>
+                <ul>
+                    <li><a id="home" href="/home">Home</a></li>
+                    <li><a id="tides" href="/tides">Tides</a></li>
+                    <li><a id="user" href="/user">Profile</a></li>
+                    <li><a id="create-post" href="/create-post">Make a Splash!</a></li>
+                </ul>
             </nav>
-            <div>
 
+            <a id="account-switcher" onclick="toggleDropdown()">
+                <img src="/public/assets/images/defaultProfile.png" alt="Image of the user's profile picture">
+                <span>DEEZ%username%NUTS</span>
+            </a>
+            <div id="account-dropdown">
+                <a href="/log-out">Log Out <i class="fa-solid fa-right-from-bracket"></i></a>
             </div>
         </aside>
+        
         <section id="main-content">
-            <h2>Home</h2>
             DEEZ%variables%NUTS
         </section>
     </main>
-
-    <footer></footer>
+    
 </body>
 </html>

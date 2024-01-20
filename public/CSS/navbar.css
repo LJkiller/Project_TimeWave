@@ -1,0 +1,133 @@
+:root {
+    --hourglass-color: rgba(255, 255, 0, 1);
+    --water-color: rgba(0, 128, 255, 1);
+    --object-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+    --profile-picture-size: 3.125rem;
+}
+
+main aside#aside-main {
+    position: absolute;
+    text-align: center;
+    height: 100%;
+    width: 18.75rem;
+    background-color: var(--wb-complementary-bg-color);
+}
+
+/*#region Title*/
+
+main aside#aside-main h1 a {
+    font-size: var(--xl-font-size);
+    color: rgba(255, 255, 255, 1);
+}
+main aside#aside-main h1>a>i.fa-hourglass {
+    color: var(--hourglass-color);
+}
+main aside#aside-main h1>a>i.fa-water {
+    color: var(--water-color);
+}
+
+/*#endregion*/
+
+/*#region Clear Nav*/
+
+main aside#aside-main nav {
+    height: 80%;
+    width: 100%;
+}
+main aside#aside-main nav ul {
+    list-style: none;
+    padding: 0;
+}
+main aside#aside-main nav ul li {
+    margin-top: 0.625rem;
+}
+
+/*#endregion*/
+
+main aside#aside-main nav a,
+main aside#aside-main a#account-switcher {
+    transition: var(--standard-eio-transition);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 80%;
+    padding: 1rem;
+
+    font-size: var(--large-font-size);
+    border-radius: var(--standard-border-radius);
+    color: var(--text-link-color);
+    background-color: var(--wb-primary-bg-color);
+}
+main aside#aside-main nav a:hover,
+main aside#aside-main a#account-switcher:hover {
+    color: var(--text-link-highlight-color);
+    box-shadow: var(--object-shadow);
+    text-shadow: 0 0 3px black;
+    background-color: var(--text-link-color);
+}
+
+/*#region Profile*/
+
+main aside#aside-main a#account-switcher {
+    overflow: hidden;
+    font-size: var(--small-font-size);
+}
+main aside#aside-main a#account-switcher:hover{
+    cursor: pointer;
+}
+
+main aside#aside-main a#account-switcher img {
+    display: block;
+    float: left;
+    margin-right: 10px;
+
+    height: var(--profile-picture-size);
+    width: var(--profile-picture-size);
+}
+main aside#aside-main a#account-switcher span {
+    display: block;
+    float: left;
+    overflow: hidden;
+
+    width: 160px;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+main aside#aside-main a#account-switcher:focus + #account-dropdown {
+    display: block;
+}
+
+main aside#aside-main #account-dropdown {
+    transition: var(--standard-eio-transition);
+    display: none;
+    position: absolute;
+    bottom: 8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+
+    width: 90%;
+
+    font-size: var(--large-font-size);
+    border-radius: var(--standard-border-radius);
+    box-shadow: var(--object-shadow);
+    background-color: var(--wb-primary-bg-color);
+}
+main aside#aside-main #account-dropdown a {
+    padding: 0.625rem;
+    display: block;
+    color: var(--text-link-color);
+}
+main aside#aside-main #account-dropdown:hover {
+    background-color: var(--text-link-color);
+}
+main aside#aside-main #account-dropdown:hover a {
+    text-shadow: 0 0 3px black;
+    color: var(--text-link-highlight-color);
+}
+
+/*#endregion*/

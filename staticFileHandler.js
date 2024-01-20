@@ -5,7 +5,7 @@ import ResponseManager from './methodManagers/responseManager.js';
 
 export async function handleStaticFileRoute (pathSegments, response) {
 
-    pathSegments[0] = 'public'
+    pathSegments[0] = 'public';
     let path = pathSegments.join('/');
 
     let fileContents;
@@ -41,6 +41,9 @@ export async function handleStaticFileRoute (pathSegments, response) {
         case 'jpg':
         case 'jpeg':
             contentType = 'image/jpeg';
+            break;
+        case 'png':
+            contentType = 'image/png';
             break;
         default:
             ResponseManager.sendWebPageResponse(response);
