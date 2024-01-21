@@ -39,6 +39,9 @@ For instance: body.
 	/*Text*/
 	--normal-font-family: Arial, Helvetica, sans-serif;
 
+	--large-text-shadow: 0 0 6px black;
+	--standard-text-shadow: 0 0 3px black;
+
 	--xl-font-size: 1.75rem;
 	--large-font-size: 1.25rem;
 	--normal-font-size: 1rem;
@@ -96,6 +99,7 @@ body{
 
 a{
 	transition: var(--standard-eio-transition);
+	display: block;
 	text-decoration: none;
 }
 

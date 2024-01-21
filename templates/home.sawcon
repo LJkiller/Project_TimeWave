@@ -3,42 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sawcon</title>
+    <title>TimeWave</title>
 
     <!--CSS-->
-    <link rel="stylesheet" href="/public/CSS/style.css">
-    <link rel="stylesheet" href="/public/CSS/navbar.css">
-    <link rel="stylesheet" href="/public/CSS/home.css">
+    <link rel="stylesheet" href="/public/CSS/structure/style.css">
+    <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
+    <link rel="stylesheet" href="/public/CSS/structure/main.css">
+    <link rel="stylesheet" href="/public/CSS/structure/home.css">
 
     <!--JavaScript-->
-    <script defer src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
     <script defer src="/public/JavaScript/openProfileOptions.js"></script>
 </head>
 <body>
 
     <main>
         <aside id="aside-main">
-            <h1><a href="/home"><i class="fa-solid fa-hourglass"></i><span> TimeWave </span><i class="fa-solid fa-water"></i></a></h1>
+            <h1><a href="/home"><i class="fa-solid fa-hourglass"></i> <span>TimeWave</span></i></a></h1>
             <nav>
                 <ul>
-                    <li><a id="home" href="/home">Home</a></li>
-                    <li><a id="tides" href="/tides">Tides</a></li>
-                    <li><a id="user" href="/user">Profile</a></li>
-                    <li><a id="create-post" href="/create-post">Make a Splash!</a></li>
+                    <li class="active"><a id="home" href="/home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
+                    <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
+                    <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
+                    <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a Splash!</span></a></li>
                 </ul>
             </nav>
 
-            <a id="account-switcher" onclick="toggleDropdown()">
-                <img src="/public/assets/images/defaultProfile.png" alt="Image of the user's profile picture">
-                <span>DEEZ%username%NUTS</span>
+            <a id="account-toggler" onclick="toggleDropdown()">
+                <img id="nav-profile-picture" src="/public/assets/images/defaultProfile.png" alt="Image of the user's profile picture">
+                <span id="nav-username">DEEZ%username%NUTS</span>
             </a>
             <div id="account-dropdown">
                 <a href="/log-out">Log Out <i class="fa-solid fa-right-from-bracket"></i></a>
             </div>
         </aside>
         
+        <h2 class="page-display">Home</h2>
         <section id="main-content">
-            DEEZ%variables%NUTS
+            <div class="main-top">
+                <a href="/create-post" class="create-post"><h3><i class="fa-solid fa-droplet"></i> Make a Splash!</h3></a>
+            </div>
+            <section id="posts">
+                <h2>Splashes</h2>
+                DEEZ%splashes%NUTS
+            </section>
         </section>
     </main>
     

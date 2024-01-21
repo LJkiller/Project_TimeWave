@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sawcon</title>
+    <title>TimeWave</title>
 
     <!--CSS-->
-    <link rel="stylesheet" href="/public/CSS/style.css">
-    <link rel="stylesheet" href="/public/CSS/index.css">
+    <link rel="stylesheet" href="/public/CSS/structure/style.css">
+    <link rel="stylesheet" href="/public/CSS/structure/index.css">
 
     <!--JavaScript-->
-    <script defer src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
 </head>
 
 <body>

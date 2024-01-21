@@ -1,16 +1,19 @@
 :root {
     --hourglass-color: rgba(255, 255, 0, 1);
-    --water-color: rgba(0, 128, 255, 1);
     --object-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
     --profile-picture-size: 3.125rem;
+
+    --navbar-width: 18.75rem;
+    --nav-item-width: 80%;
+    --nav-item-icon-margin-left: calc(95% - var(--nav-item-width));
 }
 
 main aside#aside-main {
     position: absolute;
     text-align: center;
     height: 100%;
-    width: 18.75rem;
+    width: var(--navbar-width);
     background-color: var(--wb-complementary-bg-color);
 }
 
@@ -23,13 +26,10 @@ main aside#aside-main h1 a {
 main aside#aside-main h1>a>i.fa-hourglass {
     color: var(--hourglass-color);
 }
-main aside#aside-main h1>a>i.fa-water {
-    color: var(--water-color);
-}
 
 /*#endregion*/
 
-/*#region Clear Nav*/
+/*#region Nav*/
 
 main aside#aside-main nav {
     height: 80%;
@@ -42,17 +42,31 @@ main aside#aside-main nav ul {
 main aside#aside-main nav ul li {
     margin-top: 0.625rem;
 }
+main aside#aside-main nav ul li.active a{
+    --text-link-color: rgba(230,230,230,1);
+    --text-link-highlight-color: var(--primary-color);
+    color: var(--text-link-color);
+    background-color: var(--text-link-highlight-color);
+}
+
+main aside#aside-main nav ul li i.fa-solid{
+    position: absolute;
+    
+    left: 0;
+    margin-top: 0.1rem;
+    margin-left: var(--nav-item-icon-margin-left);
+}
 
 /*#endregion*/
 
 main aside#aside-main nav a,
-main aside#aside-main a#account-switcher {
+main aside#aside-main a#account-toggler {
     transition: var(--standard-eio-transition);
     display: block;
     margin-left: auto;
     margin-right: auto;
 
-    width: 80%;
+    width: var(--nav-item-width);
     padding: 1rem;
 
     font-size: var(--large-font-size);
@@ -61,24 +75,29 @@ main aside#aside-main a#account-switcher {
     background-color: var(--wb-primary-bg-color);
 }
 main aside#aside-main nav a:hover,
-main aside#aside-main a#account-switcher:hover {
+main aside#aside-main a#account-toggler:hover {
     color: var(--text-link-highlight-color);
     box-shadow: var(--object-shadow);
-    text-shadow: 0 0 3px black;
+    text-shadow: var(--standard-text-shadow);
     background-color: var(--text-link-color);
 }
 
 /*#region Profile*/
 
-main aside#aside-main a#account-switcher {
+main aside#aside-main a#account-toggler {
     overflow: hidden;
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: var(--small-font-size);
 }
-main aside#aside-main a#account-switcher:hover{
+
+main aside#aside-main a#account-toggler:hover{
     cursor: pointer;
 }
 
-main aside#aside-main a#account-switcher img {
+main aside#aside-main a#account-toggler img {
     display: block;
     float: left;
     margin-right: 10px;
@@ -86,7 +105,7 @@ main aside#aside-main a#account-switcher img {
     height: var(--profile-picture-size);
     width: var(--profile-picture-size);
 }
-main aside#aside-main a#account-switcher span {
+main aside#aside-main a#account-toggler span {
     display: block;
     float: left;
     overflow: hidden;
@@ -97,7 +116,7 @@ main aside#aside-main a#account-switcher span {
     text-overflow: ellipsis;
 }
 
-main aside#aside-main a#account-switcher:focus + #account-dropdown {
+main aside#aside-main a#account-toggler:focus + #account-dropdown {
     display: block;
 }
 
@@ -126,7 +145,7 @@ main aside#aside-main #account-dropdown:hover {
     background-color: var(--text-link-color);
 }
 main aside#aside-main #account-dropdown:hover a {
-    text-shadow: 0 0 3px black;
+    text-shadow: var(--standard-text-shadow);
     color: var(--text-link-highlight-color);
 }
 

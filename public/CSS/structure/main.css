@@ -1,0 +1,58 @@
+:root{
+    --main-content-margin-left: calc(var(--navbar-width) + 1rem);
+    --main-content-margin-top: calc((100vh - var(--main-content-height)) - 2.5vh);
+
+    --main-content-height: 90vh;
+    --main-content-width: 50%;
+
+    --create-post-height: 5rem;
+}
+
+main h2.page-display{
+    position: absolute;
+    margin-left: calc(var(--main-content-margin-left) + 1rem);
+    font-size: var(--xl-font-size);
+    color: white;
+    text-shadow: var(--large-text-shadow);
+}
+main section#main-content{
+    position: absolute;
+    margin-top: var(--main-content-margin-top);
+    margin-left: var(--main-content-margin-left);
+
+    height: var(--main-content-height);
+    width: var(--main-content-width);
+
+    border-radius: var(--sharp-border-radius);
+    background-color: var(--wb-complementary-bg-color);
+}
+
+main section#main-content div.main-top a.create-post{
+    --text-link-color: rgba(230,230,230,1);
+    --text-link-highlight-color: var(--primary-color);
+
+    text-align: center;
+    line-height: var(--create-post-height);
+
+    height: var(--create-post-height);
+    width: 100%;
+
+    font-weight: bold;
+    font-size: var(--large-font-size);
+    border-top-left-radius: var(--sharp-border-radius);
+    border-top-right-radius: var(--sharp-border-radius);
+    color: var(--text-link-color);
+    background-color: var(--text-link-highlight-color);
+}
+main section#main-content div.main-top a.create-post h3{
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+}
+main section#main-content div.main-top a.create-post:hover{
+    color: var(--text-link-highlight-color);
+    background-color: var(--text-link-color);
+}
+
+main section#main-content a.post{
+    color: rgba(225,225,225,1);
+}

@@ -3,12 +3,12 @@
  * by changing its display property.
  */
 function toggleDropdown() {
-    let dropdown = document.getElementById("account-dropdown");
+    let dropdown = document.getElementById('account-dropdown');
 
-    if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
     } else {
-        dropdown.style.display = "block";
+        dropdown.style.display = 'block';
     }
 }
 
@@ -19,10 +19,15 @@ function toggleDropdown() {
  * @param {Event} event - The click event.
  */
 window.onclick = function(event) {
-    let dropdown = document.getElementById("account-dropdown");
-    let switcher = document.getElementById("account-switcher");
+    let dropdown = document.getElementById('account-dropdown');
+    let toggler = document.getElementById('account-toggler');
+    let profilePicture = document.getElementById('nav-profile-picture');
+    let username = document.getElementById('nav-username');
 
-    if (event.target !== dropdown && event.target !== switcher) {
-        dropdown.style.display = "none";
+    if (event.target !== dropdown 
+        && event.target !== toggler
+        && event.target !== profilePicture 
+        && event.target !== username) {
+            dropdown.style.display = 'none';
     }
 };
