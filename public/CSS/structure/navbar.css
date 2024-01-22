@@ -21,7 +21,7 @@ main aside#aside-main {
 
 main aside#aside-main h1 a {
     font-size: var(--xl-font-size);
-    color: rgba(255, 255, 255, 1);
+    color: var(--brighter-text-color);
 }
 main aside#aside-main h1>a>i.fa-hourglass {
     color: var(--hourglass-color);
@@ -43,7 +43,7 @@ main aside#aside-main nav ul li {
     margin-top: 0.625rem;
 }
 main aside#aside-main nav ul li.active a{
-    --text-link-color: rgba(230,230,230,1);
+    --text-link-color: var(--standard-text-color);
     --text-link-highlight-color: var(--primary-color);
     color: var(--text-link-color);
     background-color: var(--text-link-highlight-color);
@@ -51,7 +51,6 @@ main aside#aside-main nav ul li.active a{
 
 main aside#aside-main nav ul li i.fa-solid{
     position: absolute;
-    
     left: 0;
     margin-top: 0.1rem;
     margin-left: var(--nav-item-icon-margin-left);
@@ -92,7 +91,6 @@ main aside#aside-main a#account-toggler {
     transform: translateX(-50%);
     font-size: var(--small-font-size);
 }
-
 main aside#aside-main a#account-toggler:hover{
     cursor: pointer;
 }

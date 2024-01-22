@@ -6,13 +6,23 @@
     --main-content-width: 50%;
 
     --create-post-height: 5rem;
+    --post-max-height: 30rem;
+    --post-area-max-height: calc(var(--main-content-height) - var(--create-post-height));
+    --content-margin-left: 2rem;
+    --content-max-width: calc(100% - 2.1*(var(--content-margin-left)));
+    --post-image-max-height: calc(var(--post-max-height)/2);
+    --post-image-max-width: calc(var(--main-content-width));
+    --post-background-color: rgba(0,155,220,1);
 }
+
+
 
 main h2.page-display{
     position: absolute;
     margin-left: calc(var(--main-content-margin-left) + 1rem);
+    margin-top: calc(var(--main-content-margin-top) - 3rem);
     font-size: var(--xl-font-size);
-    color: white;
+    color: var(--highlighted-text-color);
     text-shadow: var(--large-text-shadow);
 }
 main section#main-content{
@@ -44,15 +54,69 @@ main section#main-content div.main-top a.create-post{
     color: var(--text-link-color);
     background-color: var(--text-link-highlight-color);
 }
-main section#main-content div.main-top a.create-post h3{
-    margin-block-start: 0em;
-    margin-block-end: 0em;
-}
 main section#main-content div.main-top a.create-post:hover{
     color: var(--text-link-highlight-color);
     background-color: var(--text-link-color);
 }
 
-main section#main-content a.post{
-    color: rgba(225,225,225,1);
+main section#main-content section#posts{
+    overflow-y: auto;
+    max-height: var(--post-area-max-height);
+}
+main section#main-content section#posts h2{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: var(--content-margin-left);
+    color: var(--brighter-text-color);
+}
+main section#main-content section#posts h2::after{
+    content: "";
+    display: block;
+    margin-top: 0.3125rem;
+
+    height: 5px;
+    width: 30%;
+    border-radius: var(--standard-border-radius);
+    background-color: var(--brighter-text-color);
+}
+main section#main-content section#posts h2>span::after{
+    content: "";
+    display: inline-block;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
+    margin-bottom: -0.4rem;
+
+    height: 1.7rem;
+    width: 0.15em;
+    border-radius: var(--standard-border-radius);
+    background-color: var(--dimmer-text-color);
+}
+
+main section#main-content section#posts a.post{
+    padding: 0.3125rem 0;
+    max-height: var(--post-max-height);
+    color: var(--standard-text-color);
+    background-color: var(--post-background-color);
+}
+main section#main-content section#posts a.post:hover{
+    background-color: var(--primary-color);
+}
+main section#main-content section#posts a.post h3,
+main section#main-content section#posts a.post span,
+main section#main-content section#posts a.post p,
+main section#main-content section#posts a.post div.media-container{
+    max-width: var(--content-max-width);
+    margin-left: var(--content-margin-left);
+}
+main section#main-content section#posts a.post h3{
+    margin-top: 0.25rem;
+}
+main section#main-content section#posts a.post span{
+    color: var(--thin-text-color);
+}
+
+main section#main-content section#posts a.post div.media-container img{
+    max-height: var(--post-image-max-height);
+    max-width: var(--post-image-max-width);
+    border-radius: var(--standard-border-radius);
 }

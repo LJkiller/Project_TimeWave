@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
     <script defer src="/public/JavaScript/openProfileOptions.js"></script>
 </head>
+
 <body>
 
     <main>
@@ -22,7 +24,8 @@
             <h1><a href="/home"><i class="fa-solid fa-hourglass"></i> <span>TimeWave</span></i></a></h1>
             <nav>
                 <ul>
-                    <li class="active"><a id="home" href="/home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
+                    <li class="active"><a id="home" href="/home"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+                    </li>
                     <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
                     <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
                     <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a Splash!</span></a></li>
@@ -30,25 +33,43 @@
             </nav>
 
             <a id="account-toggler" onclick="toggleDropdown()">
-                <img id="nav-profile-picture" src="/public/assets/images/defaultProfile.png" alt="Image of the user's profile picture">
+                <img id="nav-profile-picture" src="/public/assets/images/defaultProfile.png"
+                    alt="Image of the user's profile picture">
                 <span id="nav-username">DEEZ%username%NUTS</span>
             </a>
             <div id="account-dropdown">
                 <a href="/log-out">Log Out <i class="fa-solid fa-right-from-bracket"></i></a>
             </div>
         </aside>
-        
+
         <h2 class="page-display">Home</h2>
         <section id="main-content">
             <div class="main-top">
-                <a href="/create-post" class="create-post"><h3><i class="fa-solid fa-droplet"></i> Make a Splash!</h3></a>
+                <a href="/create-post" class="create-post">
+                    <h3><i class="fa-solid fa-droplet"></i> Make a Splash!</h3>
+                </a>
             </div>
             <section id="posts">
-                <h2>Splashes</h2>
+                <h2><span>DEEZ%pageReflector%NUTS</span>Splashes</h2>
                 DEEZ%splashes%NUTS
+
+                <!-- Post Structure:
+                    <a class="post" href="/post?id=${splash.splashId}">
+                        <h3 class="author">@${splash.author}</h3>
+                        <span class="date">Made a splash: ${Methods.formatDate(splash)}</span>
+                        <p class="content">Content: ${splash.splashContent}</p>
+                        <div class="image-container">
+                            <img src="${splash.media.source}" 
+                            alt="${splash.author}'s media for splash: ${splash.splashId}">
+                            ELLER
+                            <iframe></iframe>
+                        </div>`;
+                    </a>
+                -->
             </section>
         </section>
     </main>
-    
+
 </body>
+
 </html>

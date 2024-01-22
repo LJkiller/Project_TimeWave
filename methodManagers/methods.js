@@ -46,7 +46,7 @@ class Methods {
 
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
-      
+
       .replaceAll('"', '&quot;')
       .replaceAll('`', '&#96;')
 
@@ -58,6 +58,22 @@ class Methods {
       .replaceAll('(', '&#40;')
       .replaceAll(')', '&#41;');
     return output;
+  }
+
+  /**
+   * Method responsible of analyzing which page you are on
+   * to reflect what appropiate content header.
+   * 
+   * @param {string} route - Page route of current page.
+   * @returns {string} - Corresponding content header depending on page route.
+   */
+  static pageReflection(route) {
+    switch (route) {
+      case 'home':
+        return 'Global';
+      default:
+        return 'UnknownPage';
+    }
   }
 
 }

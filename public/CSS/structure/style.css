@@ -8,13 +8,21 @@ For instance: body.
 
     /*Scrollbar*/
     --scrollbar-width: 0.75rem;
-    --primary-scrollbar-color: rgba(0,128,255,1);
-    --secondary-scrollbar-color: rgba(255,255,255,1);
+    --primary-scrollbar-color: rgba(0,108,235,1);
+    --secondary-scrollbar-color: rgba(235,235,235,1);
+	--active-primary-scrollbar-color: rgba(0,78,205,1);
+	--active-secondary-scrollbar-color: rgba(205,205,205,1);
 
 
 
     /*Colors*/
     --primary-color: rgba(0,128,255,1);
+
+	--highlighted-text-color: rgba(255,255,255,1);
+	--brighter-text-color: rgba(245,245,245,1);
+	--standard-text-color: rgba(225,225,225,1);
+	--dimmer-text-color: rgba(205,205,205,1);
+	--thin-text-color: rgba(195,195,195,1);
 
 	--text-link-color: rgba(0,128,255,1);
 	--text-link-highlight-color: rgba(230,230,230,1);
@@ -89,18 +97,19 @@ body{
 	border: none;
 	background-image:
 		linear-gradient(
-			var(--primary-scrollbar-color), 
-			var(--secondary-scrollbar-color));
+			var(--active-primary-scrollbar-color), 
+			var(--active-secondary-scrollbar-color));
 }
 
 /*#endregion*/
 
-/*#region A-element*/
 
 a{
 	transition: var(--standard-eio-transition);
 	display: block;
 	text-decoration: none;
 }
-
-/*#endregion*/
+h3, h2, span, p{
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
