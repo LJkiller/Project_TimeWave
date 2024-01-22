@@ -71,6 +71,8 @@ class Methods {
     switch (route) {
       case 'home':
         return 'Global';
+      case 'user':
+        return 'Profile';
       default:
         return 'UnknownPage';
     }

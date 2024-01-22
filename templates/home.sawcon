@@ -52,7 +52,7 @@
             <section id="posts">
                 <h2><span>DEEZ%pageReflector%NUTS</span>Splashes</h2>
                 DEEZ%splashes%NUTS
-
+                
                 <!-- Post Structure:
                     <a class="post" href="/post?id=${splash.splashId}">
                         <h3 class="author">@${splash.author}</h3>

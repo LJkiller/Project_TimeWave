@@ -19,16 +19,21 @@ export async function handleIndex(db, url, pathSegments, request, response){
     let route = 'index';
     ResponseManager.sendPageRoute(route);
 
-    let template = (await fs.readFile('templates/index.sawcon')).toString();
-    let balls = '';
-    balls +=`
-        <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
-        <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
-        <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
-        <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
-    `;
-    template = template.replaceAll('DEEZ%variables%NUTS', balls);
-
-    ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
-    return;
+    try{
+        let template = (await fs.readFile('templates/index.sawcon')).toString();
+        let balls = '';
+        balls +=`
+            <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
+            <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
+            <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
+            <div style="height: 50px; width: 100px; background-color: var(--wb-complementary-bg-color); color: blue; margin-top: 10px;">Balls</div>
+        `;
+        template = template.replaceAll('DEEZ%variables%NUTS', balls);
+    
+        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        return;
+    } catch (error) {
+        console.error(`Error reading file: ${error.message}`);
+        return;
+    }
 }

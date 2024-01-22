@@ -24,6 +24,7 @@ For instance: body.
 	--dimmer-text-color: rgba(205,205,205,1);
 	--thin-text-color: rgba(195,195,195,1);
 
+	--text-link-content-color: rgba(198,0,198,1);
 	--text-link-color: rgba(0,128,255,1);
 	--text-link-highlight-color: rgba(230,230,230,1);
 
@@ -49,6 +50,7 @@ For instance: body.
 
 	--large-text-shadow: 0 0 6px black;
 	--standard-text-shadow: 0 0 3px black;
+	--small-text-shadow: 0 0 1.5px black;
 
 	--xl-font-size: 1.75rem;
 	--large-font-size: 1.25rem;

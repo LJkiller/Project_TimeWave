@@ -11,6 +11,7 @@ class ResponseManager{
 
     /**
      * Method responsible of sending a Webpage response with writeHead, write, and ends it.
+     * Default: 500 Internal Server Error.
      *
      * @param {http.ServerResponse} response - Response object. Always required.
      * @param {number} statusC0D3 - HTTP status code.
@@ -25,6 +26,7 @@ class ResponseManager{
   
     /**
      * Method responsible of sending an API response with writeHead, write, and ends it.
+     * Default: 500 Internal Server Error.
      * 
      * @param {http.ServerResponse} response - Response object. Always required.
      * @param {number} statusC0D3 - HTTP status code.

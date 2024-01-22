@@ -19,24 +19,28 @@ import { handleHome } from './routeHandlers/homeHandler.js';
  * @returns {Promise<void>} Promise that resolves when the routing and handling are complete.
  */
 export async function handleRoute (db, url, pathSegments, request, response) {
-
-    if (pathSegments.length === 0) {
-        handleIndex(db, url, pathSegments, request, response);
-    }
-    else {
-        // Handle other routes based on first segment of pathSegments.
-        switch (pathSegments[0]) {
-            case 'index':
-                handleIndex(db, url, pathSegments, request, response);
-                break;
-            case 'home':
-                handleHome(db, url, pathSegments, request, response);
-                break;
-            default:
-                // Invalid route.
-                ResponseManager.sendWebPageResponse(response);
-                return;
+    try{
+        if (pathSegments.length === 0) {
+            handleIndex(db, url, pathSegments, request, response);
         }
+        else {
+            // Handle other routes based on first segment of pathSegments.
+            switch (pathSegments[0]) {
+                case 'index':
+                    handleIndex(db, url, pathSegments, request, response);
+                    break;
+                case 'home':
+                    handleHome(db, url, pathSegments, request, response);
+                    break;
+                default:
+                    // Invalid route.
+                    ResponseManager.sendWebPageResponse(response);
+                    return;
+            }
+        }
+    } catch (error) {
+        console.error(`Unhandled error: ${error.message}`);
+        ResponseManager.sendErrorResponse(response);
     }
 
 }

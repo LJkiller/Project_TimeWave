@@ -21,14 +21,22 @@ export async function handleHome(db, url, pathSegments, request, response){
     ResponseManager.sendPageRoute(route);
     let contentHead = Methods.pageReflection(route);
 
-    let template = (await fs.readFile('templates/home.sawcon')).toString();    
-    let result = await db.collection('splashes').find().toArray();
-    let posts = PostManager.generateSplashes(result);
+    try{
+        let template = (await fs.readFile('templates/home.sawcon')).toString();    
+        let result = await db.collection('splashes').find().toArray();
+        let posts = PostManager.generateSplashes(result);
+    
+        template = template
+            .replaceAll('DEEZ%splashes%NUTS', posts)
+            .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
+        ;      
+    
+        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        return;
 
-    template = template
-        .replaceAll('DEEZ%splashes%NUTS', posts)
-        .replaceAll('DEEZ%pageReflector%NUTS', contentHead);
-
-    ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
-    return;
+    } catch(error){
+        console.error(`Error reading file: ${error.message}`);
+        ResponseManager.sendWebPageResponse(response);
+        return;
+    }
 }

@@ -10,8 +10,14 @@ import { handleRoute } from './routeHandler.js';
 import { handleStaticFileRoute } from './staticFileHandler.js';
 
 // Establishing MongoDB Connection.
-const mongoConn = await mongoDB.MongoClient.connect(process.env.MONGODB_CONNECTIONSTING);
-const db = mongoConn.db('timeWave');
+let mongoConn;
+try{
+    mongoConn = await mongoDB.MongoClient.connect(process.env.MONGODB_CONNECTIONSTING);
+} catch (error){
+    console.error(`MongoDB failed to connect: ${error.message}`);
+    console.log('Further uses of application will be downgraded.');
+}
+let db = mongoConn.db('timeWave');
 
 /**
  * Method responsible of handling HTTP requests. 

@@ -92,30 +92,52 @@ main section#main-content section#posts h2>span::after{
     background-color: var(--dimmer-text-color);
 }
 
-main section#main-content section#posts a.post{
+main section#main-content section#posts .post{
     padding: 0.3125rem 0;
     max-height: var(--post-max-height);
     color: var(--standard-text-color);
     background-color: var(--post-background-color);
 }
-main section#main-content section#posts a.post:hover{
+main section#main-content section#posts .post:hover{
     background-color: var(--primary-color);
 }
-main section#main-content section#posts a.post h3,
-main section#main-content section#posts a.post span,
-main section#main-content section#posts a.post p,
-main section#main-content section#posts a.post div.media-container{
+
+main section#main-content section#posts .post h3,
+main section#main-content section#posts .post a.id-display,
+main section#main-content section#posts .post span.date,
+main section#main-content section#posts .post p.content,
+main section#main-content section#posts .post div.media-container{
     max-width: var(--content-max-width);
     margin-left: var(--content-margin-left);
 }
-main section#main-content section#posts a.post h3{
-    margin-top: 0.25rem;
+
+main section#main-content section#posts .post h3 a:hover,
+main section#main-content section#posts .post a.id-display:hover{
+    color: var(--text-link-content-color);
+    text-shadow: var(--small-text-shadow);
 }
-main section#main-content section#posts a.post span{
+main section#main-content section#posts .post h3 a{
+    transition: var(--standard-eio-transition);
+    margin-top: 0.25rem;
+    color: var(--brighter-text-color);
+}
+main section#main-content section#posts .post a.id-display,
+main section#main-content section#posts .post span.date{
+    font-style: italic;
+}
+main section#main-content section#posts .post a.id-display{
+    color: var(--standard-text-color);
+}
+main section#main-content section#posts .post span.date{
     color: var(--thin-text-color);
 }
+main section#main-content section#posts .post p.content a{
+    font-weight: bold;
+    color: var(--text-link-content-color);
+}
 
-main section#main-content section#posts a.post div.media-container img{
+main section#main-content section#posts .post div.media-container img,
+main section#main-content section#posts .post div.media-container iframe{
     max-height: var(--post-image-max-height);
     max-width: var(--post-image-max-width);
     border-radius: var(--standard-border-radius);
