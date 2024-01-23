@@ -35,28 +35,53 @@ class Methods {
 
   /**
    * Method responsible of replacing potentially dangerous charaters in a string with corresponding HTML entities.
+   * Also repsonsible for decoding the saniitized content.
    * Preventing cross-site scripting (XSS) vulnerabilities.
    *
    * @param {string} input - Input to be sanitized.
+   * @param {boolean} [encode=true] - To encode or to decode, that is the question.
    * @returns {string} Sanitized string with replaced characters.
    */
-  static replaceDangerousCharacters(input) {
-    let output = input
-      .replaceAll('&', '&amp;')
+  static XSSProtectionHandler(input, encode = true) {
+    let output;
+    switch (encode) {
+      case false:
+        output = input
+          .replaceAll('&', '&amp;')
 
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
 
-      .replaceAll('"', '&quot;')
-      .replaceAll('`', '&#96;')
+          .replaceAll('"', '&quot;')
+          .replaceAll('`', '&#96;')
 
-      .replaceAll('\'', '&#39;')
-      .replaceAll('/', '&#47;')
+          .replaceAll('\'', '&#39;')
+          .replaceAll('/', '&#47;')
 
-      .replaceAll('=', '&#61;')
+          .replaceAll('=', '&#61;')
 
-      .replaceAll('(', '&#40;')
-      .replaceAll(')', '&#41;');
+          .replaceAll('(', '&#40;')
+          .replaceAll(')', '&#41;');
+        break;
+      default:
+        output = input
+          .replaceAll('&amp;', '&')
+
+          .replaceAll('&lt;', '<')
+          .replaceAll('&gt;', '>')
+
+          .replaceAll('&quot;', '"')
+          .replaceAll('&#96;', '`')
+
+          .replaceAll('&#39;', '\'')
+          .replaceAll('&#47;', '/')
+
+          .replaceAll('&#61;', '=')
+
+          .replaceAll('&#40;', '(')
+          .replaceAll('&#41;', ')');
+        break;
+    }
     return output;
   }
 

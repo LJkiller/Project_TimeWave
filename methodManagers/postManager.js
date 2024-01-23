@@ -32,7 +32,10 @@ class PostManager {
                 splash =
                     `
                     <div class="post">
-                        <h3 class="author"><a href="/user/${splash.author}">@${splash.author}</a></h3>
+                        <h3>
+                            <a class="author" href="/user/${splash.author}">@${splash.author}</a>
+                            <div class="subject-container">Tide: ${PostManager.generatePostSubject(splash.splashSubject)}</div>
+                        </h3>
                         <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
                         <span class="date">Made a splash: ${PostManager.formatDate(splash)}</span>
                         ${content}
@@ -89,7 +92,7 @@ class PostManager {
      * Method responsible for checking splash content for links and
      * act accordingly.
      * 
-     * @param {Object} splash - MongoDB object containing splash information.
+     * @param {string} content - String of the MongoDB object splash.splashContent.
      * @returns {string} - Updated content with encapsulated links.
      */
     static checkForLinkedContent(content){
@@ -143,7 +146,8 @@ class PostManager {
                 return `
                     <div class="media-container">
                         <img src="${splash.media.source}"
-                            alt="${splash.author}'s media for splash: ${splash.splashId}">
+                            alt="${splash.author}'s media for splash: ${splash.splashId}"
+                            Image is not supported by your browser>
                     </div>`
                 ;
             } else if (mediaType.type === 'video') {
@@ -163,6 +167,21 @@ class PostManager {
         }
     }
 
+    static generatePostSubject(subjectObject) {
+        let subjects = '';
+        for (let key in subjectObject) {
+            if (subjectObject.hasOwnProperty(key)) {
+                let subject = subjectObject[key];
+                subject = `
+                    <a class="subject" href="/tides/${subject.toLowerCase()}">${subject}</a>
+                `;
+    
+                subjects += subject;
+            }
+        }
+        return subjects;
+    }
+
     /**
      * Method responsible of creating embed path for media, videos.
      * Supports embedding videos of:
@@ -178,7 +197,7 @@ class PostManager {
             videoId = PostManager.videoIdExtractor(splash);
             switch (mediaType.source) {
                 case 'youtube':
-                    return `https://www.youtube-nocookie.com/embed/${videoId}?start=0&autoplay=1&autohide=1`;
+                    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=0&autoplay=1&autohide=1`;
                 default: // Default to avoid problems.
                     return '';
             }

@@ -23,6 +23,7 @@ For instance: body.
 	--standard-text-color: rgba(225,225,225,1);
 	--dimmer-text-color: rgba(205,205,205,1);
 	--thin-text-color: rgba(195,195,195,1);
+	--dark-text-color: rgba(60,60,60,1);
 
 	--text-link-content-color: rgba(198,0,198,1);
 	--text-link-color: rgba(0,128,255,1);
@@ -30,6 +31,9 @@ For instance: body.
 
     --wb-primary-bg-color: rgba(215,215,215,1);
     --wb-complementary-bg-color: rgba(0,165,220,1);
+
+	--subject-background-color: rgba(120,120,120,1);
+	--highlighted-subject-background-color: rgba(200,200,200,1);
 	
 
 
