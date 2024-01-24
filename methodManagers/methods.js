@@ -10,6 +10,7 @@ class Methods {
   /**
    * Method responsible of retrieving body content from HTTP request.
    *
+   * @static
    * @param {http.IncomingMessage} request - HTTP request.
    * @returns {Promise<string>} Promise that resolves the body content as string.
    * @rejects {Error} If error during request or data retrieval.
@@ -38,6 +39,7 @@ class Methods {
    * Also repsonsible for decoding the saniitized content.
    * Preventing cross-site scripting (XSS) vulnerabilities.
    *
+   * @static
    * @param {string} input - Input to be sanitized.
    * @param {boolean} [encode=true] - To encode or to decode, that is the question.
    * @returns {string} Sanitized string with replaced characters.
@@ -89,6 +91,7 @@ class Methods {
    * Method responsible of analyzing which page you are on
    * to reflect what appropiate content header.
    * 
+   * @static
    * @param {string} route - Page route of current page.
    * @returns {string} - Corresponding content header depending on page route.
    */

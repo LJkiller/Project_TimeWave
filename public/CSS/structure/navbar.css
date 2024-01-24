@@ -9,7 +9,7 @@
     --nav-item-icon-margin-left: calc(95% - var(--nav-item-width));
 }
 
-main aside#aside-main {
+main aside#aside-left {
     position: absolute;
     text-align: center;
     height: 100%;
@@ -19,11 +19,11 @@ main aside#aside-main {
 
 /*#region Title*/
 
-main aside#aside-main h1 a {
+main aside#aside-left h1 a {
     font-size: var(--xl-font-size);
     color: var(--brighter-text-color);
 }
-main aside#aside-main h1>a>i.fa-hourglass {
+main aside#aside-left h1>a>i.fa-hourglass {
     color: var(--hourglass-color);
 }
 
@@ -31,25 +31,25 @@ main aside#aside-main h1>a>i.fa-hourglass {
 
 /*#region Nav*/
 
-main aside#aside-main nav {
+main aside#aside-left nav {
     height: 80%;
     width: 100%;
 }
-main aside#aside-main nav ul {
+main aside#aside-left nav ul {
     list-style: none;
     padding: 0;
 }
-main aside#aside-main nav ul li {
+main aside#aside-left nav ul li {
     margin-top: 0.625rem;
 }
-main aside#aside-main nav ul li.active a{
+main aside#aside-left nav ul li.active a{
     --text-link-color: var(--standard-text-color);
     --text-link-highlight-color: var(--primary-color);
     color: var(--text-link-color);
     background-color: var(--text-link-highlight-color);
 }
 
-main aside#aside-main nav ul li i.fa-solid{
+main aside#aside-left nav ul li i.fa-solid{
     position: absolute;
     left: 0;
     margin-top: 0.1rem;
@@ -58,8 +58,8 @@ main aside#aside-main nav ul li i.fa-solid{
 
 /*#endregion*/
 
-main aside#aside-main nav a,
-main aside#aside-main a#account-toggler {
+main aside#aside-left nav a,
+main aside#aside-left a#account-toggler {
     transition: var(--standard-eio-transition);
     display: block;
     margin-left: auto;
@@ -73,8 +73,8 @@ main aside#aside-main a#account-toggler {
     color: var(--text-link-color);
     background-color: var(--wb-primary-bg-color);
 }
-main aside#aside-main nav a:hover,
-main aside#aside-main a#account-toggler:hover {
+main aside#aside-left nav a:hover,
+main aside#aside-left a#account-toggler:hover {
     color: var(--text-link-highlight-color);
     box-shadow: var(--object-shadow);
     text-shadow: var(--standard-text-shadow);
@@ -83,7 +83,7 @@ main aside#aside-main a#account-toggler:hover {
 
 /*#region Profile*/
 
-main aside#aside-main a#account-toggler {
+main aside#aside-left a#account-toggler {
     overflow: hidden;
     position: absolute;
     bottom: 2rem;
@@ -91,11 +91,11 @@ main aside#aside-main a#account-toggler {
     transform: translateX(-50%);
     font-size: var(--small-font-size);
 }
-main aside#aside-main a#account-toggler:hover{
+main aside#aside-left a#account-toggler:hover{
     cursor: pointer;
 }
 
-main aside#aside-main a#account-toggler img {
+main aside#aside-left a#account-toggler img {
     display: block;
     float: left;
     margin-right: 10px;
@@ -103,7 +103,7 @@ main aside#aside-main a#account-toggler img {
     height: var(--profile-picture-size);
     width: var(--profile-picture-size);
 }
-main aside#aside-main a#account-toggler span {
+main aside#aside-left a#account-toggler span {
     display: block;
     float: left;
     overflow: hidden;
@@ -114,11 +114,11 @@ main aside#aside-main a#account-toggler span {
     text-overflow: ellipsis;
 }
 
-main aside#aside-main a#account-toggler:focus + #account-dropdown {
+main aside#aside-left a#account-toggler:focus + #account-dropdown {
     display: block;
 }
 
-main aside#aside-main #account-dropdown {
+main aside#aside-left #account-dropdown {
     transition: var(--standard-eio-transition);
     display: none;
     position: absolute;
@@ -134,15 +134,15 @@ main aside#aside-main #account-dropdown {
     box-shadow: var(--object-shadow);
     background-color: var(--wb-primary-bg-color);
 }
-main aside#aside-main #account-dropdown a {
+main aside#aside-left #account-dropdown a {
     padding: 0.625rem;
     display: block;
     color: var(--text-link-color);
 }
-main aside#aside-main #account-dropdown:hover {
+main aside#aside-left #account-dropdown:hover {
     background-color: var(--text-link-color);
 }
-main aside#aside-main #account-dropdown:hover a {
+main aside#aside-left #account-dropdown:hover a {
     text-shadow: var(--standard-text-shadow);
     color: var(--text-link-highlight-color);
 }

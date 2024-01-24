@@ -1,0 +1,32 @@
+
+main section#main-content{
+    --main-content-width: 50%;
+    font-weight: bold;
+    color: var(--standard-text-color);
+}
+main section#main-content p{
+    margin-top: 2rem;
+    text-shadow: var(--standard-text-shadow);
+}
+main section#main-content img{
+    margin-top: 1rem;
+    aspect-ratio: 3264/1832; 
+    width: 90%;
+    border-radius: var(--standard-border-radius);
+}
+main section#main-content a{
+    display: block;
+    margin-top: 10rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 50%;
+
+    padding: 0.625rem;
+    color: var(--standard-text-color);
+    border-radius: var(--standard-border-radius);
+    background-color: var(--text-link-color);
+}
+main section#main-content a:hover{
+    color: var(--text-link-color);
+    background-color: var(--text-link-highlight-color);
+}

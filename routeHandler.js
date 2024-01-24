@@ -5,6 +5,7 @@ import ResponseManager from './methodManagers/responseManager.js';
 // Handlers
 import { handleIndex } from './routeHandlers/indexHandler.js';
 import { handleHome } from './routeHandlers/homeHandler.js';
+import { handleTOS } from './routeHandlers/tosHandler.js';
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -32,6 +33,9 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                 case 'home':
                     handleHome(db, url, pathSegments, request, response);
                     break;
+                case 'terms-of-service':
+                    handleTOS(db, url, pathSegments, request, response);
+                    break;
                 default:
                     // Invalid route.
                     ResponseManager.sendWebPageResponse(response);
@@ -39,8 +43,7 @@ export async function handleRoute (db, url, pathSegments, request, response) {
             }
         }
     } catch (error) {
-        console.error(`Unhandled error: ${error.message}`);
-        ResponseManager.sendErrorResponse(response);
+        ResponseManager.sendError('Handling route', error);
     }
 
 }

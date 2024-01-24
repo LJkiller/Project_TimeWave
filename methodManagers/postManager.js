@@ -1,4 +1,5 @@
 import Methods from './methods.js';
+import ResponseManager from './responseManager.js';
 
 /**
  * Class responsible of managing post generation by communicating
@@ -19,41 +20,51 @@ class PostManager {
      * Method responsible of generating posts from MongoDB in an HTML format.
      * Returns the generated splashes as string.
      * 
+     * @static
      * @param {Array} objResult - Splash objects from MongoDB.
      * @returns {string} - HTML string for generated splashes.
      */
     static generateSplashes(objResult) {
-        let splashes = '';
-        for (let i = 0; i < objResult.length; i++) {
-            let splash = objResult[i];
-            try{
-                let linkedContent = PostManager.checkForLinkedContent(splash.splashContent);
-                let content = `<p class="content">${linkedContent}</p>`;
-                splash =
-                    `
-                    <div class="post">
-                        <h3>
-                            <a class="author" href="/user/${splash.author}">@${splash.author}</a>
-                            <div class="subject-container">Tide: ${PostManager.generatePostSubject(splash.splashSubject)}</div>
-                        </h3>
-                        <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
-                        <span class="date">Made a splash: ${PostManager.formatDate(splash)}</span>
-                        ${content}
-                        ${PostManager.generateMedia(splash)}
-                    </div>
-                `;
-                splashes += splash;
-            } catch (error){
-                console.error(`Error generating splash HTML: ${error.message}`);
+        try{
+            // Orders the objects for biggest splashId to lower splashId.
+            let latestSplash = objResult.sort((last, first) => first.splashId - last.splashId);
+            let result = latestSplash;
+            let splashes = '';
+            for (let i = 0; i < result.length; i++) {
+                let splash = result[i];
+                try {
+                    let linkedContent = this.checkForLinkedContent(splash.splashContent);
+                    let content = `<p class="content">${linkedContent}</p>`;
+                    splash =
+                        `
+                        <article class="post">
+                            <h3>
+                                <a class="author" href="/user/${splash.author}">@${splash.author}</a>
+                                <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
+                            </h3>
+                            <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
+                            <span class="date">Made a splash: ${this.formatDate(splash)}</span>
+                            ${content}
+                            ${this.generateMedia(splash)}
+                        </article>
+                    `;
+                    splashes += splash;
+                } catch (error) {
+                    ResponseManager.sendError('Generating splash HTML', error);
+                }
             }
+            return splashes;
+
+        } catch (error){
+            ResponseManager.sendError('Generating Splashes', error);
         }
-        return splashes;
     }
 
     /**
     * Method responsible of formating the date from a MongoDB object into
     * a standardized string format.
     *
+    * @static
     * @param {Object} splash - MongoDB object containing splash information.
     * @returns {string} - Formatted date string in the "YYYY-MM-DD HH:mm:ss" format.
     */
@@ -73,12 +84,13 @@ class PostManager {
      * Method responsible of checking media type and return type,
      * dependent of information.
      * 
+     * @static
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {Object} - Information object containing type or with source.
      */
     static checkMediaType(splash) {
         if (splash.media.image) {
-            return {type: 'image'};
+            return { type: 'image' };
         } else if (splash.media.video) {
             let information = {
                 type: 'video',
@@ -92,10 +104,11 @@ class PostManager {
      * Method responsible for checking splash content for links and
      * act accordingly.
      * 
+     * @static
      * @param {string} content - String of the MongoDB object splash.splashContent.
      * @returns {string} - Updated content with encapsulated links.
      */
-    static checkForLinkedContent(content){
+    static checkForLinkedContent(content) {
         let urlPattern = /(https?:\/\/[^\s]+)/g;
 
         let contentLink = content.replace(urlPattern, (url) => {
@@ -104,12 +117,13 @@ class PostManager {
 
         return contentLink;
     }
-    
+
     /**
      * Method responsible of extracting video id from provided sources from MongoDB.
      * Supports URL formats of:
      * Youtube.
      *
+     * @static
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - Extracted video ID.
      */
@@ -132,6 +146,7 @@ class PostManager {
      * Method responsible of creating media container based of 
      * MongoDB information.
      * 
+     * @static
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - HTML structure: media container, or empty string for error.
      */
@@ -140,8 +155,8 @@ class PostManager {
             return '';
         }
 
-        try{
-            let mediaType = PostManager.checkMediaType(splash);
+        try {
+            let mediaType = this.checkMediaType(splash);
             if (mediaType.type === 'image') {
                 return `
                     <div class="media-container">
@@ -149,24 +164,31 @@ class PostManager {
                             alt="${splash.author}'s media for splash: ${splash.splashId}"
                             Image is not supported by your browser>
                     </div>`
-                ;
+                    ;
             } else if (mediaType.type === 'video') {
                 return `
                     <div class="media-container">
                         <iframe class="mediaPlayer"
-                            src="${PostManager.embedPath(mediaType, splash)}"
+                            src="${this.embedPath(mediaType, splash)}"
                             title="Media Viewer" allowfullscreen frameborder="0"
                             allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
                         </iframe>
                     </div>`
-                ;
+                    ;
             }
-        } catch(error){
-            console.error(`Error generating media HTML: ${error.message}`);
+        } catch (error) {
+            ResponseManager.sendError('Generating media HTML', error);
             return '';
         }
     }
 
+    /**
+     * Method responsible for generating subject links for posts.
+     * 
+     * @static
+     * @param {Object} subjectObject - Object containing subject information.
+     * @returns {string} - HTML structure: subject links.
+     */
     static generatePostSubject(subjectObject) {
         let subjects = '';
         for (let key in subjectObject) {
@@ -175,7 +197,7 @@ class PostManager {
                 subject = `
                     <a class="subject" href="/tides/${subject.toLowerCase()}">${subject}</a>
                 `;
-    
+
                 subjects += subject;
             }
         }
@@ -187,22 +209,23 @@ class PostManager {
      * Supports embedding videos of:
      * Youtube.
      *
+     * @static
      * @param {Object} mediaType - Information about media type, source.
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - Embed path for specified media, or empty string for error.
      */
     static embedPath(mediaType, splash) {
         let videoId;
-        try{
-            videoId = PostManager.videoIdExtractor(splash);
+        try {
+            videoId = this.videoIdExtractor(splash);
             switch (mediaType.source) {
                 case 'youtube':
                     return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=0&autoplay=1&autohide=1`;
                 default: // Default to avoid problems.
                     return '';
             }
-        } catch(error){
-            console.error(`Error embeding media source: ${error.message}`);
+        } catch (error) {
+            ResponseManager.sendError('Embedding media source', error);
             return '';
         }
     }

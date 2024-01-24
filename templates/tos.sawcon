@@ -8,8 +8,8 @@
 
     <!--CSS-->
     <link rel="stylesheet" href="/public/CSS/structure/style.css">
-    <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
     <link rel="stylesheet" href="/public/CSS/index.css">
+    <link rel="stylesheet" href="/public/CSS/tos.css">
 
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
@@ -19,13 +19,10 @@
 
     <main>
         <section id="main-content">
-            <h1><a href="/index"><i class="fa-solid fa-hourglass"></i> <span>TimeWave</span></i></a></h1>
-            <nav>
-                <a href="/home">Home</a>
-                <p>Other options</p>
-                <a href="/sign-in">Sign In</a>
-                <a href="/sign-up">Sign Up</a>
-            </nav>
+            <h1>Terms of Service</h1>
+            <p>I own you</p>
+            <img src="https://i.redd.it/mosxrktfccj51.jpg" alt="Cat staring at you, menacingly">
+            <a href="/home">Go back</a>
         </section>
     </main>
 

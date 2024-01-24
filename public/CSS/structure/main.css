@@ -15,7 +15,7 @@
     --post-background-color: rgba(0,155,220,1);
 }
 
-
+/*#region Basic Structure*/
 
 main h2.page-display{
     position: absolute;
@@ -92,6 +92,10 @@ main section#main-content section#posts h2>span::after{
     background-color: var(--dimmer-text-color);
 }
 
+/*#endregion*/
+
+/*#region Posts*/
+
 main section#main-content section#posts .post{
     padding: 0.625rem 0;
     max-height: var(--post-max-height);
@@ -143,6 +147,18 @@ main section#main-content section#posts .post h3 .subject-container a.subject{
     color: var(--standard-text-color);
     background-color: var(--subject-background-color);
 }
+main section#main-content section#posts .post h3 .subject-container span::before{
+    content: "";
+    display: inline-block;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
+    margin-bottom: -0.4rem;
+
+    height: 1.7rem;
+    width: 0.2em;
+    border-radius: var(--standard-border-radius);
+    background-color: var(--dimmer-text-color);
+}
 main section#main-content section#posts .post h3 .subject-container a.subject:hover{
     color: var(--dark-text-color);
     background-color: var(--highlighted-subject-background-color);
@@ -158,9 +174,11 @@ main section#main-content section#posts .post span.date{
     color: var(--thin-text-color);
 }
 main section#main-content section#posts .post p.content a{
-    max-width: none !important;
     font-weight: bold;
     color: var(--text-link-content-color);
+}
+main section#main-content section#posts .post p.content a:hover{
+    color: white;
 }
 
 main section#main-content section#posts .post div.media-container img,
@@ -169,3 +187,5 @@ main section#main-content section#posts .post div.media-container iframe{
     max-width: var(--post-image-max-width);
     border-radius: var(--standard-border-radius);
 }
+
+/*#endregion*/

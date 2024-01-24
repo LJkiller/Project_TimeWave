@@ -9,6 +9,7 @@
     <!--CSS-->
     <link rel="stylesheet" href="/public/CSS/structure/style.css">
     <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
+    <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
     <link rel="stylesheet" href="/public/CSS/structure/main.css">
     <link rel="stylesheet" href="/public/CSS/structure/home.css">
 
@@ -20,7 +21,7 @@
 <body>
 
     <main>
-        <aside id="aside-main">
+        <aside id="aside-left">
             <h1><a href="/home"><i class="fa-solid fa-hourglass"></i> <span>TimeWave</span></i></a></h1>
             <nav>
                 <ul>
@@ -68,6 +69,21 @@
                 -->
             </section>
         </section>
+
+        <aside id="aside-right">
+            <div>
+                <h2>TimeWave</h2>
+                <p>
+                    A discussion platform that allows users to log in and share things with the public or in small groups through Splashes. The website supports HTML, CSS, and JavaScript.
+                    <br>
+                    <br>
+                    The main purpose of TimeWave is to share information, stories, and perhaps even gossip through text. Additionally, this website supports file formats such as images and videos when splashing. 
+                    Different groups or forum topics are referred to as Tides. Users' splashes cannot be removed, hence the name: TimeWave.
+                </p>
+                <p>&copy; 2024 TimeWave. All rights reserved.</p>
+                <a href="/terms-of-service">Terms of service</a>
+            </div>
+        </aside>
     </main>
 
 </body>

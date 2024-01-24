@@ -1,0 +1,44 @@
+
+:root{
+    --pushed-aside-margin-left: calc(var(--main-content-margin-left) + var(--main-content-width));
+    --remaining-margin-aside: calc(100vw - var(--pushed-aside-margin-left));
+    --aside-right-margin-left: calc(var(--pushed-aside-margin-left) + (var(--remaining-margin-aside)/5));
+
+    --aside-right-height: 90vh;
+    --aside-right-width: 20%;
+}
+
+main aside#aside-right{
+    position: absolute;
+    margin-top: var(--main-content-margin-top);
+    margin-left: var(--aside-right-margin-left);
+
+    height: var(--aside-right-height);
+    width: var(--aside-right-width);
+
+    border-radius: var(--sharp-border-radius);
+    color: var(--standard-text-color);
+    background-color: var(--wb-complementary-bg-color);
+}
+main aside#aside-right div{
+    margin-left: 2.5%;
+    height: calc(var(--aside-right-height) - 2rem);
+    width: 95%;
+    font-weight: bold;
+    text-shadow: var(--standard-text-shadow);
+}
+main aside#aside-right div p, 
+main aside#aside-right div a{
+    display: block;
+}
+main aside#aside-right div h2{
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    text-shadow: var(--large-text-shadow);
+}
+main aside#aside-right div a{
+    color: var(--dimmer-text-color);
+}
+main aside#aside-right div a:hover{
+    color: white;
+}

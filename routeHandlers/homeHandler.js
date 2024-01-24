@@ -35,7 +35,7 @@ export async function handleHome(db, url, pathSegments, request, response){
         return;
 
     } catch(error){
-        console.error(`Error reading file: ${error.message}`);
+        ResponseManager.sendError('Reading file', error);
         ResponseManager.sendWebPageResponse(response);
         return;
     }
