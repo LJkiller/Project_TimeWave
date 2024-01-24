@@ -162,7 +162,8 @@ class PostManager {
                     <div class="media-container">
                         <img src="${splash.media.source}"
                             alt="${splash.author}'s media for splash: ${splash.splashId}"
-                            Image is not supported by your browser>
+                            Image is not supported by your browser
+                        >
                     </div>`
                     ;
             } else if (mediaType.type === 'video') {

@@ -29,7 +29,8 @@
                     </li>
                     <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
                     <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
-                    <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a Splash!</span></a></li>
+                    <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a
+                                Splash!</span></a></li>
                 </ul>
             </nav>
 
@@ -53,19 +54,36 @@
             <section id="posts">
                 <h2><span>DEEZ%pageReflector%NUTS</span>Splashes</h2>
                 DEEZ%splashes%NUTS
-                
+
                 <!-- Post Structure:
-                    <a class="post" href="/post?id=${splash.splashId}">
-                        <h3 class="author">@${splash.author}</h3>
-                        <span class="date">Made a splash: ${Methods.formatDate(splash)}</span>
-                        <p class="content">Content: ${splash.splashContent}</p>
-                        <div class="image-container">
-                            <img src="${splash.media.source}" 
-                            alt="${splash.author}'s media for splash: ${splash.splashId}">
-                            ELLER
-                            <iframe></iframe>
-                        </div>`;
-                    </a>
+                    <article class="post">
+                        <h3>
+                            <a class="author" href="/user/${splash.author}">@${splash.author}</a>
+                            <div class="subject-container">
+                                <a class="subject" href="/tides/${subject.toLowerCase()}">${subject}</a>
+                                <span>Tide</span>
+                            </div>
+                        </h3>
+                        <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
+                        <span class="date">Made a splash: ${this.formatDate(splash)}</span>
+                        <p class="content">
+                            <a href="${url}" target="_blank">${url}</a>
+                        </p>
+                        <div class="media-container">
+                            <img src="${splash.media.source}"
+                                alt="${splash.author}'s media for splash: ${splash.splashId}"
+                                Image is not supported by your browser
+                            >
+                            
+                            OR
+
+                            <iframe class="mediaPlayer"
+                                src="${this.embedPath(mediaType, splash)}"
+                                title="Media Viewer" allowfullscreen frameborder="0"
+                                allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                            </iframe>
+                        </div>
+                    </article>
                 -->
             </section>
         </section>
@@ -74,11 +92,14 @@
             <div>
                 <h2>TimeWave</h2>
                 <p>
-                    A discussion platform that allows users to log in and share things with the public or in small groups through Splashes. The website supports HTML, CSS, and JavaScript.
+                    A discussion platform that allows users to log in and share things with the public or in small
+                    groups through Splashes. The website supports HTML, CSS, and JavaScript.
                     <br>
                     <br>
-                    The main purpose of TimeWave is to share information, stories, and perhaps even gossip through text. Additionally, this website supports file formats such as images and videos when splashing. 
-                    Different groups or forum topics are referred to as Tides. Users' splashes cannot be removed, hence the name: TimeWave.
+                    The main purpose of TimeWave is to share information, stories, and perhaps even gossip through text.
+                    Additionally, this website supports file formats such as images and videos when splashing.
+                    Different groups or forum topics are referred to as Tides. Users' splashes cannot be removed, hence
+                    the name: TimeWave.
                 </p>
                 <p>&copy; 2024 TimeWave. All rights reserved.</p>
                 <a href="/terms-of-service">Terms of service</a>
