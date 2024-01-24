@@ -1,4 +1,3 @@
-import Methods from './methods.js';
 import ResponseManager from './responseManager.js';
 
 /**

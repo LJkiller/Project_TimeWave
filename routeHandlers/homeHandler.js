@@ -5,8 +5,8 @@ import PostManager from '../methodManagers/postManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
- * Method responsible of handling the index page request. 
- * Logging the route, reading index template, replacing placeholders with content, 
+ * Method responsible of handling the home page request. 
+ * Logging the route, reading home template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @param {Db} db - MongoDB database object.

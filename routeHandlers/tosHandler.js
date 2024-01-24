@@ -4,8 +4,8 @@ import Methods from '../methodManagers/methods.js';
 import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
- * Method responsible of handling the index page request. 
- * Logging the route, reading index template, replacing placeholders with content, 
+ * Method responsible of handling the tos page request. 
+ * Logging the route, reading tos template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @param {Db} db - MongoDB database object.

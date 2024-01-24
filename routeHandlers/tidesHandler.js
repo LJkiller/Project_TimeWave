@@ -1,11 +1,12 @@
 
 import fs from 'fs/promises';
 import Methods from '../methodManagers/methods.js';
+import TidesManager from '../methodManagers/tidesManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
- * Method responsible of handling the index page request. 
- * Logging the route, reading index template, replacing placeholders with content, 
+ * Method responsible of handling the tides page request. 
+ * Logging the route, reading tides template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @param {Db} db - MongoDB database object.
@@ -23,7 +24,7 @@ export async function handleTides(db, url, pathSegments, request, response){
     try{
         let template = (await fs.readFile('templates/tides.sawcon')).toString();    
         let result = await db.collection('availableTides').find().toArray();
-        let tides = 'e';
+        let tides = TidesManager.generateAvailableTides(result);
     
         template = template
             .replaceAll('DEEZ%tides%NUTS', tides)
