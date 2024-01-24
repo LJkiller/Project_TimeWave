@@ -43,47 +43,16 @@
             </div>
         </aside>
 
-        <h2 class="page-display">Home</h2>
+        <h2 class="page-display">Tides</h2>
         <section id="main-content">
             <div class="main-top">
                 <a href="/create-post" class="create-post">
                     <h3><i class="fa-solid fa-droplet"></i> Make a Splash!</h3>
                 </a>
             </div>
-            <section id="posts" class="main-part">
-                <h2><span>DEEZ%pageReflector%NUTS</span>Splashes</h2>
-                DEEZ%splashes%NUTS
-
-                <!-- Post Structure:
-                    <article class="post">
-                        <h3>
-                            <a class="author" href="/user/${splash.author}">@${splash.author}</a>
-                            <div class="subject-container">
-                                <a class="subject" href="/tides/${subject.toLowerCase()}">${subject}</a>
-                                <span>Tide</span>
-                            </div>
-                        </h3>
-                        <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
-                        <span class="date">Made a splash: ${this.formatDate(splash)}</span>
-                        <p class="content">
-                            <a href="${url}" target="_blank">${url}</a>
-                        </p>
-                        <div class="media-container">
-                            <img src="${splash.media.source}"
-                                alt="${splash.author}'s media for splash: ${splash.splashId}"
-                                Image is not supported by your browser
-                            >
-                            
-                            OR
-
-                            <iframe class="mediaPlayer"
-                                src="${this.embedPath(mediaType, splash)}"
-                                title="Media Viewer" allowfullscreen frameborder="0"
-                                allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                            </iframe>
-                        </div>
-                    </article>
-                -->
+            <section id="tides" class="main-part">
+                <h2><span>DEEZ%pageReflector%NUTS</span> CBT</h2>
+                DEEZ%tides%NUTS
             </section>
         </section>
 

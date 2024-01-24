@@ -102,6 +102,8 @@ class Methods {
         return 'Global';
       case 'user':
         return 'Profile';
+      case 'tides':
+        return 'Tides';
       default:
         return 'UnknownPage';
     }
