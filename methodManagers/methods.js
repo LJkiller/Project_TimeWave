@@ -96,6 +96,7 @@ class Methods {
    * @returns {string} - Corresponding content header depending on page route.
    */
   static pageReflection(route) {
+    // TOS is unnecessary, no pageReflection for that route
     switch (route) {
       case 'home':
         return 'Global';
