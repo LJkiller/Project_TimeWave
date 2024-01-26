@@ -26,6 +26,9 @@ main aside#aside-left h1 a {
 main aside#aside-left h1>a>i.fa-hourglass {
     color: var(--hourglass-color);
 }
+main aside#aside-left h1 a:hover{
+    text-shadow: var(--large-text-shadow);
+}
 
 /*#endregion*/
 

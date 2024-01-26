@@ -21,7 +21,7 @@ class TidesManager {
     static generateTides(objResult) {
         try {
             let tides = '';
-            for (let i = 0; i < objResult.length; i++){
+            for (let i = 0; i < objResult.length; i++) {
                 try {
                     let tide = this.generateAvailableTides(objResult[i].availableTides);
                     tides += tide;
@@ -41,9 +41,9 @@ class TidesManager {
      * @param {Object} tideObject - Object containing tide information.
      * @returns {string} - HTML structure: tide links.
      */
-    static generateAvailableTides(tideObject){
+    static generateAvailableTides(tideObject) {
         let tides = '';
-        for (let key in tideObject){
+        for (let key in tideObject) {
             if (tideObject.hasOwnProperty(key)) {
                 let tide = Methods.capitalizeFirstLetter(tideObject[key]);
                 tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${tide}</a>`;
@@ -52,15 +52,23 @@ class TidesManager {
         return tides;
     }
 
-    static getAvailableTides(tideObject){
-        let tide = '';
-        for (let key in tideObject){
-            if (tideObject.hasOwnProperty(key)){
-                tide = tideObject[key];
+    /**
+     * Method responsible of getting available tides for further comparison.
+     * 
+     * @param {Object} tideObject - Object containing tide information.
+     * @returns {string[]} - Array of available tides.
+     */
+    static getAvailableTides(tideObject) {
+        let tidesArray = [];
+        for (let entryItems = 0; entryItems < tideObject.availableTides; entryItems++) {
+            if (tideObject.availableTides) {
+                let availableTides = tideObject.availableTides;
+                let daughterItems = TidesManager.getAvailableTides(availableTides);
+                tidesArray = tidesArray.concat(daughterItems);
             }
         }
-        return tide;
+        return tidesArray;
     }
-    
+
 }
 export default TidesManager;

@@ -5,8 +5,8 @@ import TidesManager from '../methodManagers/tidesManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
- * Method responsible of handling the tides page request. 
- * Logging the route, reading tides template, replacing placeholders with content, 
+ * Method responsible of handling the tides content page request. 
+ * Logging the route, reading tides-content template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @param {Db} db - MongoDB database object.
@@ -17,17 +17,24 @@ import ResponseManager from '../methodManagers/responseManager.js';
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
 export async function handleTidesContent(db, url, pathSegments, request, response){
-    let route = 'tides';
-    ResponseManager.sendPageRoute(route);
+    let route = 'tide';
     let contentHead = Methods.pageReflection(route);
+    let contentBody = Methods.capitalizeFirstLetter(pathSegments[1]);
+    route = `${route} ${pathSegments[1]}`;
+    ResponseManager.sendPageRoute(route);
 
     try{
-        let template = (await fs.readFile('templates/tides.sawcon')).toString();    
-        let result = await db.collection('posts').find().toArray();
+        let template = (await fs.readFile('templates/tides-content.sawcon')).toString();
+        let splashes = await db.collection('posts').find().toArray();
+
+        template = template
+            .replaceAll('DEEZ%tides%NUTS', splashes)
+            .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
+            .replaceAll('DEEZ%tideType%NUTS', contentBody)
+        ;
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       
         return;
-
     } catch(error){
         ResponseManager.sendError('Reading file', error);
         ResponseManager.sendWebPageResponse(response);

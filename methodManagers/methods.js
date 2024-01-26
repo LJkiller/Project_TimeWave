@@ -1,3 +1,4 @@
+import TidesManager from './tidesManager.js';
 
 /**
  * Utility class, containing static methods for various tasks in the web server.
@@ -8,13 +9,13 @@
 class Methods {
 
   /**
-   * Method responsible of retrieving body content from HTTP request.
-   *
-   * @static
-   * @param {http.IncomingMessage} request - HTTP request.
-   * @returns {Promise<string>} Promise that resolves the body content as string.
-   * @rejects {Error} If error during request or data retrieval.
-   */
+  * Method responsible of retrieving body content from HTTP request.
+  *
+  * @static
+  * @param {http.IncomingMessage} request - HTTP request.
+  * @returns {Promise<string>} Promise that resolves the body content as string.
+  * @rejects {Error} If error during request or data retrieval.
+  */
   static getBody(request) {
     return new Promise(function (resolve, reject) {
       let chunks = [];
@@ -35,15 +36,15 @@ class Methods {
   }
 
   /**
-   * Method responsible of replacing potentially dangerous charaters in a string with corresponding HTML entities.
-   * Also repsonsible for decoding the saniitized content.
-   * Preventing cross-site scripting (XSS) vulnerabilities.
-   *
-   * @static
-   * @param {string} input - Input to be sanitized.
-   * @param {boolean} [encode=true] - To encode or to decode, that is the question.
-   * @returns {string} Sanitized string with replaced characters.
-   */
+  * Method responsible of replacing potentially dangerous charaters in a string with corresponding HTML entities.
+  * Also repsonsible for decoding the saniitized content.
+  * Preventing cross-site scripting (XSS) vulnerabilities.
+  *
+  * @static
+  * @param {string} input - Input to be sanitized.
+  * @param {boolean} [encode=true] - To encode or to decode, that is the question.
+  * @returns {string} Sanitized string with replaced characters.
+  */
   static XSSProtectionHandler(input, encode = true) {
     let output;
     switch (encode) {
@@ -88,13 +89,13 @@ class Methods {
   }
 
   /**
-   * Method responsible of analyzing which page you are on
-   * to reflect what appropiate content header.
-   * 
-   * @static
-   * @param {string} route - Page route of current page.
-   * @returns {string} - Corresponding content header depending on page route.
-   */
+  * Method responsible of analyzing which page you are on
+  * to reflect what appropiate page header.
+  * 
+  * @static
+  * @param {string} route - Page route of current page.
+  * @returns {string} - Corresponding page header depending on page route.
+  */
   static pageReflection(route) {
     // TOS is unnecessary, no pageReflection for that route
     switch (route) {
@@ -104,17 +105,19 @@ class Methods {
         return 'Profile';
       case 'tides':
         return 'Tides';
+      case 'tide':
+        return 'Tide'
       default:
         return 'UnknownPage';
     }
   }
 
   /**
-   * Method responsible of capitalizing first letters of words.
-   * 
-   * @param {string} input - Input string to be capitalized first letter. 
-   * @returns {string} - Capitalized first letter in each word.
-   */
+    * Method responsible of capitalizing first letters of words.
+    * 
+    * @param {string} input - Input string to be capitalized first letter. 
+    * @returns {string} - Capitalized first letter in each word.
+    */
   static capitalizeFirstLetter(input) {
     return input.replace(/\b\w/g, function (char) {
       return char.toUpperCase();
