@@ -23,8 +23,8 @@ export async function handleTides(db, url, pathSegments, request, response){
 
     try{
         let template = (await fs.readFile('templates/tides.sawcon')).toString();    
-        let result = await db.collection('availableTides').find().toArray();
-        let tides = TidesManager.generateAvailableTides(result);
+        let result = await db.collection('tides').find().toArray();
+        let tides = TidesManager.generateTides(result);
     
         template = template
             .replaceAll('DEEZ%tides%NUTS', tides)

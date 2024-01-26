@@ -109,5 +109,17 @@ class Methods {
     }
   }
 
+  /**
+   * Method responsible of capitalizing first letters of words.
+   * 
+   * @param {string} input - Input string to be capitalized first letter. 
+   * @returns {string} - Capitalized first letter in each word.
+   */
+  static capitalizeFirstLetter(input) {
+    return input.replace(/\b\w/g, function (char) {
+      return char.toUpperCase();
+    });
+  }
+
 }
 export default Methods;

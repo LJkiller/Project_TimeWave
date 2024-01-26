@@ -111,8 +111,8 @@ main section#main-content section#posts .post a.id-display,
 main section#main-content section#posts .post span.date,
 main section#main-content section#posts .post p.content,
 main section#main-content section#posts .post div.media-container{
-    max-width: var(--content-max-width);
     margin-left: var(--content-margin-left);
+    max-width: var(--content-max-width);
 }
 
 main section#main-content section#posts .post h3{

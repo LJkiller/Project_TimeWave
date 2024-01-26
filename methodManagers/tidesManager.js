@@ -1,3 +1,4 @@
+import Methods from './methods.js';
 import ResponseManager from './responseManager.js';
 
 /**
@@ -17,31 +18,39 @@ class TidesManager {
      * @param {Array} objResult - Tide objects from MongoDB.
      * @returns {string} - HTML string for generated splashes.
      */
-    static generateAvailableTides(objResult) {
+    static generateTides(objResult) {
         try {
-            objResult.sort((a, b) => a.availableTides.localeCompare(b.availableTides));
-
             let tides = '';
-            
-            // Step 2: Iterate through the sorted array to generate HTML
-            for (let i = 0; i < objResult.length; i++) {
-                let tide = objResult[i];
-                
+            for (let i = 0; i < objResult.length; i++){
                 try {
-                    // Step 3: Corrected variable names (splash to tide, splashes to tidesHTML)
-                    tide = `
-                        <a href="/tides/${tide.availableTides}" class="tide">${tide.availableTides}</a>
-                    `;
+                    let tide = this.generateAvailableTides(objResult[i].availableTides);
                     tides += tide;
                 } catch (error) {
                     ResponseManager.sendError('Generating tides HTML', error);
                 }
             }
-
             return tides;
         } catch (error) {
             ResponseManager.sendError('Generating available Tides', error);
         }
     }
+
+    /**
+     * Method responsible for generating available tides.
+     * 
+     * @param {Object} tideObject - Object containing tide information.
+     * @returns {string} - HTML structure: tide links.
+     */
+    static generateAvailableTides(tideObject){
+        let tides = '';
+        for (let key in tideObject){
+            if (tideObject.hasOwnProperty(key)) {
+                let tide = Methods.capitalizeFirstLetter(tideObject[key]);
+                tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${tide}</a>`;
+            }
+        }
+        return tides;
+    }
+    
 }
 export default TidesManager;
