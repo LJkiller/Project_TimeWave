@@ -4,14 +4,10 @@ import Methods from '../methodManagers/methods.js';
 import TidesManager from '../methodManagers/tidesManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
 
-// Route
-import { handleTidesContent } from './tidesContentHandler.js';
-
 /**
  * Method responsible of handling the tides page request. 
  * Logging the route, reading tides template, replacing placeholders with content, 
  * and sending web page response.
- * Forwards the user to further handling of routes.
  *
  * @param {Db} db - MongoDB database object.
  * @param {URL} url - URL.
@@ -20,32 +16,14 @@ import { handleTidesContent } from './tidesContentHandler.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
-export async function handleTides(db, url, pathSegments, request, response){
+export async function handleTidesContent(db, url, pathSegments, request, response){
     let route = 'tides';
     ResponseManager.sendPageRoute(route);
     let contentHead = Methods.pageReflection(route);
 
-    // Handle endpoints further from just tides
-    if (pathSegments.length > 1){
-        pathSegments.shift();
-        let seg = pathSegments[0];
-        console.log('Should be here: ' + seg);
-        handleTidesContent(db, url, pathSegments, request, response);
-    } else{
-        // Fail Safe here
-    }
-
     try{
         let template = (await fs.readFile('templates/tides.sawcon')).toString();    
-        let result = await db.collection('tides').find().toArray();
-        let tides = TidesManager.generateTides(result);
-    
-        template = template
-            .replaceAll('DEEZ%tides%NUTS', tides)
-            .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
-        ;      
-
-        
+        let result = await db.collection('posts').find().toArray();
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       
         return;

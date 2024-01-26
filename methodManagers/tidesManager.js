@@ -51,6 +51,16 @@ class TidesManager {
         }
         return tides;
     }
+
+    static getAvailableTides(tideObject){
+        let tide = '';
+        for (let key in tideObject){
+            if (tideObject.hasOwnProperty(key)){
+                tide = tideObject[key];
+            }
+        }
+        return tide;
+    }
     
 }
 export default TidesManager;
