@@ -7,7 +7,7 @@ import ResponseManager from './responseManager.js';
  * Functions:
  * Generate HTML structure.
  *
- * @class PostManager
+ * @class TidesManager
  */
 class TidesManager {
 
@@ -53,7 +53,7 @@ class TidesManager {
     }
 
     /**
-     * Method responsible of getting available tides for further comparison.
+     * Method responsible of getting available tides and stores the tides in an array.
      * 
      * @param {Object} tideObject - Object containing tide information.
      * @returns {string[]} - Array of available tides.

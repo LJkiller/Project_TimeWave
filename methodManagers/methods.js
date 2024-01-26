@@ -1,4 +1,3 @@
-import TidesManager from './tidesManager.js';
 
 /**
  * Utility class, containing static methods for various tasks in the web server.
