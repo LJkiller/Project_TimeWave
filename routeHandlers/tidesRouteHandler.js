@@ -26,28 +26,10 @@ export async function handleTidesRoute(db, url, pathSegments, request, response)
     } else {
         let result = await db.collection('tides').find().toArray();
         
-        if (endPointComparison(result, pathSegments)) {
+        if (TidesManager.tidesEndPointComparison(result, pathSegments)) {
             handleTidesContent(db, url, pathSegments, request, response);
         } else {
             ResponseManager.sendWebPageResponse(response);
         }
     }
-}
-
-/**
- * Method responsible of comparing web page's endpoint with viable tides.
- * 
- * @param {Object} result - Object containing tides information.
- * @param {string[]} pathSegments - Array representing the segments of the URL.
- * @returns 
- */
-async function endPointComparison(result, pathSegments) {
-    let tidesArray = TidesManager.getAvailableTides(result);
-
-    for (let tide of tidesArray) {
-        if (pathSegments[1] === tide) {
-            return true;
-        }
-    }
-    return false;
 }

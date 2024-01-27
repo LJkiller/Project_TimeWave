@@ -1,4 +1,5 @@
 import ResponseManager from './responseManager.js';
+import TidesManager from './tidesManager.js';
 
 /**
  * Class responsible of managing post generation by communicating
@@ -23,37 +24,44 @@ class PostManager {
      * @param {Array} objResult - Splash objects from MongoDB.
      * @returns {string} - HTML string for generated splashes.
      */
-    static generateSplashes(objResult) {
+    static generateSplashes(objResult, db, pathSegments) {
         try{
             // Orders the objects for biggest splashId to lower splashId.
             let latestSplash = objResult.sort((last, first) => first.splashId - last.splashId);
             let result = latestSplash;
             let splashes = '';
-            for (let i = 0; i < result.length; i++) {
-                let splash = result[i];
-                try {
-                    let linkedContent = this.checkForLinkedContent(splash.splashContent);
-                    let content = `<p class="content">${linkedContent}</p>`;
-                    splash =
-                        `
-                        <article class="post">
-                            <h3>
-                                <a class="author" href="/user/${splash.author}">@${splash.author}</a>
-                                <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
-                            </h3>
-                            <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
-                            <span class="date">Made a splash: ${this.formatDate(splash)}</span>
-                            ${content}
-                            ${this.generateMedia(splash)}
-                        </article>
-                    `;
-                    splashes += splash;
-                } catch (error) {
-                    ResponseManager.sendError('Generating splash HTML', error);
+
+            let comparison = db.collection('tides').find().toArray();
+            // Handling if: tides + [subject]
+            if (TidesManager.tidesEndPointComparison(comparison, pathSegments)){
+                // Continue here! Might need to divide the splashHTML into a new function.
+                console.log('Displaying subjects depending on pathSeg.');
+            } else {
+                for (let i = 0; i < result.length; i++) {
+                    let splash = result[i];
+                    try {
+                        let linkedContent = this.checkForLinkedContent(splash.splashContent);
+                        let content = `<p class="content">${linkedContent}</p>`;
+                        splash =
+                            `
+                            <article class="post">
+                                <h3>
+                                    <a class="author" href="/user/${splash.author}">@${splash.author}</a>
+                                    <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
+                                </h3>
+                                <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
+                                <span class="date">Made a splash: ${this.formatDate(splash)}</span>
+                                ${content}
+                                ${this.generateMedia(splash)}
+                            </article>
+                        `;
+                        splashes += splash;
+                    } catch (error) {
+                        ResponseManager.sendError('Generating splash HTML', error);
+                    }
                 }
             }
             return splashes;
-
         } catch (error){
             ResponseManager.sendError('Generating Splashes', error);
         }

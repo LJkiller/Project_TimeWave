@@ -24,7 +24,7 @@ export async function handleHome(db, url, pathSegments, request, response){
     try{
         let template = (await fs.readFile('templates/home.sawcon')).toString();    
         let result = await db.collection('splashes').find().toArray();
-        let posts = PostManager.generateSplashes(result);
+        let posts = PostManager.generateSplashes(result, db, pathSegments);
     
         template = template
             .replaceAll('DEEZ%splashes%NUTS', posts)

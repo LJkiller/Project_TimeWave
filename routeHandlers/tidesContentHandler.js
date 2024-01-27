@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import Methods from '../methodManagers/methods.js';
 import TidesManager from '../methodManagers/tidesManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
+import PostManager from '../methodManagers/postManager.js';
 
 /**
  * Method responsible of handling the tides content page request. 
@@ -25,10 +26,11 @@ export async function handleTidesContent(db, url, pathSegments, request, respons
 
     try{
         let template = (await fs.readFile('templates/tides-content.sawcon')).toString();
-        let splashes = await db.collection('posts').find().toArray();
+        let result = await db.collection('posts').find().toArray();
+        let post = PostManager.generateSplashes(result, db, pathSegments);
 
         template = template
-            .replaceAll('DEEZ%tides%NUTS', splashes)
+            .replaceAll('DEEZ%tides%NUTS', post)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%tideType%NUTS', contentBody)
         ;

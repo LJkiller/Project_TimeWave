@@ -60,14 +60,32 @@ class TidesManager {
      */
     static getAvailableTides(tideObject) {
         let tidesArray = [];
-        for (let entryItems = 0; entryItems < tideObject.availableTides; entryItems++) {
-            if (tideObject.availableTides) {
-                let availableTides = tideObject.availableTides;
-                let daughterItems = TidesManager.getAvailableTides(availableTides);
-                tidesArray = tidesArray.concat(daughterItems);
+        for (let i = 0; i < tideObject.length; i++) {
+            try {
+                let entry = tideObject[i].availableTides;
+                tidesArray = tidesArray.concat(entry);
+            } catch (error) {
+                ResponseManager.sendError('Getting available tides', error);
             }
         }
         return tidesArray;
+    }
+    /**
+     * Method responsible of comparing web page's endpoint with viable tides.
+     * 
+     * @param {Object} result - Object containing tides information.
+     * @param {string[]} pathSegments - Array representing the segments of the URL.
+     * @returns 
+     */
+    static async tidesEndPointComparison(result, pathSegments) {
+        let tidesArray = TidesManager.getAvailableTides(result);
+
+        if (pathSegments[0] === 'tides') {
+            return pathSegments[1].includes(tidesArray);
+        } else {
+            return false;
+        }
+
     }
 
 }
