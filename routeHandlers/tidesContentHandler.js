@@ -27,10 +27,10 @@ export async function handleTidesContent(db, url, pathSegments, request, respons
     try{
         let template = (await fs.readFile('templates/tides-content.sawcon')).toString();
         let result = await db.collection('posts').find().toArray();
-        let post = PostManager.generateSplashes(result, db, pathSegments);
+        let posts = await PostManager.generateSplashes(result, db, pathSegments);
 
         template = template
-            .replaceAll('DEEZ%tides%NUTS', post)
+            .replaceAll('DEEZ%splashes%NUTS', posts)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%tideType%NUTS', contentBody)
         ;

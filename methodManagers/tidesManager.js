@@ -70,6 +70,7 @@ class TidesManager {
         }
         return tidesArray;
     }
+    
     /**
      * Method responsible of comparing web page's endpoint with viable tides.
      * 
