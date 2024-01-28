@@ -26,7 +26,7 @@ export async function handleTidesContent(db, url, pathSegments, request, respons
 
     try{
         let template = (await fs.readFile('templates/tides-content.sawcon')).toString();
-        let result = await db.collection('posts').find().toArray();
+        let result = await db.collection('splashes').find().toArray();
         let posts = await PostManager.generateSplashes(result, db, pathSegments);
 
         template = template

@@ -18,6 +18,7 @@ class PostManager {
 
     /**
      * Method responsible of generating posts from MongoDB in an HTML format.
+     * Filters the content if necessary (pathSegments).
      * Returns the generated splashes as string.
      * 
      * @static
@@ -34,25 +35,32 @@ class PostManager {
 
             try {
                 let comparison = await db.collection('tides').find().toArray();
-                if (await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(comparison), pathSegments)) {
-                    console.log('Displaying subjects depending on pathSeg. (coughcough, topics)');
-                    console.log('Am I here?');
-                    splashHTML = 'balls';
-                    splashes += splashHTML;
-                    console.log('I AM HERE!');
-                } else {
-                    for (let i = 0; i < result.length; i++) {
-                        let splash = result[i];
-                        try {
-                            splashHTML = this.getSplashHTML(splash);
-                            splashes += splashHTML;
-                        } catch (error) {
-                            ResponseManager.sendError('Generating splash HTML', error);
+                let isFilteringContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(comparison), pathSegments);
+                
+                if (isFilteringContent) {
+                    result = result.filter(splash => {
+                        for (let key in splash.splashSubject) {
+                            if (splash.splashSubject[key].toLowerCase() === pathSegments[1]) {
+                                // Returns true if object's subjects is pathSegments[1].
+                                return true;
+                            }
                         }
+                        // Returns false if object's subjects is  not pathSegments[1].
+                        return false;
+                    });
+                }
+
+                for (let i = 0; i < result.length; i++) {
+                    let splash = result[i];
+                    try {
+                        splashHTML = this.getSplashHTML(splash);
+                        splashes += splashHTML;
+                    } catch (error) {
+                        ResponseManager.sendError('Generating splash HTML', error);
                     }
                 }
             } catch (error) {
-                ResponseManager.sendError('', error);
+                ResponseManager.sendError('Comparing', error);
             }
             return splashes;
         } catch (error) {
