@@ -37,7 +37,8 @@ class PostManager {
                 let comparison = await db.collection('tides').find().toArray();
                 let isFilteringContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(comparison), pathSegments);
                 
-                if (isFilteringContent) {
+                console.log('Before', result.length);
+                if (isFilteringContent && pathSegments[0] === 'tides') {
                     result = result.filter(splash => {
                         for (let key in splash.splashSubject) {
                             if (splash.splashSubject[key].toLowerCase() === pathSegments[1]) {
