@@ -45,7 +45,7 @@ class PostManager {
                                 return true;
                             }
                         }
-                        // Returns false if object's subjects is  not pathSegments[1].
+                        // Returns false if object's subjects is not pathSegments[1].
                         return false;
                     });
                 }
@@ -98,13 +98,13 @@ class PostManager {
     }
 
     /**
-    * Method responsible of formating the date from a MongoDB object into
-    * a standardized string format.
-    *
-    * @static
-    * @param {Object} splash - MongoDB object containing splash information.
-    * @returns {string} - Formatted date string in the "YYYY-MM-DD HH:mm:ss" format.
-    */
+     * Method responsible of formating the date from a MongoDB object into
+     * a standardized string format.
+     *
+     * @static
+     * @param {Object} splash - MongoDB object containing splash information.
+     * @returns {string} - Formatted date string in the "YYYY-MM-DD HH:mm:ss" format.
+     */
     static formatDate(splash) {
         let addZero = (time) => (time < 10 ? `0${time}` : time);
 
