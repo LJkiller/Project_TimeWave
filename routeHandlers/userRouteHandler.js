@@ -1,7 +1,9 @@
 
 import ResponseManager from '../methodManagers/responseManager.js';
+import UserManager from '../methodManagers/userManager.js';
 
 import { handleUser } from './userHandler.js';
+import { handleUserContent } from './userContentHandler.js';
 
 // Route
 
@@ -23,7 +25,13 @@ export async function handleUserRoute(db, url, pathSegments, request, response) 
     if (pathSegments.length === 1) {
         handleUser(db, url, pathSegments, request, response);
     } else {
-        let result = await db.collection('tides').find().toArray();
+        let result = await db.collection('accounts').find().toArray();
+        
+        if (UserManager.usersEndPointComparison(result, pathSegments)) {
+            handleUserContent(db, url, pathSegments, request, response);
+        } else {
+            ResponseManager.sendWebPageResponse(response);
+        }
         
     }
 }

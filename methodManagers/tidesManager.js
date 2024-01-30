@@ -37,6 +37,7 @@ class TidesManager {
         }
     }
 
+
     /**
      * Method responsible for generating available tides.
      * 
@@ -81,7 +82,7 @@ class TidesManager {
      * @returns 
      */
     static async tidesEndPointComparison(result, pathSegments) {
-        let tidesArray = TidesManager.getAvailableTides(result);
+        let tidesArray = this.getAvailableTides(result);
 
         if (pathSegments[0] === 'tides') {
             return pathSegments[1].includes(tidesArray);

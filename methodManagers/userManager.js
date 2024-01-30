@@ -79,10 +79,10 @@ class UserManager {
      * @returns 
      */
     static async usersEndPointComparison(result, pathSegments) {
-        let tidesArray = TidesManager.getAvailableUsers(result);
+        let usersArray = this.getAvailableUsers(result);
 
         if (pathSegments[0] === 'user') {
-            return pathSegments[1].includes(tidesArray);
+            return pathSegments[1].includes(usersArray);
         } else {
             return false;
         }
