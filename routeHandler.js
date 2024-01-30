@@ -5,6 +5,7 @@ import ResponseManager from './methodManagers/responseManager.js';
 import { handleIndex } from './routeHandlers/indexHandler.js';
 import { handleHome } from './routeHandlers/homeHandler.js';
 import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
+import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
 import { handleTOS } from './routeHandlers/tosHandler.js';
 
 /**
@@ -38,6 +39,9 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     break;
                 case 'tides':
                     handleTidesRoute(db, url, pathSegments, request, response);
+                    break;
+                case 'user':
+                    handleUserRoute(db, url, pathSegments, request, response);
                     break;
                 default:
                     // Invalid route.

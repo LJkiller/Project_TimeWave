@@ -5,7 +5,9 @@ import ResponseManager from './responseManager.js';
  * Class responsible of managing tides generation by communicating
  * from a MongoDB database.
  * Functions:
- * Generate HTML structure.
+ * Generate HTML structure,
+ * Get available tides,
+ * End point comparison.
  *
  * @class TidesManager
  */

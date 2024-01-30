@@ -1,0 +1,12 @@
+
+main section#main-content section#users a.user{
+    margin-left: var(--content-margin-left);
+    max-width: var(--content-max-width);
+    padding: 0.3175rem 0;
+    font-weight: bold;
+    font-size: var(--large-font-size);
+    color: var(--standard-text-color);
+}
+main section#main-content section#users a.user:hover{
+    color: var(--text-link-color);
+}

@@ -37,7 +37,6 @@ class PostManager {
                 let comparison = await db.collection('tides').find().toArray();
                 let isFilteringContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(comparison), pathSegments);
                 
-                console.log('Before', result.length);
                 if (isFilteringContent && pathSegments[0] === 'tides') {
                     result = result.filter(splash => {
                         for (let key in splash.splashSubject) {
@@ -83,7 +82,7 @@ class PostManager {
             return `
                 <article class="post">
                     <h3>
-                        <a class="author" href="/user/${splash.author}">@${splash.author}</a>
+                        <a class="author" href="/user/${splash.author.toLowerCase()}">@${splash.author}</a>
                         <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
                     </h3>
                     <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
