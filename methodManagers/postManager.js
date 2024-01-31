@@ -1,5 +1,6 @@
 import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
+import UserManager from './userManager.js';
 
 /**
  * Class responsible of managing post generation by communicating
@@ -34,10 +35,13 @@ class PostManager {
             let splashHTML;
 
             try {
-                let comparison = await db.collection('tides').find().toArray();
-                let isFilteringContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(comparison), pathSegments);
+                let tidesComparison = await db.collection('tides').find().toArray();
+                let usersComparison = await db.collection('accounts').find().toArray();
+
+                let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
+                let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
                 
-                if (isFilteringContent && pathSegments[0] === 'tides') {
+                if (pathSegments[0] === 'tides' && isFilteringTidesContent) {
                     result = result.filter(splash => {
                         for (let key in splash.splashSubject) {
                             if (splash.splashSubject[key].toLowerCase() === pathSegments[1]) {
@@ -48,6 +52,8 @@ class PostManager {
                         // Returns false if object's subjects is not pathSegments[1].
                         return false;
                     });
+                } else if (pathSegments[0] === 'user' && isFilteringUsersContent){
+                    
                 }
 
                 for (let i = 0; i < result.length; i++) {
@@ -85,7 +91,7 @@ class PostManager {
                         <a class="author" href="/user/${splash.author.toLowerCase()}">@${splash.author}</a>
                         <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
                     </h3>
-                    <a class="id-display" href="/post?id=${splash.splashId}">SplashID-${splash.splashId}</a>
+                    <a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>
                     <span class="date">Made a splash: ${this.formatDate(splash)}</span>
                     ${content}
                     ${this.generateMedia(splash)}
@@ -258,7 +264,7 @@ class PostManager {
             videoId = this.videoIdExtractor(splash);
             switch (mediaType.source) {
                 case 'youtube':
-                    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=0&autoplay=1&autohide=1`;
+                    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=0&autoplay=0&autohide=1`;
                 default: // Default to avoid problems.
                     return '';
             }

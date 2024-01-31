@@ -63,7 +63,7 @@ class UserManager {
         for (let i = 0; i < userObject.length; i++) {
             try {
                 let entry = userObject[i].username;
-                usersArray = usersArray.concat(entry);
+                usersArray.push(entry);
             } catch (error) {
                 ResponseManager.sendError('Getting available users', error);
             }
@@ -80,9 +80,21 @@ class UserManager {
      */
     static async usersEndPointComparison(result, pathSegments) {
         let usersArray = this.getAvailableUsers(result);
+        let lowerCasedArray = [];
+
+        for (let i = 0; i < usersArray.length; i++) {
+            let object = usersArray[i];
+            let lowerCasedProperty = object.toLowerCase();
+            lowerCasedArray.push(lowerCasedProperty);
+        }
 
         if (pathSegments[0] === 'user') {
-            return pathSegments[1].includes(usersArray);
+            for (let i = 0; i < lowerCasedArray.length; i++) {
+                if (pathSegments[1].includes(lowerCasedArray[i])) {
+                    return true;
+                }
+            }
+            return false; // If none of the elements were found
         } else {
             return false;
         }
