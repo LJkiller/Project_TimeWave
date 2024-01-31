@@ -60,13 +60,14 @@ class PostManager {
     }
 
     /**
+     * Method responsible of sorting splashes depending on different criterias.
      * 
      * @static
      * @param {Array} result - Splash objects from MongoDB.
      * @param {string[]} pathSegments - Array representing the segments of the URL.
      * @param {boolean} isFilteringTidesContent - Criteria bool for tides for further logic.
      * @param {boolean} isFilteringUsersContent - Criteria bool for users for further logic.
-     * @returns 
+     * @returns {Array} - Sorted splashes.
      */
     static splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent){
         try {
