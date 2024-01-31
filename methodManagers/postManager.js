@@ -36,7 +36,6 @@ class PostManager {
 
             let tidesComparison = await db.collection('tides').find().toArray();
             let usersComparison = await db.collection('accounts').find().toArray();
-
             let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
             let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
 
@@ -65,7 +64,6 @@ class PostManager {
                         }
                     });
                 }
-
             } catch(error){
                 ResponseManager.sendError('Comparing', error);
             }
