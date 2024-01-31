@@ -34,13 +34,15 @@ class PostManager {
             let splashes = '';
             let splashHTML;
 
-            try {
-                let tidesComparison = await db.collection('tides').find().toArray();
-                let usersComparison = await db.collection('accounts').find().toArray();
+            let tidesComparison = await db.collection('tides').find().toArray();
+            let usersComparison = await db.collection('accounts').find().toArray();
 
-                let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
-                let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
-                
+            let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
+            let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
+
+            // Filtering
+            try {
+                // Tide specific filtering.
                 if (pathSegments[0] === 'tides' && isFilteringTidesContent) {
                     result = result.filter(splash => {
                         for (let key in splash.splashSubject) {
@@ -52,21 +54,31 @@ class PostManager {
                         // Returns false if object's subjects is not pathSegments[1].
                         return false;
                     });
-                } else if (pathSegments[0] === 'user' && isFilteringUsersContent){
-                    
+                }
+                // User specific filtering.
+                else if (pathSegments[0] === 'user' && isFilteringUsersContent) {
+                    result = result.filter(splash => {
+                        if (splash.author.toLowerCase() === pathSegments[1]){
+                            return true;
+                        } else{
+                            return false;
+                        }
+                    });
                 }
 
-                for (let i = 0; i < result.length; i++) {
-                    let splash = result[i];
-                    try {
-                        splashHTML = this.getSplashHTML(splash);
-                        splashes += splashHTML;
-                    } catch (error) {
-                        ResponseManager.sendError('Generating splash HTML', error);
-                    }
-                }
-            } catch (error) {
+            } catch(error){
                 ResponseManager.sendError('Comparing', error);
+            }
+
+            // Splash generation.
+            for (let i = 0; i < result.length; i++) {
+                let splash = result[i];
+                try {
+                    splashHTML = this.getSplashHTML(splash);
+                    splashes += splashHTML;
+                } catch (error) {
+                    ResponseManager.sendError('Generating splash HTML', error);
+                }
             }
             return splashes;
         } catch (error) {

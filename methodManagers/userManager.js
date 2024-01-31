@@ -84,8 +84,7 @@ class UserManager {
 
         for (let i = 0; i < usersArray.length; i++) {
             let object = usersArray[i];
-            let lowerCasedProperty = object.toLowerCase();
-            lowerCasedArray.push(lowerCasedProperty);
+            lowerCasedArray.push(object.toLowerCase());
         }
 
         if (pathSegments[0] === 'user') {
