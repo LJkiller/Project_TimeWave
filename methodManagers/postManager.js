@@ -24,6 +24,8 @@ class PostManager {
      * 
      * @static
      * @param {Array} objResult - Splash objects from MongoDB.
+     * @param {Db} db - MongoDB database object.
+     * @param {string[]} pathSegments - Array representing the segments of the URL.
      * @returns {string} - HTML string for generated splashes.
      */
     static async generateSplashes(objResult, db, pathSegments) {
@@ -39,34 +41,7 @@ class PostManager {
             let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
             let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
 
-            // Filtering
-            try {
-                // Tide specific filtering.
-                if (pathSegments[0] === 'tides' && isFilteringTidesContent) {
-                    result = result.filter(splash => {
-                        for (let key in splash.splashSubject) {
-                            if (splash.splashSubject[key].toLowerCase() === pathSegments[1]) {
-                                // Returns true if object's subjects is pathSegments[1].
-                                return true;
-                            }
-                        }
-                        // Returns false if object's subjects is not pathSegments[1].
-                        return false;
-                    });
-                }
-                // User specific filtering.
-                else if (pathSegments[0] === 'user' && isFilteringUsersContent) {
-                    result = result.filter(splash => {
-                        if (splash.author.toLowerCase() === pathSegments[1]){
-                            return true;
-                        } else{
-                            return false;
-                        }
-                    });
-                }
-            } catch(error){
-                ResponseManager.sendError('Comparing', error);
-            }
+            result = this.splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent);
 
             // Splash generation.
             for (let i = 0; i < result.length; i++) {
@@ -81,6 +56,46 @@ class PostManager {
             return splashes;
         } catch (error) {
             ResponseManager.sendError('Generating Splashes', error);
+        }
+    }
+
+    /**
+     * 
+     * @static
+     * @param {Array} result - Splash objects from MongoDB.
+     * @param {string[]} pathSegments - Array representing the segments of the URL.
+     * @param {boolean} isFilteringTidesContent - Criteria bool for tides for further logic.
+     * @param {boolean} isFilteringUsersContent - Criteria bool for users for further logic.
+     * @returns 
+     */
+    static splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent){
+        try {
+            // Tide specific filtering.
+            if (pathSegments[0] === 'tides' && isFilteringTidesContent) {
+                result = result.filter(splash => {
+                    for (let key in splash.splashSubject) {
+                        if (splash.splashSubject[key].toLowerCase() === pathSegments[1]) {
+                            // Returns true if object's subjects is pathSegments[1].
+                            return true;
+                        }
+                    }
+                    // Returns false if object's subjects is not pathSegments[1].
+                    return false;
+                });
+            }
+            // User specific filtering.
+            else if (pathSegments[0] === 'user' && isFilteringUsersContent) {
+                result = result.filter(splash => {
+                    if (splash.author.toLowerCase() === pathSegments[1]){
+                        return true;
+                    } else{
+                        return false;
+                    }
+                });
+            }
+            return result;
+        } catch(error){
+            ResponseManager.sendError('Comparing', error);
         }
     }
 
