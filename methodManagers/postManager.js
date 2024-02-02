@@ -116,7 +116,7 @@ class PostManager {
             return `
                 <article class="post">
                     <h3>
-                        <a class="author" href="/user/${splash.author.toLowerCase()}">@${splash.author}</a>
+                        <a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>
                         <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
                     </h3>
                     <a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>

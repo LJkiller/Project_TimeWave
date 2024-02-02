@@ -159,7 +159,7 @@ class Methods {
     * @returns {string} - Capitalized first letter in each word.
     */
   static capitalizeFirstLetter(input) {
-    return input.replace(/\b\w/g, function (char) {
+    return input.replace(/(?:^|\s|-|_)\w/g, function (char) {
       return char.toUpperCase();
     });
   }

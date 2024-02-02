@@ -19,7 +19,7 @@ import PostManager from '../methodManagers/postManager.js';
  */
 export async function handleUserContent(db, url, pathSegments, request, response){
     let route = 'user';
-    let contentBody = Methods.capitalizeFirstLetter(pathSegments[1]);
+    let user = Methods.capitalizeFirstLetter(pathSegments[1]);
     route = `${route} ${pathSegments[1]}`;
     ResponseManager.sendPageRoute(route);
 
@@ -32,7 +32,7 @@ export async function handleUserContent(db, url, pathSegments, request, response
         template = template
             .replaceAll('DEEZ%splashes%NUTS', posts)
             .replaceAll('DEEZ%joinDate%NUTS', joinDate)
-            .replaceAll('DEEZ%username%NUTS', contentBody)
+            .replaceAll('DEEZ%username%NUTS', user)
         ;
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       
