@@ -25,11 +25,13 @@ export async function handleUserContent(db, url, pathSegments, request, response
 
     try{
         let template = (await fs.readFile('templates/user-content.sawcon')).toString();
-        let result = await db.collection('splashes').find().toArray();
-        let posts = await PostManager.generateSplashes(result, db, pathSegments);
+        let postResult = await db.collection('splashes').find().toArray();
+        let posts = await PostManager.generateSplashes(postResult, db, pathSegments);
+        let joinDate = await UserManager.generateJoinDate(db, pathSegments);
 
         template = template
             .replaceAll('DEEZ%splashes%NUTS', posts)
+            .replaceAll('DEEZ%joinDate%NUTS', joinDate)
             .replaceAll('DEEZ%username%NUTS', contentBody)
         ;
 

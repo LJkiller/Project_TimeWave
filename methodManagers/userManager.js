@@ -42,6 +42,7 @@ class UserManager {
     /**
      * Method responsible for generating available users.
      * 
+     * @static
      * @param {Object} userObject - Object containing user information.
      * @returns {string} - HTML structure: tide links.
      */
@@ -70,10 +71,31 @@ class UserManager {
         }
         return usersArray;
     }
-    
+
+    /**
+     * Method responsible of finding a user's join date and then format the date.
+     * 
+     * @static
+     * @async
+     * @param {Db} db - MongoDB database object.
+     * @param {string[]} pathSegments - Array representing the segments of the URL.
+     * @returns 
+     */
+    static async generateJoinDate(db, pathSegments) {
+        try{
+            let user = await db.collection('accounts').find({ "username": pathSegments[1] }).toArray();
+            let joinDate = Methods.formatDate(user, false);
+            return joinDate[0];
+        } catch(error){
+            ResponseManager.sendError('Finding user MongoDB', error);
+        }
+    }
+
     /**
      * Method responsible of comparing web page's endpoint with viable users.
      * 
+     * @static
+     * @async
      * @param {Object} result - Object containing tides information.
      * @param {string[]} pathSegments - Array representing the segments of the URL.
      * @returns 

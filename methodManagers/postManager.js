@@ -1,6 +1,7 @@
 import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
 import UserManager from './userManager.js';
+import Methods from './methods.js';
 
 /**
  * Class responsible of managing post generation by communicating
@@ -23,6 +24,7 @@ class PostManager {
      * Returns the generated splashes as string.
      * 
      * @static
+     * @async
      * @param {Array} objResult - Splash objects from MongoDB.
      * @param {Db} db - MongoDB database object.
      * @param {string[]} pathSegments - Array representing the segments of the URL.
@@ -118,7 +120,7 @@ class PostManager {
                         <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
                     </h3>
                     <a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>
-                    <span class="date">Made a splash: ${this.formatDate(splash)}</span>
+                    <span class="date">Made a splash: ${Methods.formatDate(splash)}</span>
                     ${content}
                     ${this.generateMedia(splash)}
                 </article>
@@ -127,26 +129,6 @@ class PostManager {
             ResponseManager.sendError('Generating splash HTML', error);
             return '';
         }
-    }
-
-    /**
-     * Method responsible of formating the date from a MongoDB object into
-     * a standardized string format.
-     *
-     * @static
-     * @param {Object} splash - MongoDB object containing splash information.
-     * @returns {string} - Formatted date string in the "YYYY-MM-DD HH:mm:ss" format.
-     */
-    static formatDate(splash) {
-        let addZero = (time) => (time < 10 ? `0${time}` : time);
-
-        let { year, month, day, hour, minute, second } = splash.splashDate;
-
-        // YYYY-MM-DD: HH:MM:SS
-        let format = `${year}-${addZero(month)}-${addZero(day)}:` +
-            `${addZero(hour)}:${addZero(minute)}:${addZero(second)}`;
-
-        return format;
     }
 
     /**

@@ -37,10 +37,10 @@ class TidesManager {
         }
     }
 
-
     /**
      * Method responsible for generating available tides.
      * 
+     * @static
      * @param {Object} tideObject - Object containing tide information.
      * @returns {string} - HTML structure: tide links.
      */
@@ -58,6 +58,7 @@ class TidesManager {
     /**
      * Method responsible of getting available tides and stores the tides in an array.
      * 
+     * @static
      * @param {Object} tideObject - Object containing tide information.
      * @returns {string[]} - Array of available tides.
      */
@@ -77,6 +78,8 @@ class TidesManager {
     /**
      * Method responsible of comparing web page's endpoint with viable tides.
      * 
+     * @static
+     * @async
      * @param {Object} result - Object containing tides information.
      * @param {string[]} pathSegments - Array representing the segments of the URL.
      * @returns 

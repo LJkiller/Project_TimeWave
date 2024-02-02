@@ -88,6 +88,46 @@ class Methods {
   }
 
   /**
+   * Method responsible of formating the date from a MongoDB object into
+   * a standardized string format.
+   *
+   * @static
+   * @param {Object} splash - MongoDB object containing splash information.
+   * @returns {string} - Formatted date string in the "YYYY-MM-DD HH:mm:ss" format.
+   */
+  static formatDate(object, isSplash = true) {
+    let addZero = (time) => (time < 10 ? `0${time}` : time);
+    let format = '';
+
+    // Formatting splashes' date.
+    if (isSplash) {
+      let { year, month, day, hour, minute, second } = object.splashDate;
+      // YYYY-MM-DD: HH:MM:SS
+      format = `${year}-${addZero(month)}-${addZero(day)}:` +
+        ` ${addZero(hour)}:${addZero(minute)}:${addZero(second)}`;
+    }
+    // Formatting user's join date.
+    else {
+      if (Array.isArray(object)){
+        format = object.map(item =>{
+          // Checks if item and joinDate property is not null.
+          if (item && item.joinDate){
+            let { year, month, day, ...rest } = item.joinDate;
+            // YYYY-MM-DD
+            return `${year}-${addZero(month)}-${addZero(day)}`;
+          } else{
+            return `Didn't find date.`;
+          }
+        });
+      } else{
+        format = 'Object is not an array.';
+      }
+    }
+
+    return format;
+  }
+
+  /**
   * Method responsible of analyzing which page you are on
   * to reflect what appropiate page header.
   * 
@@ -114,6 +154,7 @@ class Methods {
   /**
     * Method responsible of capitalizing first letters of words.
     * 
+    * @static
     * @param {string} input - Input string to be capitalized first letter. 
     * @returns {string} - Capitalized first letter in each word.
     */

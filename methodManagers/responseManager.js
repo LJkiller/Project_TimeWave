@@ -1,3 +1,4 @@
+
 /**
  * Class responsible of managing functions for responses.
  * Methods provide functionalities such as: 
