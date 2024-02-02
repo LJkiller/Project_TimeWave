@@ -11,6 +11,7 @@ import { handleTides } from './tidesHandler.js';
  * Directing routes to appropiate handlers based on pathSegments. 
  * Further actions are dependent on proved information and pathSegments.
  *
+ * @async
  * @param {Db} db - MongoDB database object.
  * @param {URL} url - URL.
  * @param {string[]} pathSegments - Array representing the segments of the URL.

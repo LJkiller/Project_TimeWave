@@ -1,3 +1,4 @@
+
 import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
 import UserManager from './userManager.js';

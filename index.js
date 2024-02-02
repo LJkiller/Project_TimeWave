@@ -3,6 +3,7 @@
 import 'dotenv/config';
 import http from 'http';
 import mongoDB from 'mongodb';
+import ResponseManager from './methodManagers/responseManager.js';
 const port = 3000;
 
 // Routing
@@ -14,7 +15,7 @@ let mongoConn;
 try{
     mongoConn = await mongoDB.MongoClient.connect(process.env.MONGODB_CONNECTIONSTING);
 } catch (error){
-    console.error(`MongoDB failed to connect: ${error.message}`);
+    ResponseManager.sendError('MongoDB connection', error);
     console.log('Further uses of application will be downgraded.');
 }
 let db = mongoConn.db('timeWave');
@@ -24,6 +25,7 @@ let db = mongoConn.db('timeWave');
  * Makes appropiate responses depending on requests.
  * Further routes requests to different handlers based on url.
  * 
+ * @async
  * @param {http.IncomingMessage} request - HTTP request.
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} Promise that resolves when the request handling is complete.

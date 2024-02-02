@@ -10,6 +10,7 @@ import PostManager from '../methodManagers/postManager.js';
  * Logging the route, reading tides-content template, replacing placeholders with content, 
  * and sending web page response.
  *
+ * @async
  * @param {Db} db - MongoDB database object.
  * @param {URL} url - URL.
  * @param {string[]} pathSegments - Array representing the segments of the URL.
