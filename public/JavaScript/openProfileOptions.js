@@ -1,33 +1,26 @@
+
+const dropdown = document.getElementById('account-dropdown');
+const toggler = document.getElementById('account-toggler');
+const profilePicture = document.getElementById('nav-profile-picture');
+const username = document.getElementById('nav-username');
+
 /**
- * Method responsible of toggling the visibility of the account dropdown 
+ * Method responsible for toggling the visibility of the account dropdown 
  * by changing its display property.
  */
 function toggleDropdown() {
-    let dropdown = document.getElementById('account-dropdown');
-
-    if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-    } else {
-        dropdown.style.display = 'block';
-    }
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
 /**
- * Method responsible of closing account dropdown when 
+ * Method responsible for closing the account dropdown when 
  * clicking outside its area.
  * 
  * @param {Event} event - The click event.
  */
 window.onclick = function(event) {
-    let dropdown = document.getElementById('account-dropdown');
-    let toggler = document.getElementById('account-toggler');
-    let profilePicture = document.getElementById('nav-profile-picture');
-    let username = document.getElementById('nav-username');
-
-    if (event.target !== dropdown 
-        && event.target !== toggler
-        && event.target !== profilePicture 
-        && event.target !== username) {
-            dropdown.style.display = 'none';
+    // Check if the clicked target is not inside the dropdown or related elements
+    if (![dropdown, toggler, profilePicture, username].includes(event.target)) {
+        dropdown.style.display = 'none';
     }
 };

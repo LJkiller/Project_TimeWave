@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeWave</title>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="/public/CSS/structure/style.css">
+    <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
+    <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
+    <link rel="stylesheet" href="/public/CSS/structure/main.css">
+    <link rel="stylesheet" href="/public/CSS/structure/splash.css">
+
+    <!--JavaScript-->
+    <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+    <script defer src="/public/JavaScript/openProfileOptions.js"></script>
+</head>
+
+<body>
+
+    <main>
+        <aside id="aside-left">
+            <h1><a href="/home"><i class="fa-solid fa-hourglass"></i> <span>TimeWave</span></i></a></h1>
+            <nav>
+                <ul>
+                    <li><a id="home" href="/home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
+                    <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
+                    <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
+                    <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a Splash!</span></a></li=>
+                </ul>
+            </nav>
+
+            <a id="account-toggler" onclick="toggleDropdown()">
+                <img id="nav-profile-picture" src="/public/assets/images/defaultProfile.png"
+                    alt="Image of the user's profile picture">
+                <span id="nav-username">DEEZ%loggedInUser%NUTS</span>
+            </a>
+            <div id="account-dropdown">
+                <a href="/sign-out">Sign Out <i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </aside>
+
+        <h2 class="page-display">Splash</h2>
+        <section id="main-content">
+            <div class="main-top">
+                <div class="splash-displayer">
+                    <h3><i class="fa-solid fa-droplet"></i> DEEZ%splashId%NUTS</h3>
+                </div>
+            </div>
+            <section id="post" class="main-part">
+                DEEZ%specificSplash%NUTS
+            </section>
+        </section>
+
+        <aside id="aside-right">
+            <div>
+                <h2>TimeWave</h2>
+                <p>
+                    A discussion platform that allows users to log in and share things with the public or in small
+                    groups through Splashes. The website supports HTML, CSS, and JavaScript.
+                    <br>
+                    <br>
+                    The main purpose of TimeWave is to share information, stories, and perhaps even gossip through text.
+                    Additionally, this website supports file formats such as images and videos when splashing.
+                    Different groups or forum topics are referred to as Tides. Users' splashes cannot be removed, hence
+                    the name: TimeWave.
+                </p>
+                <p>&copy; 2024 TimeWave. All rights reserved.</p>
+                <a href="/terms-of-service">Terms of service</a>
+            </div>
+        </aside>
+    </main>
+
+</body>
+
+</html>

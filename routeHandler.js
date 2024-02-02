@@ -7,6 +7,7 @@ import { handleHome } from './routeHandlers/homeHandler.js';
 import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
 import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
 import { handleTOS } from './routeHandlers/tosHandler.js';
+import { handleSplash } from './routeHandlers/splashHandler.js';
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -35,6 +36,9 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                 case 'home':
                     handleHome(db, url, pathSegments, request, response);
                     break;
+                case 'splash':
+                    handleSplash(db, url, pathSegments, request, response);
+                    break;
                 case 'terms-of-service':
                     handleTOS(db, url, pathSegments, request, response);
                     break;
@@ -53,5 +57,4 @@ export async function handleRoute (db, url, pathSegments, request, response) {
     } catch (error) {
         ResponseManager.sendError('Handling route', error);
     }
-
 }

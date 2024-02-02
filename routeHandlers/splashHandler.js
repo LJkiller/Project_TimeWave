@@ -17,19 +17,21 @@ import ResponseManager from '../methodManagers/responseManager.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
-export async function handleHome(db, url, pathSegments, request, response){
-    let route = 'home';
+export async function handleSplash(db, url, pathSegments, request, response){
+    let route = 'splash';
     ResponseManager.sendPageRoute(route);
     let contentHead = Methods.pageReflection(route);
 
     try{
-        let template = (await fs.readFile('templates/home.sawcon')).toString();    
-        let result = await db.collection('splashes').find().toArray();
-        let posts = await PostManager.generateSplashes(result, db, pathSegments, url);
+        let template = (await fs.readFile('templates/splash.sawcon')).toString();
+        let splashId = parseInt(url.searchParams.get('post'));
+        let result = await db.collection('splashes').findOne({ "splashId": splashId });
+        let post = await PostManager.generateSplashes(result, db, pathSegments, url, true);
     
         template = template
-            .replaceAll('DEEZ%splashes%NUTS', posts)
+            .replaceAll('DEEZ%specificSplash%NUTS', post)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
+            .replaceAll('DEEZ%splashId%NUTS', `Splash-${splashId}`)
         ;
     
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);

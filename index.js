@@ -4,7 +4,7 @@ import 'dotenv/config';
 import http from 'http';
 import mongoDB from 'mongodb';
 import ResponseManager from './methodManagers/responseManager.js';
-const port = 3000;
+const port = process.env.PORT;
 
 // Routing
 import { handleRoute } from './routeHandler.js';
@@ -17,6 +17,7 @@ try{
 } catch (error){
     ResponseManager.sendError('MongoDB connection', error);
     console.log('Further uses of application will be downgraded.');
+    process.exit(1);
 }
 let db = mongoConn.db('timeWave');
 
@@ -62,4 +63,3 @@ const app = http.createServer(handleRequest);
 app.listen(port, function () {
     console.log(`Server listening on ${port}`);
 });
-

@@ -31,7 +31,7 @@ class PostManager {
      * @param {string[]} pathSegments - Array representing the segments of the URL.
      * @returns {string} - HTML string for generated splashes.
      */
-    static async generateSplashes(objResult, db, pathSegments) {
+    static async generateSplashes(objResult, db, pathSegments, url, singular = false) {
         try {
             let splashes = '';
             let splashHTML;
@@ -41,19 +41,25 @@ class PostManager {
             let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
             let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
 
-            // Sorting.
-            let latestSplash = objResult.sort((last, first) => first.splashId - last.splashId);
-            let result = latestSplash;
-            result = this.splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent);
+            if (singular === true) {
+                let splash = objResult;
+                splashHTML = this.getSplashHTML(splash, true);
+                splashes += splashHTML;
+            } else {
+                // Sorting.
+                let latestSplash = objResult.sort((last, first) => first.splashId - last.splashId);
+                let result = latestSplash;
+                result = this.splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent);
 
-            // Splash generation.
-            for (let i = 0; i < result.length; i++) {
-                let splash = result[i];
-                try {
-                    splashHTML = this.getSplashHTML(splash);
-                    splashes += splashHTML;
-                } catch (error) {
-                    ResponseManager.sendError('Generating splash HTML', error);
+                // Splash generation.
+                for (let i = 0; i < result.length; i++) {
+                    let splash = result[i];
+                    try {
+                        splashHTML = this.getSplashHTML(splash);
+                        splashes += splashHTML;
+                    } catch (error) {
+                        ResponseManager.sendError('Generating splash HTML', error);
+                    }
                 }
             }
             return splashes;
@@ -72,7 +78,7 @@ class PostManager {
      * @param {boolean} isFilteringUsersContent - Criteria bool for users for further logic.
      * @returns {Array} - Sorted splashes.
      */
-    static splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent){
+    static splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent) {
         try {
             // Returning true: if object's subjects || object's author is pathSegments[1].
             // Returning false: if it does not match.
@@ -90,15 +96,15 @@ class PostManager {
             // User specific filtering.
             else if (pathSegments[0] === 'user' && isFilteringUsersContent) {
                 result = result.filter(splash => {
-                    if (splash.author.toLowerCase() === pathSegments[1]){
+                    if (splash.author.toLowerCase() === pathSegments[1]) {
                         return true;
-                    } else{
+                    } else {
                         return false;
                     }
                 });
             }
             return result;
-        } catch(error){
+        } catch (error) {
             ResponseManager.sendError('Filtering', error);
         }
     }
@@ -110,18 +116,24 @@ class PostManager {
      * @param {Object} splash - The splash object containing information about the splash.
      * @returns {string} - HTML string for generated splashe.
      */
-    static getSplashHTML(splash) {
+    static getSplashHTML(splash, singular = false) {
         try {
-            let linkedContent = this.checkForLinkedContent(splash.splashContent);
-            let content = `<p class="content">${linkedContent}</p>`;
+            let author = `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
+            let subjects = `<div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>`;
+            let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
+            let content = `<p class="content">${this.checkForLinkedContent(splash.splashContent)}</p>`;
+            let ifSingular = singular ? 'singular' : '';
+    
+            let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
+    
             return `
-                <article class="post">
+                <article class="post ${ifSingular}">
                     <h3>
-                        <a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>
-                        <div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>
+                        ${author}
+                        ${subjects}
                     </h3>
-                    <a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>
-                    <span class="date">Made a splash: ${Methods.formatDate(splash)}</span>
+                    ${splashId}
+                    ${date}
                     ${content}
                     ${this.generateMedia(splash)}
                 </article>

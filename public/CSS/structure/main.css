@@ -58,6 +58,24 @@ main section#main-content div.main-top a.create-post:hover{
     color: var(--text-link-highlight-color);
     background-color: var(--text-link-color);
 }
+main section#main-content div.main-top .splash-displayer{
+    --text-link-color: var(--standard-text-color);
+    --text-link-highlight-color: var(--primary-color);
+
+    line-height: var(--create-post-height);
+    height: var(--create-post-height);
+    width: 100%;
+
+    font-weight: bold;
+    font-size: var(--large-font-size);
+    border-top-left-radius: var(--sharp-border-radius);
+    border-top-right-radius: var(--sharp-border-radius);
+    color: var(--text-link-color);
+    background-color: var(--text-link-highlight-color);
+}
+main section#main-content div.main-top .splash-displayer h3{
+    margin-left: var(--content-margin-left);
+}
 
 main section#main-content section.main-part{
     overflow-y: auto;
@@ -104,6 +122,9 @@ main section#main-content section.main-part .post{
     color: var(--standard-text-color);
     background-color: var(--post-background-color);
 }
+main section#main-content section.main-part .post.singular{
+    max-height: 100%;
+}
 main section#main-content section.main-part .post:hover{
     background-color: var(--primary-color);
 }
@@ -131,6 +152,9 @@ main section#main-content section.main-part .post h3 a.author{
     margin-top: 0.563rem;
     width: 50%;
     color: var(--brighter-text-color);
+}
+main section#main-content section.main-part .post.singular h3 a.author{
+    font-size: var(--large-font-size);
 }
 main section#main-content section.main-part .post h3 div.subject-container{
     float: right;
@@ -183,12 +207,22 @@ main section#main-content section.main-part .post p.content a{
 main section#main-content section.main-part .post p.content a:hover{
     color: white;
 }
+main section#main-content section.main-part .post.singular p.content{
+    margin: 1rem 0 1rem var(--content-margin-left);
+    font-size: var(--large-font-size);
+}
 
 main section#main-content section.main-part .post div.media-container img,
 main section#main-content section.main-part .post div.media-container iframe{
     max-height: var(--post-image-max-height);
     max-width: var(--post-image-max-width);
     border-radius: var(--standard-border-radius);
+}
+main section#main-content section.main-part .post.singular div.media-container img,
+main section#main-content section.main-part .post.singular div.media-container iframe{
+    margin-bottom: 5rem;
+    max-height: calc(var(--post-image-max-height) + 20rem);
+    max-width: 100%;
 }
 
 /*#endregion*/

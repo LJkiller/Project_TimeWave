@@ -2,10 +2,9 @@
 import ResponseManager from '../methodManagers/responseManager.js';
 import UserManager from '../methodManagers/userManager.js';
 
+// Route
 import { handleUser } from './userHandler.js';
 import { handleUserContent } from './userContentHandler.js';
-
-// Route
 
 /**
  * Method responsible of handling routes for user requests. 
@@ -33,6 +32,5 @@ export async function handleUserRoute(db, url, pathSegments, request, response) 
         } else {
             ResponseManager.sendWebPageResponse(response);
         }
-        
     }
 }
