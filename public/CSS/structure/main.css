@@ -38,7 +38,7 @@ main section#main-content{
 }
 
 main section#main-content div.main-top a.create-post{
-    --text-link-color: rgba(230,230,230,1);
+    --text-link-color: var(--standard-text-color);
     --text-link-highlight-color: var(--primary-color);
 
     text-align: center;
@@ -62,6 +62,8 @@ main section#main-content div.main-top a.create-post:hover{
 main section#main-content section.main-part{
     overflow-y: auto;
     max-height: var(--post-area-max-height);
+    border-bottom-left-radius: var(--sharp-border-radius);
+    border-bottom-right-radius: var(--sharp-border-radius);
 }
 main section#main-content section.main-part h2{
     margin-top: 1rem;

@@ -19,7 +19,6 @@ import PostManager from '../methodManagers/postManager.js';
  */
 export async function handleUserContent(db, url, pathSegments, request, response){
     let route = 'user';
-    let contentHead = Methods.pageReflection(route);
     let contentBody = Methods.capitalizeFirstLetter(pathSegments[1]);
     route = `${route} ${pathSegments[1]}`;
     ResponseManager.sendPageRoute(route);
@@ -31,7 +30,6 @@ export async function handleUserContent(db, url, pathSegments, request, response
 
         template = template
             .replaceAll('DEEZ%splashes%NUTS', posts)
-            .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%username%NUTS', contentBody)
         ;
 

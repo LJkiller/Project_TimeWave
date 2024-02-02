@@ -42,7 +42,7 @@
             </div>
         </aside>
 
-        <h2 class="page-display">Tides</h2>
+        <h2 class="page-display">Users</h2>
         <section id="main-content">
             <div class="main-top">
                 <a href="/create-post" class="create-post">

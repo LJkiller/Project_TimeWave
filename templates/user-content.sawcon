@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
     <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
     <link rel="stylesheet" href="/public/CSS/structure/main.css">
-    <link rel="stylesheet" href="/public/CSS/tides.css">
+    <link rel="stylesheet" href="/public/CSS/user.css">
 
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
@@ -42,15 +42,19 @@
             </div>
         </aside>
 
-        <h2 class="page-display">Tides</h2>
+        <h2 class="page-display">User</h2>
         <section id="main-content">
             <div class="main-top">
-                <a href="/create-post" class="create-post">
-                    <h3><i class="fa-solid fa-droplet"></i> Make a Splash!</h3>
-                </a>
+                <div class="profile-display">
+                    <img src="/public/assets/images/defaultProfileBanner.jpg" alt="Default profile banner.">
+                    <h3>DEEZ%username%NUTS</h3>
+                </div>
+                <div class="user-information">
+                    <span>Joined: DEEZ%joinDate%NUTS</span>
+                    <a href="/edit-user">Edit Profile</a>
+                </div>
             </div>
             <section id="tides" class="main-part">
-                <h2><span>DEEZ%pageReflector%NUTS</span>DEEZ%username%NUTS</h2>
                 DEEZ%splashes%NUTS
             </section>
         </section>

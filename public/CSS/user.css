@@ -10,3 +10,54 @@ main section#main-content section#users a.user{
 main section#main-content section#users a.user:hover{
     color: var(--text-link-color);
 }
+
+main section#main-content div.main-top div{
+    font-weight: bold;
+    color: var(--standard-text-color);
+    background-color: var(--primary-color);
+}
+main section#main-content div.main-top div.profile-display{
+    height: calc(var(--create-post-height) + 5rem);
+    width: 100%;
+
+    border-top-left-radius: var(--sharp-border-radius);
+    border-top-right-radius: var(--sharp-border-radius);
+}
+main section#main-content div.main-top div.user-information{
+    padding: 1rem 0;
+    height: 2rem;
+    width: 100%;
+    border-bottom: 10px solid var(--wb-primary-bg-color);
+}
+main section#main-content div.main-top div.user-information span,
+main section#main-content div.main-top div.user-information a{
+    display: inline-block;
+}
+main section#main-content div.main-top div.user-information span{
+    bottom: 0;
+    margin-left: var(--content-margin-left);
+}
+main section#main-content div.main-top div.user-information a{
+    margin-top: -5rem;
+    margin-left: calc(100% - (4 * var(--content-margin-left)));
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--standard-border-radius);
+    color: var(--text-link-color);
+    background-color: var(--standard-text-color);
+}
+main section#main-content div.main-top div.profile-display img{
+    aspect-ratio: 95/15;
+    position: absolute;
+    left: 50%;
+    margin-top: 5px;
+    transform: translate(-50%);
+    height: 17.4%;
+    border-radius: var(--sharp-border-radius);
+}
+main section#main-content div.main-top div.profile-display h3{
+	--xl-font-size: 2rem;
+    position: relative;
+    top: calc(100% - (var(--xl-font-size) + 0.75rem));
+    margin-left: var(--content-margin-left);
+    font-size: var(--xl-font-size);
+}

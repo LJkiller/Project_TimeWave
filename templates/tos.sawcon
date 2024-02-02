@@ -20,8 +20,9 @@
     <main>
         <section id="main-content">
             <h1>Terms of Service</h1>
-            <p>I own you</p>
+            <p>I own you.</p>
             <img src="https://i.redd.it/mosxrktfccj51.jpg" alt="Cat staring at you, menacingly">
+            <p>By reading this you agree to the terms of service.</p>
             <a href="/home">Go back</a>
         </section>
     </main>

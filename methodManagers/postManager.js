@@ -30,9 +30,6 @@ class PostManager {
      */
     static async generateSplashes(objResult, db, pathSegments) {
         try {
-            // Orders the objects for biggest splashId to lower splashId.
-            let latestSplash = objResult.sort((last, first) => first.splashId - last.splashId);
-            let result = latestSplash;
             let splashes = '';
             let splashHTML;
 
@@ -41,6 +38,9 @@ class PostManager {
             let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
             let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
 
+            // Sorting.
+            let latestSplash = objResult.sort((last, first) => first.splashId - last.splashId);
+            let result = latestSplash;
             result = this.splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent);
 
             // Splash generation.
@@ -71,16 +71,16 @@ class PostManager {
      */
     static splashFiltering(result, pathSegments, isFilteringTidesContent, isFilteringUsersContent){
         try {
+            // Returning true: if object's subjects || object's author is pathSegments[1].
+            // Returning false: if it does not match.
             // Tide specific filtering.
             if (pathSegments[0] === 'tides' && isFilteringTidesContent) {
                 result = result.filter(splash => {
                     for (let key in splash.splashSubject) {
                         if (splash.splashSubject[key].toLowerCase() === pathSegments[1]) {
-                            // Returns true if object's subjects is pathSegments[1].
                             return true;
                         }
                     }
-                    // Returns false if object's subjects is not pathSegments[1].
                     return false;
                 });
             }
@@ -96,7 +96,7 @@ class PostManager {
             }
             return result;
         } catch(error){
-            ResponseManager.sendError('Comparing', error);
+            ResponseManager.sendError('Filtering', error);
         }
     }
 
