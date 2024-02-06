@@ -8,6 +8,7 @@ import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
 import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
 import { handleTOS } from './routeHandlers/tosHandler.js';
 import { handleSplash } from './routeHandlers/splashHandler.js';
+import { handleMakeASplash } from './routeHandlers/makeASplashHandler.js';
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -48,6 +49,8 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                 case 'user':
                     handleUserRoute(db, url, pathSegments, request, response);
                     break;
+                case 'create-post':
+                    handleMakeASplash(db, url, pathSegments, request, response);
                 default:
                     // Invalid route.
                     ResponseManager.sendWebPageResponse(response);

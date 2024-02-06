@@ -5,8 +5,8 @@ import PostManager from '../methodManagers/postManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
- * Method responsible of handling the splash page request. 
- * Logging the route, reading splash template, replacing placeholders with content, 
+ * Method responsible of handling the make a splash page request. 
+ * Logging the route, reading make-a-splash template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @async
@@ -17,21 +17,18 @@ import ResponseManager from '../methodManagers/responseManager.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
-export async function handleSplash(db, url, pathSegments, request, response){
-    let route = 'splash';
-    ResponseManager.sendPageRoute(`${route} ${route}`);
-    let contentHead = Methods.pageReflection(route);
+export async function handleMakeASplash(db, url, pathSegments, request, response){
+    let route = 'make a splash';
+    ResponseManager.sendPageRoute(route);
 
     try{
-        let template = (await fs.readFile('templates/splash.sawcon')).toString();
-        let splashId = parseInt(url.searchParams.get('post'));
-        let result = await db.collection('splashes').findOne({ "splashId": splashId });
-        let post = await PostManager.generateSplashes(result, db, pathSegments, url, true);
+        let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();
+        
+        // let loggedInUser = ;
+        // let userResult = await db.collection('accounts').findeOne({ "": loggedInUser });
     
         template = template
-            .replaceAll('DEEZ%specificSplash%NUTS', post)
-            .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
-            .replaceAll('DEEZ%splashId%NUTS', `Splash-${splashId}`)
+            //.replaceAll('DEEZ%specificSplash%NUTS', post)
         ;
     
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);

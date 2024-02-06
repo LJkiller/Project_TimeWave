@@ -6,7 +6,7 @@ import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
  * Method responsible of handling the user page request. 
- * Logging the route, reading tides template, replacing placeholders with content, 
+ * Logging the route, reading user template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @async

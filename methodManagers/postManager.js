@@ -295,5 +295,9 @@ class PostManager {
         }
     }
 
+    static makeASplash(stringContent, fileContent){
+
+    }
+
 }
 export default PostManager;

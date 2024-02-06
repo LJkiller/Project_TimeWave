@@ -7,7 +7,7 @@ import PostManager from '../methodManagers/postManager.js';
 
 /**
  * Method responsible of handling the users content page request. 
- * Logging the route, reading tides-content template, replacing placeholders with content, 
+ * Logging the route, reading user-content template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @async
