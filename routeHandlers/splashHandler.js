@@ -19,7 +19,7 @@ import ResponseManager from '../methodManagers/responseManager.js';
  */
 export async function handleSplash(db, url, pathSegments, request, response){
     let route = 'splash';
-    ResponseManager.sendPageRoute(`${route} ${route}`);
+    ResponseManager.sendPageRoute(`${route} id-${url.searchParams.get('post')}`);
     let contentHead = Methods.pageReflection(route);
 
     try{
