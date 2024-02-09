@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
     <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
     <link rel="stylesheet" href="/public/CSS/structure/main.css">
+    <link rel="stylesheet" href="/public/CSS/make-a-splash.css">
 
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
@@ -27,7 +28,8 @@
                     <li><a id="home" href="/home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
                     <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
                     <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
-                    <li class="active"><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a Splash!</span></a></li=>
+                    <li class="active"><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i>
+                            <span>Make a Splash!</span></a></li=>
                 </ul>
             </nav>
 
@@ -50,7 +52,28 @@
             </div>
             <section id="post" class="main-part">
                 <form action="/splash?post=thisPost'sId">
-                    
+                    <br>
+                    <label for="author">Author</label>
+                    <select name="author" id="author" required>
+                        <option value="none">Select yourself</option>
+                        <option value="1">List1</option>
+                        DEEZ%authorListOptions%NUTS
+                    </select>
+                    <br>
+                    <br>
+                    <div class="subjects">
+                        <span>Choose your subject!</span>
+                        <ul>
+                            <li>test dog</li>
+                            DEEZ%subjectLists%NUTS
+                        </ul>
+                    </div>
+                    <br>
+                    <label for="content">Content</label>
+                    <textarea name="content" id="content" required></textarea>
+                    <br>
+
+                    <button type="submit">Make a splash!</button>
                 </form>
             </section>
         </section>

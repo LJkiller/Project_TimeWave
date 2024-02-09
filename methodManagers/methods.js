@@ -11,11 +11,12 @@ class Methods {
   * Method responsible of retrieving body content from HTTP request.
   *
   * @static
+  * @async
   * @param {http.IncomingMessage} request - HTTP request.
   * @returns {Promise<string>} Promise that resolves the body content as string.
   * @rejects {Error} If error during request or data retrieval.
   */
-  static getBody(request) {
+  static async getBody(request) {
     return new Promise(function (resolve, reject) {
       let chunks = [];
 

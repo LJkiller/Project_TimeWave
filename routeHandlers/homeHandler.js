@@ -31,7 +31,9 @@ export async function handleHome(db, url, pathSegments, request, response){
             .replaceAll('DEEZ%splashes%NUTS', posts)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
         ;
-    
+
+        let { year, month, day, hour, minute, second } = getCurrentUTCDate();
+        console.log(getCurrentUTCDate());
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
 
@@ -40,4 +42,16 @@ export async function handleHome(db, url, pathSegments, request, response){
         ResponseManager.sendWebPageResponse(response);
         return;
     }
+}
+
+function getCurrentUTCDate() {
+    let currentDate = new Date();
+    let year = currentDate.getUTCFullYear();
+    let month = currentDate.getUTCMonth() + 1;
+    let day = currentDate.getUTCDate();
+    let hour = currentDate.getUTCHours();
+    let minute = currentDate.getUTCMinutes();
+    let second = currentDate.getUTCSeconds();
+
+    return { year, month, day, hour, minute, second };
 }

@@ -1,0 +1,32 @@
+main section#main-content section#post form{
+    height: calc(var(--main-content-height) - var(--create-post-height));
+}
+
+main section#main-content section#post form input,
+main section#main-content section#post form label,
+main section#main-content section#post form select,
+main section#main-content section#post form .subjects,
+main section#main-content section#post form textarea{
+    margin-left: var(--content-margin-left);
+    width: var(--content-max-width);
+}
+main section#main-content section#post form input,
+main section#main-content section#post form label,
+main section#main-content section#post form select,
+main section#main-content section#post form .subjects,
+main section#main-content section#post form button{
+    font-size: var(--large-font-size);
+}
+main section#main-content section#post form label,
+main section#main-content section#post form .subjects{
+    color: var(--brighter-text-color);
+}
+main section#main-content section#post form textarea{
+    min-width: var(--content-max-width);
+    max-width: var(--content-max-width);
+    min-height: 2rem;
+    max-height: 8rem;
+}
+main section#main-content section#post form button{
+    margin-left: var(--content-margin-left);
+}

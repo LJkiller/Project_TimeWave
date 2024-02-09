@@ -36,7 +36,6 @@ export async function handleSplash(db, url, pathSegments, request, response){
     
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
-
     } catch(error){
         ResponseManager.sendError('Reading file', error);
         ResponseManager.sendWebPageResponse(response);

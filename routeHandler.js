@@ -1,5 +1,6 @@
 
 import ResponseManager from './methodManagers/responseManager.js';
+import PostManager from './methodManagers/postManager.js';
 
 // Handlers
 import { handleIndex } from './routeHandlers/indexHandler.js';
@@ -50,10 +51,15 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     handleUserRoute(db, url, pathSegments, request, response);
                     break;
                 case 'create-post':
-                    handleMakeASplash(db, url, pathSegments, request, response);
+                    if (request.method === 'GET'){
+                        handleMakeASplash(db, url, pathSegments, request, response);
+                    } else if (request.method === 'POST'){
+                        PostManager.makeASplash(db, url, pathSegments, request, response);
+                    }
+                    break;
                 default:
                     // Invalid route.
-                    ResponseManager.sendWebPageResponse(response);
+                    ResponseManager.sendWebPageResponse(response, 404, 'text/plain', '404 NOT FOUND');
                     return;
             }
         }

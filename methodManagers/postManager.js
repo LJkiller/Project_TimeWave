@@ -295,8 +295,13 @@ class PostManager {
         }
     }
 
-    static makeASplash(stringContent, fileContent){
+    static async makeASplash(db, url, pathSegments, request, response){
+        let data = await Methods.getBody();
+        let params = new URLSearchParams(data);
 
+        let post ={
+            author: params.get('author')
+        }
     }
 
 }
