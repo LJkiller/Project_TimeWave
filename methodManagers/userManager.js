@@ -31,12 +31,12 @@ class UserManager {
                     let user = this.generateAvailableUsers(result[i].username, isOption);
                     users += user;
                 } catch (error) {
-                    ResponseManager.sendError('Generating users HTML', error);
+                    ResponseManager.sendError('userManager.generateUsers(), Generating users HTML', error);
                 }
             }
             return users;
         } catch (error) {
-            ResponseManager.sendError('Generating available Users', error);
+            ResponseManager.sendError('userManager.generateUsers(), Generating available Users', error);
         }
     }
 
@@ -58,7 +58,7 @@ class UserManager {
             }
             return users;            
         } catch (error) {
-            ResponseManager.sendError('Generating user HTML', error);
+            ResponseManager.sendError('userManager.generateAvailableUsers(), Generating user HTML', error);
         }
     }
 
@@ -75,7 +75,7 @@ class UserManager {
                 let entry = userObject[i].username;
                 usersArray.push(entry);
             } catch (error) {
-                ResponseManager.sendError('Getting available users', error);
+                ResponseManager.sendError('userManager.getAvailableUsers(), Getting available users', error);
             }
         }
         return usersArray;
@@ -96,7 +96,7 @@ class UserManager {
             let joinDate = Methods.formatDate(user, false);
             return joinDate[0];
         } catch(error){
-            ResponseManager.sendError('Finding user MongoDB', error);
+            ResponseManager.sendError('userManager.generateJoinDate(), Finding user MongoDB', error);
         }
     }
 

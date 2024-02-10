@@ -31,12 +31,12 @@ class TidesManager {
                     let tide = this.generateAvailableTides(objResult[i].availableTides, isCheckList);
                     tides += tide;
                 } catch (error) {
-                    ResponseManager.sendError('Generating tides HTML', error);
+                    ResponseManager.sendError('tidesManager.generateTides(), Generating tides HTML', error);
                 }
             }
             return tides;
         } catch (error) {
-            ResponseManager.sendError('Generating available Tides', error);
+            ResponseManager.sendError('tidesManager.generateTides(), Generating available Tides', error);
         }
     }
 
@@ -72,7 +72,7 @@ class TidesManager {
         try {
             return tideArray[0].availableTides;
         } catch (error) {
-            ResponseManager.sendError('Getting available tides', error);
+            ResponseManager.sendError('tidesManager.getAvailabletides(), Getting available tides', error);
         }
     }
     

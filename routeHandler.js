@@ -54,14 +54,12 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     if (request.method === 'GET'){
                         handleMakeASplash(db, url, pathSegments, request, response);
                     } else if (request.method === 'POST'){
-                        console.log('This works');
                         PostManager.makeASplash(db, url, request, response);
-                        handleSplash(db, url, pathSegments, request, response);
                     }
                     break;
                 default:
                     // Invalid route.
-                    ResponseManager.sendWebPageResponse(response, 404, 'text/plain', '404 NOT FOUND');
+                    ResponseManager.sendWebPageResponse(response, 404, 'text/plain', '404 Not Found');
                     return;
             }
         }

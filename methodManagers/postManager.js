@@ -3,6 +3,7 @@ import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
 import UserManager from './userManager.js';
 import Methods from './methods.js';
+import { Db } from 'mongodb';
 
 /**
  * Class responsible of managing post generation by communicating
@@ -41,9 +42,10 @@ class PostManager {
             let isFilteringTidesContent = await TidesManager.tidesEndPointComparison(TidesManager.getAvailableTides(tidesComparison), pathSegments);
             let isFilteringUsersContent = await UserManager.usersEndPointComparison(usersComparison, pathSegments);
 
+            let generatedPost = 0;
             if (singular === true) {
-                let splash = objResult;
-                splashHTML = this.getSplashHTML(splash, true);
+                splashHTML = this.getSplashHTML(objResult, true);
+                generatedPost++;
                 splashes += splashHTML;
             } else {
                 // Sorting.
@@ -55,16 +57,18 @@ class PostManager {
                 for (let i = 0; i < result.length; i++) {
                     let splash = result[i];
                     try {
-                        splashHTML = this.getSplashHTML(splash);
+                        splashHTML = this.getSplashHTML(splash, singular);
+                        generatedPost++;
                         splashes += splashHTML;
                     } catch (error) {
-                        ResponseManager.sendError('Generating splash HTML', error);
+                        ResponseManager.sendError('postManager.generateSplashes(), Generating splash HTML', error);
                     }
                 }
             }
+            console.log('Posts generated:', generatedPost);
             return splashes;
         } catch (error) {
-            ResponseManager.sendError('Generating Splashes', error);
+            ResponseManager.sendError('postManager.generateSplashes(), Generating splashes', error);
         }
     }
 
@@ -105,7 +109,7 @@ class PostManager {
             }
             return result;
         } catch (error) {
-            ResponseManager.sendError('Filtering', error);
+            ResponseManager.sendError('postManager.splashFiltering(), Filtering', error);
         }
     }
 
@@ -125,8 +129,7 @@ class PostManager {
             let ifSingular = singular ? 'singular' : '';
 
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
-
-            return `
+            let post = `
                 <article class="post ${ifSingular}">
                     <h3>
                         ${author}
@@ -138,8 +141,9 @@ class PostManager {
                     ${this.generateMedia(splash)}
                 </article>
             `;
+            return post;
         } catch (error) {
-            ResponseManager.sendError('Generating splash HTML', error);
+            ResponseManager.sendError('postManager.getSplashHTML(), Generating splash HTML', error);
             return '';
         }
     }
@@ -178,7 +182,6 @@ class PostManager {
         let contentLink = content.replace(urlPattern, (url) => {
             return `<a href="${url}" target="_blank">${url}</a>`;
         });
-
         return contentLink;
     }
 
@@ -242,7 +245,7 @@ class PostManager {
                     ;
             }
         } catch (error) {
-            ResponseManager.sendError('Generating media HTML', error);
+            ResponseManager.sendError('postManager.generateMedia(), Generating media HTML', error);
             return '';
         }
     }
@@ -283,7 +286,7 @@ class PostManager {
                     return '';
             }
         } catch (error) {
-            ResponseManager.sendError('Embedding media source', error);
+            ResponseManager.sendError('postManager.embedPath(), Embedding media source', error);
             return '';
         }
     }
@@ -292,30 +295,53 @@ class PostManager {
         try {
             let data = await Methods.getBody(request);
             let params = new URLSearchParams(data);
+
+            let tidesResult = await db.collection('tides').find().toArray();
+            let tidesArray = await TidesManager.getAvailableTides(tidesResult);
+            
+            let splashSubjects = [];
+            for (let [keyParam, value] of params) {
+                if (tidesArray.includes(keyParam)){
+                    splashSubjects.push(keyParam);
+                }
+            }
+    
             let post = {
                 author: params.get('author'),
                 splashDate: Methods.getCurrentUTCDate(),
-                splashSubject: {
-
-                },
                 splashContent: params.get('content'),
-                splashId: params.get('post')
+                splashSubject: splashSubjects,
+                splashId: parseInt(params.get('post')),
+                media: {
+                    content: false,
+                    image: false,
+                    video: false,
+                    source: "none",
+                    videoSourc: "none"
+                }
             }
 
-            console.log(post);
             try {
                 await db.collection('splashes').insertOne(post);
             } catch (error) {
-                ResponseManager.sendError('Posting splash', error);
+                ResponseManager.sendError('postManager.makeASplash(), Posting splash', error);
             }
 
+            response.writeHead(302, { 'Location': `/splash?post=${post.splashId}` });
+            response.end();
             return;
         } catch (error) {
             ResponseManager.sendWebPageResponse(response);
-            ResponseManager.sendError('Making splash', error);
+            ResponseManager.sendError('postManager.makeASplash(), Making splash', error);
         }
     }
 
+    /**
+     * Method responsible of getting the latest splash's id.
+     * 
+     * @param {Db} db - MongoDB database object.
+     * @returns {number} - Number of the latest splash.
+     */
     static async getLatestSplash(db) {
         try {
             let latestSplash = await db.collection('splashes').find().sort({ splashId: -1 }).limit(1).toArray();
@@ -325,7 +351,7 @@ class PostManager {
                 return null; // Or any appropriate default value if there are no splashes
             }
         } catch (error) {
-            PostManager.sendError('Getting latest splash', error);
+            PostManager.sendError('postManager.getLatestSplash(), Getting latest splash', error);
         }
     }
 
