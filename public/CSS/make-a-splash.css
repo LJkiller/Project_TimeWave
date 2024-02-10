@@ -1,3 +1,4 @@
+
 main section#main-content section#post form{
     height: calc(var(--main-content-height) - var(--create-post-height));
 }
@@ -9,6 +10,10 @@ main section#main-content section#post form .subjects,
 main section#main-content section#post form textarea{
     margin-left: var(--content-margin-left);
     width: var(--content-max-width);
+}
+main section#main-content section#post form div.subjects ul{
+    padding: 0;
+    list-style-type: none;
 }
 main section#main-content section#post form input[type="checkbox"]{
     height: 1rem;

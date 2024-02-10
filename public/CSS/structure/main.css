@@ -1,3 +1,4 @@
+
 :root{
     --main-content-margin-left: calc(var(--navbar-width) + 1rem);
     --main-content-margin-top: calc((100vh - var(--main-content-height)) - 2.5vh);
@@ -35,6 +36,7 @@ main section#main-content{
 
     border-radius: var(--sharp-border-radius);
     background-color: var(--wb-complementary-bg-color);
+    word-break: break-all
 }
 
 main section#main-content div.main-top a.create-post{
@@ -117,10 +119,12 @@ main section#main-content section.main-part h2>span::after{
 /*#region Posts*/
 
 main section#main-content section.main-part .post{
+    transition: var(--sharp-eio-transition);
     padding: 0.625rem 0;
     max-height: var(--post-max-height);
     color: var(--standard-text-color);
     background-color: var(--post-background-color);
+    overflow: hidden;
 }
 main section#main-content section.main-part .post.singular{
     max-height: 100%;
@@ -143,8 +147,8 @@ main section#main-content section.main-part .post h3{
 }
 main section#main-content section.main-part .post h3 a.author:hover,
 main section#main-content section.main-part .post a.id-display:hover{
-    color: var(--text-link-content-color);
-    text-shadow: var(--small-text-shadow);
+    color: var(--brighter-text-color);
+    text-shadow: var(--large-text-shadow);
 }
 main section#main-content section.main-part .post h3 a.author{
     float: left;
@@ -199,24 +203,36 @@ main section#main-content section.main-part .post a.id-display{
 main section#main-content section.main-part .post span.date{
     color: var(--thin-text-color);
 }
+main section#main-content section.main-part .post p.content{
+    max-height: calc(var(--post-max-height) - 22rem);
+    overflow: hidden;
+}
 main section#main-content section.main-part .post p.content a{
     display: inline;
     font-weight: bold;
-    color: var(--text-link-content-color);
+    color: var(--brighter-text-color);
 }
 main section#main-content section.main-part .post p.content a:hover{
-    color: white;
+    color: var(--highlighted-text-color);
+    text-shadow: var(--large-text-shadow);
 }
 main section#main-content section.main-part .post.singular p.content{
     margin: 1rem 0 1rem var(--content-margin-left);
     font-size: var(--large-font-size);
 }
 
+main section#main-content section.main-part .post div.media-container{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 main section#main-content section.main-part .post div.media-container img,
 main section#main-content section.main-part .post div.media-container iframe{
     max-height: var(--post-image-max-height);
     max-width: var(--post-image-max-width);
     border-radius: var(--standard-border-radius);
+}
+main section#main-content section.main-part .post.singular p.content{
+    max-height: none;
 }
 main section#main-content section.main-part .post.singular div.media-container img,
 main section#main-content section.main-part .post.singular div.media-container iframe{
