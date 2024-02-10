@@ -65,13 +65,12 @@ class TidesManager {
      * Method responsible of getting available tides and stores the tides in an array.
      * 
      * @static
-     * @param {Object} tideObject - Object containing tide information.
+     * @param {Array} tideArray - Array containing tide information.
      * @returns {string[]} - Array of available tides.
      */
-    static getAvailableTides(tideObject) {
+    static getAvailableTides(tideArray) {
         try {
-            console.log('Sent informatiom', tideObject[0].availableTides);
-            return tideObject[0].availableTides;
+            return tideArray[0].availableTides;
         } catch (error) {
             ResponseManager.sendError('Getting available tides', error);
         }
@@ -82,21 +81,19 @@ class TidesManager {
      * 
      * @static
      * @async
-     * @param {Object} result - Object containing tides information.
+     * @param {Array} tideArray - Array containing tides information.
      * @param {string[]} pathSegments - Array representing the segments of the URL.
      * @returns 
      */
-    static async tidesEndPointComparison(result, pathSegments) {
-        let tidesArray = this.getAvailableTides(result);
-        console.log(tidesArray);
+    static async tidesEndPointComparison(tideArray, pathSegments) {
 
-        if (pathSegments[0] === 'tides') {
-            console.log('It is compared, and it is:', pathSegments[1].includes(tidesArray));
-            return pathSegments[1].includes(tidesArray);
-        } else {
-            return false;
+        for (let i = 0; i < tideArray.length; i++){
+            if (pathSegments[1] === tideArray[i]){
+                return true;
+            } else {
+                return false;
+            }
         }
-
     }
 
 }
