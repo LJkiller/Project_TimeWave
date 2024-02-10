@@ -1,4 +1,9 @@
 
+:root{
+    --profile-display-height: calc(var(--create-post-height) + 5rem);
+    --profile-information-height: 2rem;
+}
+
 main section#main-content section#users a.user{
     margin-left: var(--content-margin-left);
     max-width: var(--content-max-width);
@@ -17,7 +22,7 @@ main section#main-content div.main-top div{
     background-color: var(--primary-color);
 }
 main section#main-content div.main-top div.profile-display{
-    height: calc(var(--create-post-height) + 5rem);
+    height: var(--profile-display-height);
     width: 100%;
 
     border-top-left-radius: var(--sharp-border-radius);
@@ -25,7 +30,7 @@ main section#main-content div.main-top div.profile-display{
 }
 main section#main-content div.main-top div.user-information{
     padding: 1rem 0;
-    height: 2rem;
+    height: var(--profile-information-height);
     width: 100%;
     border-bottom: 10px solid var(--wb-primary-bg-color);
 }
@@ -60,4 +65,8 @@ main section#main-content div.main-top div.profile-display h3{
     top: calc(100% - (var(--xl-font-size) + 0.75rem));
     margin-left: var(--content-margin-left);
     font-size: var(--xl-font-size);
+}
+
+main section#main-content section#posts.user{
+    max-height: calc(var(--main-content-height) - (var(--profile-display-height) + var(--profile-information-height) + calc(2rem + 10px)));
 }
