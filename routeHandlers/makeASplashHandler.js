@@ -1,8 +1,10 @@
 
 import fs from 'fs/promises';
 import Methods from '../methodManagers/methods.js';
-import PostManager from '../methodManagers/postManager.js';
 import ResponseManager from '../methodManagers/responseManager.js';
+import PostManager from '../methodManagers/postManager.js';
+import TidesManager from '../methodManagers/tidesManager.js';
+import UserManager from '../methodManagers/userManager.js';
 
 /**
  * Method responsible of handling the make a splash page request. 
@@ -22,13 +24,22 @@ export async function handleMakeASplash(db, url, pathSegments, request, response
     ResponseManager.sendPageRoute(route);
 
     try{
-        let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();
+        let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();;
+        let tidesResult = await db.collection('tides').find().toArray();
+        let userResult = await db.collection('accounts').find().toArray();
+        let latestSplash = await PostManager.getLatestSplash(db);
+
+        let newPostId = latestSplash[0].splashId + 1;
+        let checklist = TidesManager.generateTides(tidesResult, true);
+        let userOption = UserManager.generateUsers(userResult, true);
         
         // let loggedInUser = ;
         // let userResult = await db.collection('accounts').findeOne({ "": loggedInUser });
     
         template = template
-            //.replaceAll('DEEZ%specificSplash%NUTS', post)
+            .replaceAll('DEEZ%latestId%NUTS', newPostId)
+            .replaceAll('DEEZ%authorListOptions%NUTS', userOption)
+            .replaceAll('DEEZ%subjectLists%NUTS', checklist)
         ;
     
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);

@@ -109,18 +109,18 @@ class Methods {
     }
     // Formatting user's join date.
     else {
-      if (Array.isArray(object)){
-        format = object.map(item =>{
+      if (Array.isArray(object)) {
+        format = object.map(item => {
           // Checks if item and joinDate property is not null.
-          if (item && item.joinDate){
+          if (item && item.joinDate) {
             let { year, month, day, ...rest } = item.joinDate;
             // YYYY-MM-DD
             return `${year}-${addZero(month)}-${addZero(day)}`;
-          } else{
+          } else {
             return `Didn't find date.`;
           }
         });
-      } else{
+      } else {
         format = 'Object is not an array.';
       }
     }
@@ -165,5 +165,23 @@ class Methods {
     });
   }
 
+
+  /**
+   * Method responsible of getting the current UTCDate.
+   * 
+   * @returns {Object} - The date.
+   */
+  static getCurrentUTCDate() {
+    let currentDate = new Date();
+    let year = currentDate.getUTCFullYear();
+    let month = currentDate.getUTCMonth() + 1;
+    let day = currentDate.getUTCDate();
+    let hour = currentDate.getUTCHours();
+    let minute = currentDate.getUTCMinutes();
+    let second = currentDate.getUTCSeconds();
+
+    let date = {year, month, day, hour, minute, second};
+    return date;
+  }
 }
 export default Methods;

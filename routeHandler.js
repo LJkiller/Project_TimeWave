@@ -54,7 +54,9 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     if (request.method === 'GET'){
                         handleMakeASplash(db, url, pathSegments, request, response);
                     } else if (request.method === 'POST'){
-                        PostManager.makeASplash(db, url, pathSegments, request, response);
+                        console.log('This works');
+                        PostManager.makeASplash(db, url, request, response);
+                        handleSplash(db, url, pathSegments, request, response);
                     }
                     break;
                 default:

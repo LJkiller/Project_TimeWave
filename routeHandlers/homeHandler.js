@@ -43,15 +43,3 @@ export async function handleHome(db, url, pathSegments, request, response){
         return;
     }
 }
-
-function getCurrentUTCDate() {
-    let currentDate = new Date();
-    let year = currentDate.getUTCFullYear();
-    let month = currentDate.getUTCMonth() + 1;
-    let day = currentDate.getUTCDate();
-    let hour = currentDate.getUTCHours();
-    let minute = currentDate.getUTCMinutes();
-    let second = currentDate.getUTCSeconds();
-
-    return { year, month, day, hour, minute, second };
-}

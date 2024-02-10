@@ -2,13 +2,17 @@ main section#main-content section#post form{
     height: calc(var(--main-content-height) - var(--create-post-height));
 }
 
-main section#main-content section#post form input,
+main section#main-content section#post form input[type="text"],
 main section#main-content section#post form label,
 main section#main-content section#post form select,
 main section#main-content section#post form .subjects,
 main section#main-content section#post form textarea{
     margin-left: var(--content-margin-left);
     width: var(--content-max-width);
+}
+main section#main-content section#post form input[type="checkbox"]{
+    height: 1rem;
+    width: 1rem;
 }
 main section#main-content section#post form input,
 main section#main-content section#post form label,

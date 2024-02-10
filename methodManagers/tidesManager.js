@@ -1,5 +1,6 @@
 
 import Methods from './methods.js';
+import PostManager from './postManager.js';
 import ResponseManager from './responseManager.js';
 
 /**
@@ -19,14 +20,15 @@ class TidesManager {
      * 
      * @static
      * @param {Array} objResult - Tide objects from MongoDB.
-     * @returns {string} - HTML string for generated splashes.
+     * @param {boolean} isCheckList - If the operation in question is a check list.
+     * @returns {string} - HTML string for generated splashes or checklist.
      */
-    static generateTides(objResult) {
+    static generateTides(objResult, isCheckList = false) {
         try {
             let tides = '';
             for (let i = 0; i < objResult.length; i++) {
                 try {
-                    let tide = this.generateAvailableTides(objResult[i].availableTides);
+                    let tide = this.generateAvailableTides(objResult[i].availableTides, isCheckList);
                     tides += tide;
                 } catch (error) {
                     ResponseManager.sendError('Generating tides HTML', error);
@@ -43,14 +45,18 @@ class TidesManager {
      * 
      * @static
      * @param {Object} tideObject - Object containing tide information.
+     * @param {boolean} isCheckList - If function is prioritsed as a checklist.
      * @returns {string} - HTML structure: tide links.
      */
-    static generateAvailableTides(tideObject) {
+    static generateAvailableTides(tideObject, isCheckList = false) {
         let tides = '';
         for (let key in tideObject) {
-            if (tideObject.hasOwnProperty(key)) {
-                let tide = Methods.capitalizeFirstLetter(tideObject[key]);
+            let tide = Methods.capitalizeFirstLetter(tideObject[key]);
+
+            if (tideObject.hasOwnProperty(key) && isCheckList === false) {
                 tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${tide}</a>`;
+            } else {
+                tides += `<li><input type="checkbox" name="${tide.toLowerCase()}" id="${tide.toLowerCase()}"> ${tide}</li>`;
             }
         }
         return tides;

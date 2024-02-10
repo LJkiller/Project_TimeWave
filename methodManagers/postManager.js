@@ -123,9 +123,9 @@ class PostManager {
             let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
             let content = `<p class="content">${this.checkForLinkedContent(splash.splashContent)}</p>`;
             let ifSingular = singular ? 'singular' : '';
-    
+
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
-    
+
             return `
                 <article class="post ${ifSingular}">
                     <h3>
@@ -295,14 +295,47 @@ class PostManager {
         }
     }
 
-    static async makeASplash(db, url, pathSegments, request, response){
-        let data = await Methods.getBody();
-        let params = new URLSearchParams(data);
+    static async makeASplash(db, url, request, response) {
+        try {
+            let data = await Methods.getBody(request);
+            let params = new URLSearchParams(data);
+            let post = {
+                author: params.get('author'),
+                splashDate: Methods.getCurrentUTCDate(),
+                splashSubject: {
 
-        let post ={
-            author: params.get('author')
+                },
+                splashContent: params.get('content'),
+                splashId: params.get('post')
+            }
+
+            console.log(post);
+            try {
+                await db.collection('splashes').insertOne(post);
+            } catch (error) {
+                ResponseManager.sendError('Posting splash', error);
+            }
+
+            return;
+        } catch (error) {
+            ResponseManager.sendWebPageResponse(response);
+            ResponseManager.sendError('Making splash', error);
         }
     }
+
+    static async getLatestSplash(db) {
+        try {
+            let latestSplash = await db.collection('splashes').find().sort({ splashId: -1 }).limit(1).toArray();
+            if (latestSplash.length > 0) {
+                return latestSplash;
+            } else {
+                return null; // Or any appropriate default value if there are no splashes
+            }
+        } catch (error) {
+            PostManager.sendError('Getting latest splash', error);
+        }
+    }
+
 
 }
 export default PostManager;

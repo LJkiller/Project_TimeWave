@@ -21,14 +21,14 @@ class UserManager {
      * @param {Array} objResult - Tide objects from MongoDB.
      * @returns {string} - HTML string for generated splashes.
      */
-    static generateUsers(objResult) {
+    static generateUsers(objResult, isOption = false) {
         try {
             let alphabeticalOrder = objResult.sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()));
             let result = alphabeticalOrder;
             let users = '';
             for (let i = 0; i < result.length; i++) {
                 try {
-                    let user = this.generateAvailableUsers(result[i].username);
+                    let user = this.generateAvailableUsers(result[i].username, isOption);
                     users += user;
                 } catch (error) {
                     ResponseManager.sendError('Generating users HTML', error);
@@ -47,11 +47,19 @@ class UserManager {
      * @param {Object} userObject - Object containing user information.
      * @returns {string} - HTML structure: tide links.
      */
-    static generateAvailableUsers(userObject) {
-        let users = '';
-        let user = Methods.capitalizeFirstLetter(userObject);
-        users += `<a class="user" href="/user/${user.toLowerCase()}">${user}</a>`;
-        return users;
+    static generateAvailableUsers(userObject, isOption) {
+        try {
+            let users = '';
+            let user = Methods.capitalizeFirstLetter(userObject);
+            if (isOption === false){
+                users += `<a class="user" href="/user/${user.toLowerCase()}">${user}</a>`;
+            } else{
+                users += `<option value="${user.toLowerCase()}">${user}</option>`;
+            }
+            return users;            
+        } catch (error) {
+            ResponseManager.sendError('Generating user HTML', error);
+        }
     }
 
     /**
