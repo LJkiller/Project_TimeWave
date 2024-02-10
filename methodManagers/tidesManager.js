@@ -86,15 +86,14 @@ class TidesManager {
      * @returns 
      */
     static async tidesEndPointComparison(tideArray, pathSegments) {
-
-        for (let i = 0; i < tideArray.length; i++){
-            if (pathSegments[1] === tideArray[i]){
+        for (let i = 0; i < tideArray.length; i++) {
+            if (pathSegments[1] === tideArray[i]) {
                 return true;
-            } else {
-                return false;
             }
         }
+        return false;
     }
+    
 
 }
 export default TidesManager;
