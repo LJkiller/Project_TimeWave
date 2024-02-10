@@ -251,20 +251,13 @@ class PostManager {
      * Method responsible for generating subject links for posts.
      * 
      * @static
-     * @param {Object} subjectObject - Object containing subject information.
+     * @param {Array} subjectArray - Array containing subject information.
      * @returns {string} - HTML structure: subject links.
      */
-    static generatePostSubject(subjectObject) {
+    static generatePostSubject(subjectArray) {
         let subjects = '';
-        for (let key in subjectObject) {
-            if (subjectObject.hasOwnProperty(key)) {
-                let subject = subjectObject[key];
-                subject = `
-                    <a class="subject" href="/tides/${subject.toLowerCase()}">${subject}</a>
-                `;
-
-                subjects += subject;
-            }
+        for (let i = 0; i < subjectArray.length; i++){
+            subjects += `<a class="subject" href="/tides/${subjectArray[i].toLowerCase()}">${Methods.capitalizeFirstLetter(subjectArray[i])}</a>` 
         }
         return subjects;
     }

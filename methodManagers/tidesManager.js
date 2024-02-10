@@ -44,16 +44,15 @@ class TidesManager {
      * Method responsible for generating available tides.
      * 
      * @static
-     * @param {Object} tideObject - Object containing tide information.
+     * @param {Array} tideArray - Array containing tide information.
      * @param {boolean} isCheckList - If function is prioritsed as a checklist.
      * @returns {string} - HTML structure: tide links.
      */
-    static generateAvailableTides(tideObject, isCheckList = false) {
+    static generateAvailableTides(tideArray, isCheckList = false) {
         let tides = '';
-        for (let key in tideObject) {
-            let tide = Methods.capitalizeFirstLetter(tideObject[key]);
-
-            if (tideObject.hasOwnProperty(key) && isCheckList === false) {
+        for (let i = 0; i < tideArray.length; i++){
+            let tide = Methods.capitalizeFirstLetter(tideArray[i]);
+            if (isCheckList === false){
                 tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${tide}</a>`;
             } else {
                 tides += `<li><input type="checkbox" name="${tide.toLowerCase()}" id="${tide.toLowerCase()}"> ${tide}</li>`;
@@ -70,16 +69,12 @@ class TidesManager {
      * @returns {string[]} - Array of available tides.
      */
     static getAvailableTides(tideObject) {
-        let tidesArray = [];
-        for (let i = 0; i < tideObject.length; i++) {
-            try {
-                let entry = tideObject[i].availableTides;
-                tidesArray = tidesArray.concat(entry);
-            } catch (error) {
-                ResponseManager.sendError('Getting available tides', error);
-            }
+        try {
+            console.log('Sent informatiom', tideObject[0].availableTides);
+            return tideObject[0].availableTides;
+        } catch (error) {
+            ResponseManager.sendError('Getting available tides', error);
         }
-        return tidesArray;
     }
     
     /**
@@ -93,8 +88,10 @@ class TidesManager {
      */
     static async tidesEndPointComparison(result, pathSegments) {
         let tidesArray = this.getAvailableTides(result);
+        console.log(tidesArray);
 
         if (pathSegments[0] === 'tides') {
+            console.log('It is compared, and it is:', pathSegments[1].includes(tidesArray));
             return pathSegments[1].includes(tidesArray);
         } else {
             return false;

@@ -32,11 +32,8 @@ export async function handleHome(db, url, pathSegments, request, response){
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
         ;
 
-        let { year, month, day, hour, minute, second } = getCurrentUTCDate();
-        console.log(getCurrentUTCDate());
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
-
     } catch(error){
         ResponseManager.sendError('Reading file', error);
         ResponseManager.sendWebPageResponse(response);
