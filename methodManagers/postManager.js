@@ -290,8 +290,39 @@ class PostManager {
             return '';
         }
     }
+    
+    /**
+     * Method responsible of getting the latest splash's id.
+     * 
+     * @static
+     * @async
+     * @param {Db} db - MongoDB database object.
+     * @returns {number} - Number of the latest splash.
+     */
+    static async getLatestSplash(db) {
+        try {
+            let latestSplash = await db.collection('splashes').find().sort({ splashId: -1 }).limit(1).toArray();
+            if (latestSplash.length > 0) {
+                return latestSplash;
+            } else {
+                return null; // Or any appropriate default value if there are no splashes
+            }
+        } catch (error) {
+            PostManager.sendError('postManager.getLatestSplash(), Getting latest splash', error);
+        }
+    }
 
-    static async makeASplash(db, url, request, response) {
+    /**
+     * Method responsible of posting new splash to MongoDB from analyzing url params.
+     * 
+     * @static
+     * @async
+     * @param {Db} db - MongoDB database object.
+     * @param {http.IncomingMessage} request - HTTP request.
+     * @param {http.ServerResponse} response - HTTP response.
+     * @returns Noting.
+     */
+    static async makeASplash(db, request, response) {
         try {
             let data = await Methods.getBody(request);
             let params = new URLSearchParams(data);
@@ -311,7 +342,7 @@ class PostManager {
                 splashDate: Methods.getCurrentUTCDate(),
                 splashContent: params.get('content'),
                 splashSubject: splashSubjects,
-                splashId: parseInt(params.get('post')),
+                splashId: (await this.getActualSplashId(db, parseInt(params.get('post')))),
                 media: {
                     content: false,
                     image: false,
@@ -326,7 +357,7 @@ class PostManager {
             } catch (error) {
                 ResponseManager.sendError('postManager.makeASplash(), Posting splash', error);
             }
-
+            // User redirection to created splash.
             response.writeHead(302, { 'Location': `/splash?post=${post.splashId}` });
             response.end();
             return;
@@ -337,24 +368,20 @@ class PostManager {
     }
 
     /**
-     * Method responsible of getting the latest splash's id.
+     * Method responsible of actually getting latest id to avoid multiple of same id.
+     * Working recursively.
      * 
-     * @param {Db} db - MongoDB database object.
-     * @returns {number} - Number of the latest splash.
+     * @param {Db} db - MongoDB database object. 
+     * @param {Number} splashId - Splash id, to be handled and set a proper value.
+     * @returns {Number} - The actual available id.
      */
-    static async getLatestSplash(db) {
-        try {
-            let latestSplash = await db.collection('splashes').find().sort({ splashId: -1 }).limit(1).toArray();
-            if (latestSplash.length > 0) {
-                return latestSplash;
-            } else {
-                return null; // Or any appropriate default value if there are no splashes
-            }
-        } catch (error) {
-            PostManager.sendError('postManager.getLatestSplash(), Getting latest splash', error);
+    static async getActualSplashId(db, splashId) {
+        if (await db.collection('splashes').findOne({ "splashId": splashId })) {
+            return this.getActualSplashId(db, splashId + 1);
+        } else {
+            return splashId;
         }
     }
-
-
+    
 }
 export default PostManager;

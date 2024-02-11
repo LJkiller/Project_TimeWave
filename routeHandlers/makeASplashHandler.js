@@ -19,11 +19,11 @@ import UserManager from '../methodManagers/userManager.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
-export async function handleMakeASplash(db, url, pathSegments, request, response){
+export async function handleMakeASplash(db, url, pathSegments, request, response) {
     let route = 'make a splash';
     ResponseManager.sendPageRoute(route);
 
-    try{
+    try {
         let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();;
         let tidesResult = await db.collection('tides').find().toArray();
         let userResult = await db.collection('accounts').find().toArray();
@@ -32,20 +32,20 @@ export async function handleMakeASplash(db, url, pathSegments, request, response
         let newPostId = latestSplash[0].splashId + 1;
         let checklist = TidesManager.generateTides(tidesResult, true);
         let userOption = UserManager.generateUsers(userResult, true);
-        
+
         // let loggedInUser = ;
         // let userResult = await db.collection('accounts').findeOne({ "": loggedInUser });
-    
+
         template = template
             .replaceAll('DEEZ%latestId%NUTS', newPostId)
             .replaceAll('DEEZ%authorListOptions%NUTS', userOption)
             .replaceAll('DEEZ%subjectLists%NUTS', checklist)
-        ;
-    
+            ;
+
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
 
-    } catch(error){
+    } catch (error) {
         ResponseManager.sendError('Reading file', error);
         ResponseManager.sendWebPageResponse(response);
         return;
