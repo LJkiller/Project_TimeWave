@@ -17,6 +17,7 @@
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
     <script defer src="/public/JavaScript/openProfileOptions.js"></script>
     <script defer src="/public/JavaScript/checkboxLimiter.js"></script>
+    <script defer src="/public/JavaScript/inputLimiter.js"></script>
 </head>
 
 <body>
@@ -72,8 +73,13 @@
                     <label for="content">Content</label>
                     <textarea name="content" id="content" required></textarea>
                     <br>
-                    <label for="media">Select a media (video or image):</label>
-                    <input type="file" id="media" name="media" accept="image/*,video/*">
+                    <label for="media-file">Select a media (video or image):</label>
+                    <!--This thing is stupid, but I did too much work to just remove this one.-->
+                    <input disabled type="file" name="media-file" class="media" accept="image/*,video/*">
+                    <br>
+                    <label for="media-link">Link a media (text):</label>
+                    <br>
+                    <input type="text" name="media-link" class="media">
                     <br>
                     <br>
                     <button type="submit">Make a splash!</button>

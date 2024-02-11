@@ -1,4 +1,6 @@
 
+import fs from 'fs/promises';
+
 import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
 import UserManager from './userManager.js';
@@ -173,19 +175,42 @@ class PostManager {
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - Extracted video ID.
      */
-    static videoIdExtractor(splash) {
+    static mediaIdExtractor(splash) {
         let path = splash.media.source;
-        let watchPattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-        let shortPattern = /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/
-        let embedPattern = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
+        
+        let patterns = [
+            {
+                name: 'youtube',
+                regex: [
+                    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                    /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
+                    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
+                ]
+            },
+            {
+                name: 'reddit',
+                regex: [
+                    /(?:https?:\/\/(?:www\.)?reddit\.com\/media\?url=|https?:\/\/(?:preview\.)?redd\.it\/)([a-zA-Z0-9]+)\.jpg/
+                ]
+            },
+            // Add more patterns as needed...
+        ];
+        
+        // Push all regex patterns into a single array
+        let combinedPatterns = [];
+        for (let patternGroup of patterns) {
+            combinedPatterns.push(...patternGroup.regex);
+        }
 
-        let watchMatch = path.match(watchPattern);
-        let shortMatch = path.match(shortPattern);
-        let embedMatch = path.match(embedPattern);
-
-        let videoId = watchMatch ? watchMatch[1] : (shortMatch ? shortMatch[1] : embedMatch ? embedMatch[1] : null);
-
-        return videoId;
+        let mediaId = 0;
+        for (let i = 0; i < patterns.length; i++) {
+            let match = path.match(patterns[i]);
+            if (match && match[1]) {
+                mediaId = match[1];
+                break; 
+            }
+        }
+        return mediaId;
     }
 
     /**
@@ -254,12 +279,11 @@ class PostManager {
      * @returns {string} - Embed path for specified media, or empty string for error.
      */
     static embedPath(media, splash) {
-        let videoId;
         try {
-            videoId = this.videoIdExtractor(splash);
+            let mediaId = this.mediaIdExtractor(splash);
             switch (media.sourceType) {
                 case 'youtube':
-                    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=0&autoplay=0&autohide=1`;
+                    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mediaId)}?start=0&autoplay=0&autohide=1`;
                 default: // Default to avoid problems.
                     return '';
             }
@@ -304,8 +328,9 @@ class PostManager {
         try {
             let data = await Methods.getBody(request);
             let params = new URLSearchParams(data);
-            console.log(params);
             let post = await this.getPostObject(db, params);
+
+            console.log(params);
 
             try {
                 await db.collection('splashes').insertOne(post);
@@ -353,18 +378,82 @@ class PostManager {
         return post;
     }
 
-    static async mediaAnalyzer(params){
+    /**
+     * Method responsible of constructing media object to be saved in a MongoDB object.
+     * 
+     * @static
+     * @async
+     * @param {*} params - Parameters to construct the object.
+     * @returns {Object} - Media object.
+     */
+    static async mediaAnalyzer(params) {
         let media = {};
-        for (let [keyParam, value] of params){
-            if (keyParam.includes('media')){
-                media = {
-                    content: true
-                }
+        let content = false;
+        let mediaFileExists = {};
+        let mediaLinkExists = {};
+        for (let [keyParam, value] of params) {
+            switch (true) {
+                case keyParam.includes('media-file') && value !== '':
+                    let mediaFileMime = await this.mimeMediaAnalyzer(value);
+                    content = true;
+                    mediaFileExists = {
+                        content: content,
+                        mime: `${mediaFileMime}`,
+                        fileSource: value,
+                        source: null
+                    }
+                    media = Object.assign(media, mediaFileExists);
+                    break;
+                case keyParam.includes('media-link') && value !== '':
+                    let mediaLinkMime = await this.mimeMediaAnalyzer(value);
+                    content = true;
+                    mediaLinkExists = {
+                        content: content,
+                        mime: `${mediaLinkMime}`,
+                        fileSource: null,
+                        source: value
+                    }
+                    media = Object.assign(media, mediaLinkExists);
+                    break;
+                default:
 
-            } else {
-                return media;
+                    break;
             }
         }
+        return media;
+    }
+
+    /**
+     * Method responsible of analyzing the file's or link mime-type.
+     * 
+     * @static
+     * @async
+     * @param {string} input - Input value from params to be analyzed.
+     * @returns {string} - Wheter it's an image or video.
+     */
+    static async mimeMediaAnalyzer(input) {
+        let patterns = [
+            { pattern: /\.jpg$|\.jpeg$/, mimeType: 'image/jpeg' },
+            { pattern: /\.png$/, mimeType: 'image/png' },
+            { pattern: /\.gif$/, mimeType: 'image/gif' },
+            { pattern: /\.bmp$/, mimeType: 'image/bmp' },
+            { pattern: /\.webp$/, mimeType: 'image/webp' },
+            { pattern: /\.svg$/, mimeType: 'image/svg+xml' },
+            { pattern: /\.tiff$/, mimeType: 'image/tiff' },
+            { pattern: /\.ico$/, mimeType: 'image/x-icon' },
+            { pattern: /\.psd$/, mimeType: 'image/vnd.adobe.photoshop' },
+            { pattern: /\.mp4$/, mimeType: 'video/mp4' },
+            { pattern: /\.webm$/, mimeType: 'video/webm' }
+        ];
+
+        for (let i = 0; i < patterns.length; i++) {
+            if (patterns[i].pattern.test(input.toLowerCase())) {
+                let mimeType = patterns[i].mimeType.split('/')
+                return mimeType[0];
+            }
+        }
+
+        return 'text/plain';
     }
 
     /**
