@@ -86,8 +86,8 @@ class PostManager {
             let subjects = `<div class="subject-container">${this.generatePostSubjectHTML(splash.splashSubject)}<span>Tide</span></div>`;
             let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
             let content = `<p class="content">${this.checkForLinkedContent(splash.splashContent)}</p>`;
-            let ifSingular = singular ? 'singular' : '';
 
+            let ifSingular = singular ? 'singular' : '';
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
             let post = `
                 <article class="post ${ifSingular}">
@@ -282,7 +282,13 @@ class PostManager {
      */
     static mediaInfoExtractor(media) {
         try {
-            let source = media.source;
+            let source;
+            if (typeof media === 'object') { 
+                source = media.source;
+            } else if (typeof media === 'string') {
+                source = media;
+            }
+            
             let mediaInfo = { id: 0, format: '', page: '' };
     
             let patternsForInfo = [
@@ -375,8 +381,6 @@ class PostManager {
             let params = new URLSearchParams(data);
             let post = await this.getPostObject(db, params);
 
-            console.log(params);
-
             try {
                 await db.collection('splashes').insertOne(post);
             } catch (error) {
@@ -395,32 +399,37 @@ class PostManager {
     /**
      * Method responsible of getting post object to be posted into MongoDB.
      * 
+     * @static
+     * @async
      * @param {Db} db - MongoDB database object.
      * @param {*} params - Parameters to construct the object.
      * @returns {Object} - Post object.
      */
     static async getPostObject(db, params) {
-        let tidesResult = await db.collection('tides').find().toArray();
-        let tidesArray = await TidesManager.getAvailableTides(tidesResult);
-
-        let splashSubjects = [];
-        for (let [keyParam, value] of params) {
-            if (tidesArray.includes(keyParam)) {
-                splashSubjects.push(keyParam);
+        try {
+            let tidesResult = await db.collection('tides').find().toArray();
+            let tidesArray = await TidesManager.getAvailableTides(tidesResult);
+    
+            let splashSubjects = [];
+            for (let [keyParam, value] of params) {
+                if (tidesArray.includes(keyParam)) {
+                    splashSubjects.push(keyParam);
+                }
             }
+            let mediaResult = await this.mediaAnalyzer(params);
+    
+            let post = {
+                author: params.get('author'),
+                splashDate: Methods.getCurrentUTCDate(),
+                splashContent: params.get('content'),
+                splashSubject: splashSubjects,
+                splashId: (await this.getActualSplashId(db, parseInt(params.get('post')))),
+                media: mediaResult
+            }
+            return post;
+        } catch (error) {
+            ResponseManager.sendError('postManager.getPostObject(), Constructing post object', error);
         }
-
-        let mediaResult = await this.mediaAnalyzer(params);
-
-        let post = {
-            author: params.get('author'),
-            splashDate: Methods.getCurrentUTCDate(),
-            splashContent: params.get('content'),
-            splashSubject: splashSubjects,
-            splashId: (await this.getActualSplashId(db, parseInt(params.get('post')))),
-            media: mediaResult
-        }
-        return post;
     }
 
     /**
@@ -432,42 +441,47 @@ class PostManager {
      * @returns {Object} - Media object.
      */
     static async mediaAnalyzer(params) {
-        let media = {};
-        let content = false;
-        let mediaFileExists = {};
-        let mediaLinkExists = {};
-        for (let [keyParam, value] of params) {
-            switch (true) {
-                case keyParam.includes('media-file') && value !== '':
-                    let mediaFileMime = await this.mimeMediaAnalyzer(value);
-                    console.log(mediaFileMime);
-                    content = true;
-                    mediaFileExists = {
-                        content: content,
-                        mime: [mediaFileMime],
-                        fileSource: value,
-                        source: null
-                    }
-                    media = Object.assign(media, mediaFileExists);
-                    break;
-                case keyParam.includes('media-link') && value !== '':
-                    let mediaLinkMime = await this.mimeMediaAnalyzer(value);
-                    console.log(mediaLinkMime);
-                    content = true;
-                    mediaLinkExists = {
-                        content: content,
-                        mime: [mediaLinkMime],
-                        fileSource: null,
-                        source: value
-                    }
-                    media = Object.assign(media, mediaLinkExists);
-                    break;
-                default:
-
-                    break;
+        try {
+            let media = {
+                content: 'none',
+                mime: 'none',
+                fileSource: null,
+                source: null,
+                page: 'none'
             }
+            let mediaExists = {};
+
+            for (let [keyParam, value] of params) {
+                let content = false;
+    
+                if (keyParam.includes('media-file') && value !== '') {
+                    let mediaFileMime = await this.mimeMediaAnalyzer(value);
+                    content = true;
+                    mediaExists = {
+                        content: content,
+                        mime: `${mediaFileMime}`,
+                        fileSource: value,
+                        source: null,
+                        page: 'none'
+                    }                
+                } else if (keyParam.includes('media-link') && value !== '') {
+                    let mediaLinkMime = await this.mimeMediaAnalyzer(value);
+                    let mediaInfo = this.mediaInfoExtractor(value);
+                    content = true;
+                    mediaExists = {
+                        content: content,
+                        mime: `${mediaLinkMime}`,
+                        fileSource: null,
+                        source: value,
+                        page: `${mediaInfo.page}`
+                    }
+                }
+            }
+            media = { ...media, ...mediaExists };
+            return media;
+        } catch (error) {
+            ResponseManager.sendError('postManager.mediaAnalyzer(), Constructing media', error);
         }
-        return media;
     }
 
     /**
@@ -493,10 +507,14 @@ class PostManager {
             { pattern: /\.webm$/, mimeType: 'video/webm' }
         ];
 
+        let analyzeInput = this.mediaInfoExtractor(input);
+        if (typeof analyzeInput === 'object') {
+            return 'video';
+        }
         for (let i = 0; i < patterns.length; i++) {
             if (patterns[i].pattern.test(input.toLowerCase())) {
-                let mimeType = patterns[i].mimeType.split('/')
-                return mimeType;
+                let mimeType = patterns[i].mimeType.split('/');
+                return mimeType[0];
             }
         }
 
@@ -528,6 +546,8 @@ class PostManager {
      * Method responsible of actually getting latest id to avoid multiple of same id.
      * Working recursively.
      * 
+     * @static
+     * @async
      * @param {Db} db - MongoDB database object. 
      * @param {Number} splashId - Splash id, to be handled and set a proper value.
      * @returns {Number} - The actual available id.
