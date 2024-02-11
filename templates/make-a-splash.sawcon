@@ -72,7 +72,10 @@
                     <label for="content">Content</label>
                     <textarea name="content" id="content" required></textarea>
                     <br>
-
+                    <label for="media">Select a media (video or image):</label>
+                    <input type="file" id="media" name="media" accept="image/*,video/*">
+                    <br>
+                    <br>
                     <button type="submit">Make a splash!</button>
                 </form>
             </section>

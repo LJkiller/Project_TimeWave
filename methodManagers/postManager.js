@@ -3,7 +3,6 @@ import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
 import UserManager from './userManager.js';
 import Methods from './methods.js';
-import { Db } from 'mongodb';
 
 /**
  * Class responsible of managing post generation by communicating
@@ -149,26 +148,6 @@ class PostManager {
     }
 
     /**
-     * Method responsible of checking media type and return type,
-     * dependent of information.
-     * 
-     * @static
-     * @param {Object} splash - MongoDB object containing splash information.
-     * @returns {Object} - Information object containing type or with source.
-     */
-    static checkMediaType(splash) {
-        if (splash.media.image) {
-            return { type: 'image' };
-        } else if (splash.media.video) {
-            let information = {
-                type: 'video',
-                source: splash.media.videoSource
-            };
-            return information;
-        }
-    }
-
-    /**
      * Method responsible for checking splash content for links and
      * act accordingly.
      * 
@@ -221,10 +200,9 @@ class PostManager {
         if (splash.media.content !== true) {
             return '';
         }
-
         try {
-            let mediaType = this.checkMediaType(splash);
-            if (mediaType.type === 'image') {
+            let media = splash.media;
+            if (media.mime === 'image') {
                 return `
                     <div class="media-container">
                         <img src="${splash.media.source}"
@@ -233,11 +211,11 @@ class PostManager {
                         >
                     </div>`
                     ;
-            } else if (mediaType.type === 'video') {
+            } else if (media.mime === 'video') {
                 return `
                     <div class="media-container">
                         <iframe class="mediaPlayer"
-                            src="${this.embedPath(mediaType, splash)}"
+                            src="${this.embedPath(media, splash)}"
                             title="Media Viewer" allowfullscreen frameborder="0"
                             allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
                         </iframe>
@@ -259,8 +237,8 @@ class PostManager {
      */
     static generatePostSubject(subjectArray) {
         let subjects = '';
-        for (let i = 0; i < subjectArray.length; i++){
-            subjects += `<a class="subject" href="/tides/${subjectArray[i].toLowerCase()}">${Methods.capitalizeFirstLetter(subjectArray[i])}</a>` 
+        for (let i = 0; i < subjectArray.length; i++) {
+            subjects += `<a class="subject" href="/tides/${subjectArray[i].toLowerCase()}">${Methods.capitalizeFirstLetter(subjectArray[i])}</a>`
         }
         return subjects;
     }
@@ -275,11 +253,11 @@ class PostManager {
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - Embed path for specified media, or empty string for error.
      */
-    static embedPath(mediaType, splash) {
+    static embedPath(media, splash) {
         let videoId;
         try {
             videoId = this.videoIdExtractor(splash);
-            switch (mediaType.source) {
+            switch (media.sourceType) {
                 case 'youtube':
                     return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=0&autoplay=0&autohide=1`;
                 default: // Default to avoid problems.
@@ -290,7 +268,7 @@ class PostManager {
             return '';
         }
     }
-    
+
     /**
      * Method responsible of getting the latest splash's id.
      * 
@@ -326,31 +304,8 @@ class PostManager {
         try {
             let data = await Methods.getBody(request);
             let params = new URLSearchParams(data);
-
-            let tidesResult = await db.collection('tides').find().toArray();
-            let tidesArray = await TidesManager.getAvailableTides(tidesResult);
-            
-            let splashSubjects = [];
-            for (let [keyParam, value] of params) {
-                if (tidesArray.includes(keyParam)){
-                    splashSubjects.push(keyParam);
-                }
-            }
-    
-            let post = {
-                author: params.get('author'),
-                splashDate: Methods.getCurrentUTCDate(),
-                splashContent: params.get('content'),
-                splashSubject: splashSubjects,
-                splashId: (await this.getActualSplashId(db, parseInt(params.get('post')))),
-                media: {
-                    content: false,
-                    image: false,
-                    video: false,
-                    source: "none",
-                    videoSourc: "none"
-                }
-            }
+            console.log(params);
+            let post = await this.getPostObject(db, params);
 
             try {
                 await db.collection('splashes').insertOne(post);
@@ -364,6 +319,51 @@ class PostManager {
         } catch (error) {
             ResponseManager.sendWebPageResponse(response);
             ResponseManager.sendError('postManager.makeASplash(), Making splash', error);
+        }
+    }
+
+    /**
+     * Method responsible of getting post object to be posted into MongoDB.
+     * 
+     * @param {Db} db - MongoDB database object.
+     * @param {*} params - Parameters to construct the object.
+     * @returns {Object} - Post object.
+     */
+    static async getPostObject(db, params) {
+        let tidesResult = await db.collection('tides').find().toArray();
+        let tidesArray = await TidesManager.getAvailableTides(tidesResult);
+
+        let splashSubjects = [];
+        for (let [keyParam, value] of params) {
+            if (tidesArray.includes(keyParam)) {
+                splashSubjects.push(keyParam);
+            }
+        }
+
+        let mediaResult = await this.mediaAnalyzer(params);
+
+        let post = {
+            author: params.get('author'),
+            splashDate: Methods.getCurrentUTCDate(),
+            splashContent: params.get('content'),
+            splashSubject: splashSubjects,
+            splashId: (await this.getActualSplashId(db, parseInt(params.get('post')))),
+            media: mediaResult
+        }
+        return post;
+    }
+
+    static async mediaAnalyzer(params){
+        let media = {};
+        for (let [keyParam, value] of params){
+            if (keyParam.includes('media')){
+                media = {
+                    content: true
+                }
+
+            } else {
+                return media;
+            }
         }
     }
 
@@ -382,6 +382,6 @@ class PostManager {
             return splashId;
         }
     }
-    
+
 }
 export default PostManager;
