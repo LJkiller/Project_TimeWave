@@ -28,7 +28,7 @@ class TidesManager {
             let tides = '';
             for (let i = 0; i < objResult.length; i++) {
                 try {
-                    let tide = this.generateAvailableTides(objResult[i].availableTides, isCheckList);
+                    let tide = this.generateAvailableTidesHTML(objResult[i].availableTides, isCheckList);
                     tides += tide;
                 } catch (error) {
                     ResponseManager.sendError('tidesManager.generateTides(), Generating tides HTML', error);
@@ -48,7 +48,7 @@ class TidesManager {
      * @param {boolean} isCheckList - If function is prioritsed as a checklist.
      * @returns {string} - HTML structure: tide links.
      */
-    static generateAvailableTides(tideArray, isCheckList = false) {
+    static generateAvailableTidesHTML(tideArray, isCheckList = false) {
         let tides = '';
         for (let i = 0; i < tideArray.length; i++){
             let tide = Methods.capitalizeFirstLetter(tideArray[i]);

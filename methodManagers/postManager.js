@@ -19,6 +19,8 @@ import Methods from './methods.js';
  */
 class PostManager {
 
+    // #region Splash Generation
+
     /**
      * Method responsible of generating posts from MongoDB in an HTML format.
      * Filters the content if necessary (pathSegments).
@@ -64,10 +66,101 @@ class PostManager {
                     }
                 }
             }
-            console.log('Posts generated:', generatedPost);
+            console.log('Posts generated:', generatedPost, '| Total posts:', objResult.length || 1);
             return splashes;
         } catch (error) {
             ResponseManager.sendError('postManager.generateSplashes(), Generating splashes', error);
+        }
+    }
+
+    /**
+     * Method responsible of getting splash HTML.
+     * 
+     * @static
+     * @param {Object} splash - The splash object containing information about the splash.
+     * @returns {string} - HTML string for generated splashe.
+     */
+    static getSplashHTML(splash, singular = false) {
+        try {
+            let author = `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
+            let subjects = `<div class="subject-container">${this.generatePostSubjectHTML(splash.splashSubject)}<span>Tide</span></div>`;
+            let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
+            let content = `<p class="content">${this.checkForLinkedContent(splash.splashContent)}</p>`;
+            let ifSingular = singular ? 'singular' : '';
+
+            let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
+            let post = `
+                <article class="post ${ifSingular}">
+                    <h3>
+                        ${author}
+                        ${subjects}
+                    </h3>
+                    ${splashId}
+                    ${date}
+                    ${content}
+                    ${this.generateMediaHTML(splash)}
+                </article>
+            `;
+            return post;
+        } catch (error) {
+            ResponseManager.sendError('postManager.getSplashHTML(), Generating splash HTML', error);
+            return '';
+        }
+    }
+
+    /**
+     * Method responsible for generating subject links for posts.
+     * 
+     * @static
+     * @param {Array} subjectArray - Array containing subject information.
+     * @returns {string} - HTML structure: subject links.
+     */
+    static generatePostSubjectHTML(subjectArray) {
+        let subjects = '';
+        for (let i = 0; i < subjectArray.length; i++) {
+            subjects += `<a class="subject" href="/tides/${subjectArray[i].toLowerCase()}">${Methods.capitalizeFirstLetter(subjectArray[i])}</a>`
+        }
+        return subjects;
+    }
+
+    /**
+     * Method responsible of creating media container based of 
+     * MongoDB information.
+     * 
+     * @static
+     * @param {Object} splash - MongoDB object containing splash information.
+     * @returns {string} - HTML structure: media container, or empty string for error.
+     */
+    static generateMediaHTML(splash) {
+        if (splash.media.content !== true) {
+            return '';
+        }
+        try {
+            let media = splash.media;
+            let mediaInfo = this.mediaInfoExtractor(media);
+            if (media.mime === 'image') {
+                return `
+                    <div class="media-container">
+                        <img src="${this.embedPath(media)}" class="${mediaInfo.page}"
+                            alt="${splash.author}'s media for splash: ${splash.splashId}"
+                            Image is not supported by your browser
+                        >
+                    </div>`
+                    ;
+            } else if (media.mime === 'video') {
+                return `
+                    <div class="media-container"> 
+                        <iframe class="mediaPlayer ${mediaInfo.page}"
+                            src="${this.embedPath(media)}"
+                            title="Media Viewer" allowfullscreen frameborder="0"
+                            allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                        </iframe>
+                    </div>`
+                    ;
+            }
+        } catch (error) {
+            ResponseManager.sendError('postManager.generateMediaHTML(), Generating media HTML', error);
+            return '';
         }
     }
 
@@ -113,41 +206,6 @@ class PostManager {
     }
 
     /**
-     * Method responsible of getting splash HTML.
-     * 
-     * @static
-     * @param {Object} splash - The splash object containing information about the splash.
-     * @returns {string} - HTML string for generated splashe.
-     */
-    static getSplashHTML(splash, singular = false) {
-        try {
-            let author = `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
-            let subjects = `<div class="subject-container">${this.generatePostSubject(splash.splashSubject)}<span>Tide</span></div>`;
-            let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
-            let content = `<p class="content">${this.checkForLinkedContent(splash.splashContent)}</p>`;
-            let ifSingular = singular ? 'singular' : '';
-
-            let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
-            let post = `
-                <article class="post ${ifSingular}">
-                    <h3>
-                        ${author}
-                        ${subjects}
-                    </h3>
-                    ${splashId}
-                    ${date}
-                    ${content}
-                    ${this.generateMedia(splash)}
-                </article>
-            `;
-            return post;
-        } catch (error) {
-            ResponseManager.sendError('postManager.getSplashHTML(), Generating splash HTML', error);
-            return '';
-        }
-    }
-
-    /**
      * Method responsible for checking splash content for links and
      * act accordingly.
      * 
@@ -165,145 +223,43 @@ class PostManager {
     }
 
     /**
-     * Method responsible of extracting video id from provided sources from MongoDB.
-     * Supports URL formats of:
-     * Youtube.
-     *
-     * @static
-     * @param {Object} media - Media object containing media information.
-     * @returns {string} - Extracted video ID.
-     */
-    static mediaIdExtractor(media) {
-        try {
-            let source = media.source;
-            let mediaInfo = { id: 0, format: '' };
-    
-            let patternsForInfo = [
-                {
-                    name: 'youtube',
-                    regex: [
-                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-                        /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
-                        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
-                    ]
-                },
-                {
-                    name: 'reddit',
-                    regex: [
-                        /(?:https?:\/\/(?:www\.)?reddit\.com\/(?:media\?url=)?|https?:\/\/(?:preview\.)?redd\.it\/)([^\/?&]+)\.([a-zA-Z0-9]+)/,
-                        /https:\/\/i\.redd\.it\/(\w+)\.([a-zA-Z0-9]+)/
-                    ]
-                },
-                {
-                    name: 'imgflip',
-                    regex: [
-                        /https:\/\/i\.imgflip\.com\/(\w+)\.([a-zA-Z0-9]+)/
-                    ]
-                }
-            ];
-    
-            for (let i = 0; i < patternsForInfo.length; i++) {
-                for (let j = 0; j < patternsForInfo[i].regex.length; j++) {
-                    if (source === null) {
-                        return { id: 0, format: '' };
-                    } else {
-                        let match = source.match(patternsForInfo[i].regex[j]);
-                        if (match && match[1]) {
-                            mediaInfo.id = match[1];
-                            mediaInfo.format = match[2];
-                            return mediaInfo;
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            ResponseManager.sendError('postManager.mediaIdExtractor, Analyzing media', error);
-            return 0;
-        }
-    }
-
-    /**
-     * Method responsible of creating media container based of 
-     * MongoDB information.
-     * 
-     * @static
-     * @param {Object} splash - MongoDB object containing splash information.
-     * @returns {string} - HTML structure: media container, or empty string for error.
-     */
-    static generateMedia(splash) {
-        if (splash.media.content !== true) {
-            return '';
-        }
-        try {
-            let media = splash.media;
-            if (media.mime === 'image') {
-                return `
-                    <div class="media-container">
-                        <img src="${this.embedPath(media)}"
-                            alt="${splash.author}'s media for splash: ${splash.splashId}"
-                            Image is not supported by your browser
-                        >
-                    </div>`
-                    ;
-            } else if (media.mime === 'video') {
-                return `
-                    <div class="media-container">
-                        <iframe class="mediaPlayer"
-                            src="${this.embedPath(media)}"
-                            title="Media Viewer" allowfullscreen frameborder="0"
-                            allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                        </iframe>
-                    </div>`
-                    ;
-            }
-        } catch (error) {
-            ResponseManager.sendError('postManager.generateMedia(), Generating media HTML', error);
-            return '';
-        }
-    }
-
-    /**
-     * Method responsible for generating subject links for posts.
-     * 
-     * @static
-     * @param {Array} subjectArray - Array containing subject information.
-     * @returns {string} - HTML structure: subject links.
-     */
-    static generatePostSubject(subjectArray) {
-        let subjects = '';
-        for (let i = 0; i < subjectArray.length; i++) {
-            subjects += `<a class="subject" href="/tides/${subjectArray[i].toLowerCase()}">${Methods.capitalizeFirstLetter(subjectArray[i])}</a>`
-        }
-        return subjects;
-    }
-
-    /**
      * Method responsible of creating embed path for media, videos.
      * Supports embedding videos of:
      * Youtube.
      *
      * @static
      * @param {Object} media - Information about media object.
-     * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - Embed path for specified media, or empty string for error.
      */
     static embedPath(media) {
         try {
-            let mediaInfo = this.mediaIdExtractor(media);
-            if (media.mime === 'video'){
+            let mediaInfo = this.mediaInfoExtractor(media);
+            if (media.mime === 'video') {
                 switch (media.page) {
                     case 'youtube':
                         return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mediaInfo.id)}?start=0&autoplay=0&autohide=1`;
+                    case 'instagram':
+                        return `https://www.instagram.com/p/${mediaInfo.id}/embed/`;
+                    case 'twitter':
+                        return `https://twitter.com/i/status/${mediaInfo.id}`;
+                    case 'facebook':
+                        return `https://www.facebook.com/video/embed?video_id=${mediaInfo.id}`;
+                    case 'tiktok':
+                        return `https://www.tiktok.com/embed/v2/${mediaInfo.id}?muted=1`;
                     default: // Default to avoid problems.
                         return '';
                 }
-            } else if (media.mime === 'image'){
-                switch (media.page){
+            } else if (media.mime === 'image') {
+                switch (media.page) {
                     case 'reddit':
-                        return `https://i.redd.it/${mediaInfo.id}.${mediaInfo.format}`
+                        return `https://i.redd.it/${mediaInfo.id}.${mediaInfo.format}`;
                     case 'imgflip':
                         return `https://i.imgflip.com/${mediaInfo.id}.${mediaInfo.format}`;
-                    default:
+                    case 'instagram':
+                        return `https://www.instagram.com/p/${mediaInfo.id}/embed/`;
+                    case 'twitter':
+                        return `https://twitter.com/i/status/${mediaInfo.id}`;
+                    default: // Default to avoid problems.
                         return '';
                 }
             } else {
@@ -316,25 +272,92 @@ class PostManager {
     }
 
     /**
-     * Method responsible of getting the latest splash's id.
-     * 
+     * Method responsible of extracting video id from provided sources from MongoDB.
+     * Supports URL formats of:
+     * Youtube.
+     *
      * @static
-     * @async
-     * @param {Db} db - MongoDB database object.
-     * @returns {number} - Number of the latest splash.
+     * @param {Object} media - Media object containing media information.
+     * @returns {string} - Extracted video ID.
      */
-    static async getLatestSplash(db) {
+    static mediaInfoExtractor(media) {
         try {
-            let latestSplash = await db.collection('splashes').find().sort({ splashId: -1 }).limit(1).toArray();
-            if (latestSplash.length > 0) {
-                return latestSplash;
-            } else {
-                return null; // Or any appropriate default value if there are no splashes
+            let source = media.source;
+            let mediaInfo = { id: 0, format: '', page: '' };
+    
+            let patternsForInfo = [
+                {
+                    page: 'youtube',
+                    regex: [
+                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                        /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
+                        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
+                    ]
+                },
+                {
+                    page: 'reddit',
+                    regex: [
+                        /(?:https?:\/\/(?:www\.)?reddit\.com\/(?:media\?url=)?|https?:\/\/(?:preview\.)?redd\.it\/)([^\/?&]+)\.([a-zA-Z0-9]+)/,
+                        /https:\/\/i\.redd\.it\/(\w+)\.([a-zA-Z0-9]+)/
+                    ]
+                },
+                {
+                    page: 'imgflip',
+                    regex: [
+                        /https:\/\/i\.imgflip\.com\/(\w+)\.([a-zA-Z0-9]+)/
+                    ]
+                },
+                {
+                    page: 'instagram',
+                    regex: [
+                        /https?:\/\/(?:www\.)?instagram\.com\/p\/([^\/?#&]+)/,
+                        /https?:\/\/(?:www\.)?instagr\.am\/p\/([^\/?#&]+)/
+                    ]
+                },
+                {
+                    page: 'twitter',
+                    regex: [
+                        /https?:\/\/(?:www\.)?twitter\.com\/[^\/]+\/status\/([0-9]+)/
+                    ]
+                },
+                {
+                    page: 'facebook',
+                    regex: [
+                        /https?:\/\/(?:www\.)?facebook\.com\/[^\/]+\/videos\/([0-9]+)/
+                    ]
+                },
+                {
+                    page: 'tiktok',
+                    regex: [
+                        /https?:\/\/(?:www\.)?tiktok\.com\/@[\w.]+\/video\/(\d+)/
+                    ]
+                }
+            ];
+            
+            for (let i = 0; i < patternsForInfo.length; i++) {
+                for (let j = 0; j < patternsForInfo[i].regex.length; j++) {
+                    if (source === null) {
+                        return mediaInfo;
+                    } else {
+                        let match = source.match(patternsForInfo[i].regex[j]);
+                        if (match && match[1]) {
+                            mediaInfo.id = match[1];
+                            mediaInfo.format = match[2];
+                            mediaInfo.page = patternsForInfo[i].page;
+                            return mediaInfo;
+                        }
+                    }
+                }
             }
         } catch (error) {
-            PostManager.sendError('postManager.getLatestSplash(), Getting latest splash', error);
+            ResponseManager.sendError('postManager.mediaInfoExtractor, Analyzing media', error);
+            return 0;
         }
     }
+    
+    // #endregion
+    
+    // #region Posting
 
     /**
      * Method responsible of posting new splash to MongoDB from analyzing url params.
@@ -481,6 +504,27 @@ class PostManager {
     }
 
     /**
+     * Method responsible of getting the latest splash's id.
+     * 
+     * @static
+     * @async
+     * @param {Db} db - MongoDB database object.
+     * @returns {number} - Number of the latest splash.
+     */
+    static async getLatestSplash(db) {
+        try {
+            let latestSplash = await db.collection('splashes').find().sort({ splashId: -1 }).limit(1).toArray();
+            if (latestSplash.length > 0) {
+                return latestSplash;
+            } else {
+                return null; // Or any appropriate default value if there are no splashes
+            }
+        } catch (error) {
+            PostManager.sendError('postManager.getLatestSplash(), Getting latest splash', error);
+        }
+    }
+
+    /**
      * Method responsible of actually getting latest id to avoid multiple of same id.
      * Working recursively.
      * 
@@ -495,6 +539,8 @@ class PostManager {
             return splashId;
         }
     }
+
+    // #endregion
 
 }
 export default PostManager;

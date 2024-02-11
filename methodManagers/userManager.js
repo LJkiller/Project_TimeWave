@@ -28,7 +28,7 @@ class UserManager {
             let users = '';
             for (let i = 0; i < result.length; i++) {
                 try {
-                    let user = this.generateAvailableUsers(result[i].username, isOption);
+                    let user = this.generateAvailableUsersHTML(result[i].username, isOption);
                     users += user;
                 } catch (error) {
                     ResponseManager.sendError('userManager.generateUsers(), Generating users HTML', error);
@@ -47,7 +47,7 @@ class UserManager {
      * @param {Object} userObject - Object containing user information.
      * @returns {string} - HTML structure: tide links.
      */
-    static generateAvailableUsers(userObject, isOption) {
+    static generateAvailableUsersHTML(userObject, isOption) {
         try {
             let users = '';
             let user = Methods.capitalizeFirstLetter(userObject);
@@ -58,7 +58,7 @@ class UserManager {
             }
             return users;            
         } catch (error) {
-            ResponseManager.sendError('userManager.generateAvailableUsers(), Generating user HTML', error);
+            ResponseManager.sendError('userManager.generateAvailableUsersHTML(), Generating user HTML', error);
         }
     }
 
