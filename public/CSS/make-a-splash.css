@@ -19,6 +19,12 @@ main section#main-content section#post form input[type="checkbox"]{
     height: 1rem;
     width: 1rem;
 }
+main section#main-content section#post form input[type="checkbox"]:disabled{
+    color: var(--disable-color);
+}
+main section#main-content section#post form select#author option:nth-of-type(1){
+    display: none;
+}
 main section#main-content section#post form input,
 main section#main-content section#post form label,
 main section#main-content section#post form select,

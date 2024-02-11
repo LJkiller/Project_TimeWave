@@ -16,6 +16,7 @@
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
     <script defer src="/public/JavaScript/openProfileOptions.js"></script>
+    <script defer src="/public/JavaScript/checkboxLimiter.js"></script>
 </head>
 
 <body>
@@ -56,7 +57,7 @@
                     <label for="author">Author</label>
                     <input type="hidden" name="post" value="DEEZ%latestId%NUTS">
                     <select name="author" id="author" required>
-                        <option value="none">Select yourself</option>
+                        <option value="N/A" disabled selected>Select yourself</option>
                         DEEZ%authorListOptions%NUTS
                     </select>
                     <br>

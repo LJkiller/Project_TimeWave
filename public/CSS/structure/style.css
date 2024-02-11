@@ -24,6 +24,8 @@ For instance: body.
 	--thin-text-color: rgba(195,195,195,1);
 	--dark-text-color: rgba(60,60,60,1);
 
+	--disable-color: rgb(153,153,153,1);
+
 	--text-link-color: rgba(0,128,255,1);
 	--text-link-highlight-color: rgba(230,230,230,1);
 
