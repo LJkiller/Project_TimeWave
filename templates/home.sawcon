@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="/public/CSS/structure/style.css">
     <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
     <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
+    <link rel="stylesheet" href="/public/CSS/structure/posts.css">
+    <link rel="stylesheet" href="/public/CSS/structure/iframe.css">
     <link rel="stylesheet" href="/public/CSS/structure/main.css">
-    <link rel="stylesheet" href="/public/CSS/structure/home.css">
 
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>

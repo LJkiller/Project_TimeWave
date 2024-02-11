@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="/public/CSS/structure/style.css">
     <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
     <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
+    <link rel="stylesheet" href="/public/CSS/structure/posts.css">
+    <link rel="stylesheet" href="/public/CSS/structure/iframe.css">
     <link rel="stylesheet" href="/public/CSS/structure/main.css">
 
     <!--JavaScript-->

@@ -1,0 +1,34 @@
+
+main section#main-content section.main-part .post div.media-container{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    max-width: var(--content-max-width);
+}
+main section#main-content section.main-part .post div.media-container img,
+main section#main-content section.main-part .post div.media-container iframe{
+    max-height: var(--post-image-max-height);
+    border-radius: var(--standard-border-radius);
+}
+main section#main-content section.main-part .post div.media-container iframe.tiktok{
+    min-height: 46.1rem;
+    min-width: 20.2rem;
+}
+main section#main-content section.main-part .post div.media-container iframe.youtube{
+    min-height: 264px;
+    min-width: 468.6px;
+}
+main section#main-content section.main-part .post div.media-container iframe.tiktok main #embed-video-container .css-vptvdy{
+    border: none !important;
+}
+main section#main-content section.main-part .post.singular p.content{
+    max-height: none;
+}
+main section#main-content section.main-part .post.singular div.media-container img,
+main section#main-content section.main-part .post.singular div.media-container iframe{
+    margin-bottom: 5rem;
+    max-height: calc(var(--post-image-max-height) + 20rem);
+    max-width: 100%;
+}
+main section#main-content section.main-part .post.singular div.media-container iframe.youtube{
+    min-height: 20rem;
+}

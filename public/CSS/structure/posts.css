@@ -1,0 +1,103 @@
+
+main section#main-content section.main-part .post{
+    transition: var(--sharp-eio-transition);
+    padding: 0.625rem 0;
+    max-height: var(--post-max-height);
+    color: var(--standard-text-color);
+    background-color: var(--post-background-color);
+    overflow: hidden;
+}
+main section#main-content section.main-part .post.singular{
+    max-height: 100%;
+}
+main section#main-content section.main-part .post:hover{
+    background-color: var(--primary-color);
+}
+
+main section#main-content section.main-part .post h3,
+main section#main-content section.main-part .post a.id-display,
+main section#main-content section.main-part .post span.date,
+main section#main-content section.main-part .post p.content,
+main section#main-content section.main-part .post div.media-container{
+    margin-left: var(--content-margin-left);
+    max-width: var(--content-max-width);
+}
+
+main section#main-content section.main-part .post h3{
+    line-height: 2.2rem;
+}
+main section#main-content section.main-part .post h3 a.author:hover,
+main section#main-content section.main-part .post a.id-display:hover{
+    color: var(--brighter-text-color);
+    text-shadow: var(--large-text-shadow);
+}
+main section#main-content section.main-part .post h3 a.author{
+    float: left;
+    transition: var(--standard-eio-transition);
+    margin-top: 0.563rem;
+    width: 50%;
+    color: var(--brighter-text-color);
+}
+main section#main-content section.main-part .post.singular h3 a.author{
+    font-size: var(--large-font-size);
+}
+main section#main-content section.main-part .post h3 div.subject-container{
+    float: right;
+    margin-top: 0.563rem;
+
+    height: 100%;
+    width: 50%;
+    color: var(--dimmer-text-color);
+}
+main section#main-content section.main-part .post h3 .subject-container a.subject{
+    display: inline-block;
+    margin-left: 0.315rem;
+    height: 100%;
+    padding: 0 0.315rem;
+    border-radius: var(--standard-border-radius);
+    color: var(--standard-text-color);
+    background-color: var(--subject-background-color);
+}
+main section#main-content section.main-part .post h3 .subject-container span::before{
+    content: "";
+    display: inline-block;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
+    margin-bottom: -0.4rem;
+
+    height: 1.7rem;
+    width: 0.2em;
+    border-radius: var(--standard-border-radius);
+    background-color: var(--dimmer-text-color);
+}
+main section#main-content section.main-part .post h3 .subject-container a.subject:hover{
+    color: var(--dark-text-color);
+    background-color: var(--highlighted-subject-background-color);
+}
+main section#main-content section.main-part .post a.id-display,
+main section#main-content section.main-part .post span.date{
+    font-style: italic;
+}
+main section#main-content section.main-part .post a.id-display{
+    color: var(--standard-text-color);
+}
+main section#main-content section.main-part .post span.date{
+    color: var(--thin-text-color);
+}
+main section#main-content section.main-part .post p.content{
+    max-height: calc(var(--post-max-height) - 22rem);
+    overflow: hidden;
+}
+main section#main-content section.main-part .post p.content a{
+    display: inline;
+    font-weight: bold;
+    color: var(--brighter-text-color);
+}
+main section#main-content section.main-part .post p.content a:hover{
+    color: var(--highlighted-text-color);
+    text-shadow: var(--large-text-shadow);
+}
+main section#main-content section.main-part .post.singular p.content{
+    margin: 1rem 0 1rem var(--content-margin-left);
+    font-size: var(--large-font-size);
+}
