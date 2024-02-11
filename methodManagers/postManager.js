@@ -1,6 +1,4 @@
 
-import fs from 'fs/promises';
-
 import ResponseManager from './responseManager.js';
 import TidesManager from './tidesManager.js';
 import UserManager from './userManager.js';
@@ -172,45 +170,56 @@ class PostManager {
      * Youtube.
      *
      * @static
-     * @param {Object} splash - MongoDB object containing splash information.
+     * @param {Object} media - Media object containing media information.
      * @returns {string} - Extracted video ID.
      */
-    static mediaIdExtractor(splash) {
-        let path = splash.media.source;
-        
-        let patterns = [
-            {
-                name: 'youtube',
-                regex: [
-                    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-                    /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
-                    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
-                ]
-            },
-            {
-                name: 'reddit',
-                regex: [
-                    /(?:https?:\/\/(?:www\.)?reddit\.com\/media\?url=|https?:\/\/(?:preview\.)?redd\.it\/)([a-zA-Z0-9]+)\.jpg/
-                ]
-            },
-            // Add more patterns as needed...
-        ];
-        
-        // Push all regex patterns into a single array
-        let combinedPatterns = [];
-        for (let patternGroup of patterns) {
-            combinedPatterns.push(...patternGroup.regex);
-        }
-
-        let mediaId = 0;
-        for (let i = 0; i < patterns.length; i++) {
-            let match = path.match(patterns[i]);
-            if (match && match[1]) {
-                mediaId = match[1];
-                break; 
+    static mediaIdExtractor(media) {
+        try {
+            let source = media.source;
+            let mediaInfo = { id: 0, format: '' };
+    
+            let patternsForInfo = [
+                {
+                    name: 'youtube',
+                    regex: [
+                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                        /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
+                        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
+                    ]
+                },
+                {
+                    name: 'reddit',
+                    regex: [
+                        /(?:https?:\/\/(?:www\.)?reddit\.com\/(?:media\?url=)?|https?:\/\/(?:preview\.)?redd\.it\/)([^\/?&]+)\.([a-zA-Z0-9]+)/,
+                        /https:\/\/i\.redd\.it\/(\w+)\.([a-zA-Z0-9]+)/
+                    ]
+                },
+                {
+                    name: 'imgflip',
+                    regex: [
+                        /https:\/\/i\.imgflip\.com\/(\w+)\.([a-zA-Z0-9]+)/
+                    ]
+                }
+            ];
+    
+            for (let i = 0; i < patternsForInfo.length; i++) {
+                for (let j = 0; j < patternsForInfo[i].regex.length; j++) {
+                    if (source === null) {
+                        return { id: 0, format: '' };
+                    } else {
+                        let match = source.match(patternsForInfo[i].regex[j]);
+                        if (match && match[1]) {
+                            mediaInfo.id = match[1];
+                            mediaInfo.format = match[2];
+                            return mediaInfo;
+                        }
+                    }
+                }
             }
+        } catch (error) {
+            ResponseManager.sendError('postManager.mediaIdExtractor, Analyzing media', error);
+            return 0;
         }
-        return mediaId;
     }
 
     /**
@@ -230,7 +239,7 @@ class PostManager {
             if (media.mime === 'image') {
                 return `
                     <div class="media-container">
-                        <img src="${splash.media.source}"
+                        <img src="${this.embedPath(media)}"
                             alt="${splash.author}'s media for splash: ${splash.splashId}"
                             Image is not supported by your browser
                         >
@@ -240,7 +249,7 @@ class PostManager {
                 return `
                     <div class="media-container">
                         <iframe class="mediaPlayer"
-                            src="${this.embedPath(media, splash)}"
+                            src="${this.embedPath(media)}"
                             title="Media Viewer" allowfullscreen frameborder="0"
                             allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share">
                         </iframe>
@@ -274,18 +283,31 @@ class PostManager {
      * Youtube.
      *
      * @static
-     * @param {Object} mediaType - Information about media type, source.
+     * @param {Object} media - Information about media object.
      * @param {Object} splash - MongoDB object containing splash information.
      * @returns {string} - Embed path for specified media, or empty string for error.
      */
-    static embedPath(media, splash) {
+    static embedPath(media) {
         try {
-            let mediaId = this.mediaIdExtractor(splash);
-            switch (media.sourceType) {
-                case 'youtube':
-                    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mediaId)}?start=0&autoplay=0&autohide=1`;
-                default: // Default to avoid problems.
-                    return '';
+            let mediaInfo = this.mediaIdExtractor(media);
+            if (media.mime === 'video'){
+                switch (media.page) {
+                    case 'youtube':
+                        return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mediaInfo.id)}?start=0&autoplay=0&autohide=1`;
+                    default: // Default to avoid problems.
+                        return '';
+                }
+            } else if (media.mime === 'image'){
+                switch (media.page){
+                    case 'reddit':
+                        return `https://i.redd.it/${mediaInfo.id}.${mediaInfo.format}`
+                    case 'imgflip':
+                        return `https://i.imgflip.com/${mediaInfo.id}.${mediaInfo.format}`;
+                    default:
+                        return '';
+                }
+            } else {
+                return '';
             }
         } catch (error) {
             ResponseManager.sendError('postManager.embedPath(), Embedding media source', error);
@@ -395,10 +417,11 @@ class PostManager {
             switch (true) {
                 case keyParam.includes('media-file') && value !== '':
                     let mediaFileMime = await this.mimeMediaAnalyzer(value);
+                    console.log(mediaFileMime);
                     content = true;
                     mediaFileExists = {
                         content: content,
-                        mime: `${mediaFileMime}`,
+                        mime: [mediaFileMime],
                         fileSource: value,
                         source: null
                     }
@@ -406,10 +429,11 @@ class PostManager {
                     break;
                 case keyParam.includes('media-link') && value !== '':
                     let mediaLinkMime = await this.mimeMediaAnalyzer(value);
+                    console.log(mediaLinkMime);
                     content = true;
                     mediaLinkExists = {
                         content: content,
-                        mime: `${mediaLinkMime}`,
+                        mime: [mediaLinkMime],
                         fileSource: null,
                         source: value
                     }
@@ -449,7 +473,7 @@ class PostManager {
         for (let i = 0; i < patterns.length; i++) {
             if (patterns[i].pattern.test(input.toLowerCase())) {
                 let mimeType = patterns[i].mimeType.split('/')
-                return mimeType[0];
+                return mimeType;
             }
         }
 
