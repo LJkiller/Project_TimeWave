@@ -99,9 +99,6 @@ class PostManager {
             }
             // User specific filtering.
             else if (pathSegments[0] === 'user' && isFilteringUsersContent) {
-                if (pathSegments[1] === 'N/A'){
-                    return true;
-                }
                 result = result.filter(splash => {
                     if (splash.author.toLowerCase() === pathSegments[1]) {
                         return true;
