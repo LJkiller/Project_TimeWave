@@ -12,6 +12,7 @@ import { handleSplash } from './routeHandlers/splashHandler.js';
 import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
 import { handleTOS } from './routeHandlers/tosHandler.js';
 import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
+import { handleStatusCode } from './routeHandlers/statusCodeHandler.js';
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -31,7 +32,7 @@ export async function handleRoute (db, url, pathSegments, request, response) {
         if (pathSegments.length === 0) {
             handleIndex(db, url, pathSegments, request, response);
         }
-        else {
+        else if (pathSegments.length <= 2) {
             // Handle other routes based on first segment of pathSegments.
             switch (pathSegments[0]) {
                 case 'create-post':
@@ -66,11 +67,11 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     handleUserRoute(db, url, pathSegments, request, response);
                     break;
                 default:
-                    console.log('You went beyond the boundary.');
-                    response.writeHead(302, { 'Location': '/home' });
-                    response.end();
+                    handleStatusCode(404, pathSegments, request, response);
                     return;
             }
+        } else {
+            handleStatusCode(404, pathSegments, request, response);
         }
     } catch (error) {
         ResponseManager.sendError('Handling route', error);

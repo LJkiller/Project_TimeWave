@@ -4,8 +4,7 @@ import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
  * Method responsible of handling the sign in page request. 
- * Logging the route, reading tides template, replacing placeholders with content, 
- * and sending web page response.
+ * Logging the route, reading tides template, and sending web page response.
  *
  * @async
  * @param {Db} db - MongoDB database object.
