@@ -58,7 +58,7 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     }
                     break;
                 default:
-                    console.log('You wengt beyond the boundary.');
+                    console.log('You went beyond the boundary.');
                     response.writeHead(302, { 'Location': '/home' });
                     response.end();
                     return;
