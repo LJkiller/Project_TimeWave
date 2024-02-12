@@ -270,7 +270,7 @@ class PostManager {
     static mediaInfoExtractor(media) {
         try {
             let mediaInfo = { id: 0, format: '', page: '' };
-            let urlPattern = /\b((?:https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/;
+            let urlPattern = /(https?:\/\/[^\s<>"'`]+)/g;
             let source;
             if (typeof media === 'object') {
                 source = media.source;

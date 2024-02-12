@@ -62,7 +62,7 @@ class Methods {
             ')': '&#41;'
         };
     
-        let urlPattern = /\b((?:https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/;
+        let urlPattern = /(https?:\/\/[^\s<>"'`]+)/g;
         let urls = [];
         let urlPlaceholder = '_DEEZ__URL_PLACEHOLDER__NUTS_';
     
