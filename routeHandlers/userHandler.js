@@ -34,9 +34,8 @@ export async function handleUser(db, url, pathSegments, request, response){
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
         ;  
 
-        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       
+        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
-
     } catch(error){
         ResponseManager.sendError('Reading file', error);
         ResponseManager.sendWebPageResponse(response);

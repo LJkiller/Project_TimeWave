@@ -65,29 +65,29 @@ class Methods {
             '(': '&#40;',
             ')': '&#41;'
         };
-    
+
         let urlPattern = /(https?:\/\/[^\s<>"'`]+)/g;
         let urls = [];
         let urlPlaceholder = '_DEEZ__URL_PLACEHOLDER__NUTS_';
-    
+
         // Replacing with urlPlaceholder
         input = input.replace(urlPattern, (url) => {
             urls.push(url);
             return urlPlaceholder;
         });
-    
+
         // Replacing dangerous characters.
         for (let i = 0; i < input.length; i++) {
             let match = input[i];
             input = input.replace(match, sanitizeCharacters[match] || match);
         }
-    
+
         for (let i = 0; i < urls.length; i++) {
             input = input.replace(urlPlaceholder, `<a href="${urls[i]}" target="_blank">${urls[i]}</a>`);
         }
         return input;
     }
-    
+
     /**
      * Method responsible of formating the date from a MongoDB object into
      * a standardized string format.
@@ -182,23 +182,6 @@ class Methods {
         let date = { year, month, day, hour, minute, second };
         return date;
     }
-
-    static async locationRedirection(db, pathSegments) {
-        let tidesComparison = await db.collection('tides').find().toArray();
-        let usersComparison = await db.collection('accounts').find().toArray();
-        let tidesArray = (await TidesManager.getAvailableTides(tidesComparison));
-        let usersArray = (await UserManager.getAvailableUsers(usersComparison));
-    
-        let availableEndpoints = ['create-post', 'home', 'index', 'tides', 'user'];
-    
-        if (!tidesArray.includes(pathSegments[1]) 
-            && !usersArray.includes(pathSegments[1])
-            && !availableEndpoints.includes(pathSegments[0])) {
-            return false;
-        }
-        return true;
-    }
-    
 
 }
 export default Methods;

@@ -22,6 +22,7 @@ export async function handleTOS(db, url, pathSegments, request, response){
 
     try{
         let template = (await fs.readFile('templates/tos.sawcon')).toString();
+        
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
     } catch (error) {
