@@ -1,9 +1,9 @@
+
 :root {
     --main-content-height: 90vh;
     --main-content-width: 30%;
     --main-content-margin-top: calc((100vh - var(--main-content-height))/2);
 }
-
 
 body {
     text-align: center;

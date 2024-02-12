@@ -1,0 +1,15 @@
+
+body main section#main-content form{
+    margin-top: 10rem;
+    color: var(--brighter-text-color);
+}
+body main section#main-content form label,
+body main section#main-content form input,
+body main section#main-content form button{
+    font-size: var(--large-font-size);
+}
+
+main section#main-content nav.user-handling a:first-child{
+    margin-top: 5rem;
+    margin-bottom: 0;
+}

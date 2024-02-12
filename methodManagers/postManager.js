@@ -82,6 +82,7 @@ class PostManager {
      */
     static getSplashHTML(splash, singular = false) {
         try {
+            // True first, then false.
             let author = (splash.author === undefined || splash.author === null)
                 ? `<p class="content special-case">Error getting author.</p>`
                 : `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
@@ -293,10 +294,13 @@ class PostManager {
             if (typeof media === 'object') {
                 source = media.source;
             } else if (typeof media === 'string') {
-                if (media.split(' ') && (media.match(urlPattern) === null) || media.match(urlPattern) === false) {
+                if (media.split(' ') 
+                    && (media.match(urlPattern) === null) || media.match(urlPattern) === false) {
                     return mediaInfo;
                 }
                 source = media;
+            } else if (media.page === null && media.source === null){
+                return mediaInfo;
             }
 
             let patternsForInfo = [
