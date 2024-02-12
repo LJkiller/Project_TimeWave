@@ -16,7 +16,7 @@
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
     <script defer src="/public/JavaScript/openProfileOptions.js"></script>
-    <script defer src="/public/JavaScript/checkboxLimiter.js"></script>
+    <script defer src="/public/JavaScript/checkboxManagement.js"></script>
     <script defer src="/public/JavaScript/inputLimiter.js"></script>
 </head>
 
