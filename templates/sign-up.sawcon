@@ -20,7 +20,7 @@
     <main>
         <section id="main-content">
             <h1><a href="/index"><i class="fa-solid fa-hourglass"></i> <span>TimeWave</span></i></a></h1>
-            <form action="/sign-in" method="post">
+            <form action="/sign-up" method="post">
                 <label for="username">Your Username:</label>
                 <br>
                 <input type="text" name="username" id="username" placeholder="Username*" required>

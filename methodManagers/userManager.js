@@ -1,6 +1,11 @@
 
 import Methods from './methods.js';
 import ResponseManager from './responseManager.js';
+import 'dotenv/config';
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import cookie from 'cookie';
+
 
 /**
  * Class responsible of managing tides generation by communicating
@@ -13,6 +18,8 @@ import ResponseManager from './responseManager.js';
  * @class UserManager
  */
 class UserManager {
+
+    // #region Generation
 
     /**
      * Method responsible of generating links from MongoDB in an HTML format.
@@ -51,12 +58,12 @@ class UserManager {
         try {
             let users = '';
             let user = Methods.capitalizeFirstLetter(userObject);
-            if (isOption === false){
+            if (isOption === false) {
                 users += `<a class="user" href="/user/${user.toLowerCase()}">${user}</a>`;
-            } else{
+            } else {
                 users += `<option value="${user.toLowerCase()}">${user}</option>`;
             }
-            return users;            
+            return users;
         } catch (error) {
             ResponseManager.sendError('userManager.generateAvailableUsersHTML(), Generating user HTML', error);
         }
@@ -91,11 +98,11 @@ class UserManager {
      * @returns 
      */
     static async generateJoinDate(db, pathSegments) {
-        try{
+        try {
             let user = await db.collection('accounts').find({ "username": pathSegments[1] }).toArray();
             let joinDate = Methods.formatDate(user, false);
             return joinDate[0];
-        } catch(error){
+        } catch (error) {
             ResponseManager.sendError('userManager.generateJoinDate(), Finding user MongoDB', error);
         }
     }
@@ -130,6 +137,118 @@ class UserManager {
         }
 
     }
+
+    // #endregion
+
+    // #region
+
+    /**
+     * Method responsible of creating or logging users in comparing MongoDB with params.
+     * 
+     * @static
+     * @async
+     * @param {Db} db - MongoDB database object.
+     * @param {string} INUP - In or up, that is cum question.
+     * @param {http.IncomingMessage} request - HTTP request.
+     * @param {http.ServerResponse} response - HTTP response.
+     * @returns Noting.
+     */
+    static async signINUP(db, INUP, request, response) {
+        try {
+            let data = await Methods.getBody(request);
+            let params = new URLSearchParams(data);
+            let accountConnection = await db.collection('accounts');
+
+            let userObject = await this.getUserObject(params);
+            console.log(userObject);
+            let username = userObject.username;
+
+            try {
+                let existingUser = await accountConnection.findOne({ username });
+                console.log(existingUser);
+
+                INUP = 'e';
+                if (INUP === 'sign-in'){
+                    if (!existingUser){
+
+                    }
+                    // Do something here
+                } else if (INUP === 'sign-up'){
+                    if (!existingUser){
+                        await accountConnection.insertOne(userObject);
+                    }
+                    // Do something here
+                } else{
+                    console.log('It is done');
+                }
+            } catch (error) {
+                ResponseManager.sendError('userManager.signINUP(), MongoDB connection', error);
+            }
+            // User redirection to login or home.
+            // response.writeHead(302, { 'Location': `/splash?post=${post.splashId}` });
+            // response.end();
+            return;
+        } catch (error) {
+            ResponseManager.sendWebPageResponse(response);
+            ResponseManager.sendError('postManager.signINUP(), Object', error);
+        }
+    }
+
+    /**
+     * Method responsible of constructing userObject.
+     * 
+     * @static
+     * @async
+     * @param {URLSearchParams} params - Parameter to construct user object.
+     * @returns {Object} - Constructed user object.
+     */
+    static async getUserObject(params){
+        try {
+            let userObject = {};
+            let userInfo = this.userQueryStringExtractor(params);
+            let username = userInfo.username;
+            let password = userInfo.password;
+
+            let snortingRounds = parseInt(process.env.HASHING_ROUNDS);
+            let hashedPassword = await bcrypt.hash(password, snortingRounds);
+            let userJoinDate = Methods.getCurrentUTCDate();
+            let uuid = crypto.randomUUID();
+
+            userObject = {
+                "username": username,
+                "password": hashedPassword,
+                joinDate : userJoinDate,
+                "userUuid": uuid
+            };
+            return userObject;
+        } catch (error) {
+            ResponseManager.sendError('userManager.getUserObject(), Constructing user object', error);
+        }
+    }
+
+    /**
+     * Method responsible of etracting information of user queryStrings.
+     * 
+     * @static
+     * @param {URLSearchParams} params - Parameters to analyze.
+     * @returns {Object} - Information containing extracted value for username and password.
+     */
+    static userQueryStringExtractor(params){
+        let usernameValue;
+        let passwordValue;
+        for (let [key, value] of params) {
+            if (key === 'username') {
+                usernameValue = value.toLowerCase();
+            } else if (key === 'password') {
+                passwordValue = value;
+            } else {
+                return {};
+            }
+        }
+        return { username: usernameValue, password: passwordValue };
+    }
+
+    // #endregion
 
 }
 export default UserManager;

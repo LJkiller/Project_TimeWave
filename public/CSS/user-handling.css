@@ -9,7 +9,10 @@ body main section#main-content form button{
     font-size: var(--large-font-size);
 }
 
+main section#main-content nav.user-handling{
+    height: calc(var(--main-content-height) - (5rem + 10rem + 20rem)); 
+}
 main section#main-content nav.user-handling a:first-child{
-    margin-top: 5rem;
+    margin-top: 10rem;
     margin-bottom: 0;
 }

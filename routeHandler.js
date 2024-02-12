@@ -1,6 +1,7 @@
 
 import ResponseManager from './methodManagers/responseManager.js';
 import PostManager from './methodManagers/postManager.js';
+import UserManager from './methodManagers/userManager.js';
 
 // Handlers
 import { handleHome } from './routeHandlers/homeHandler.js';
@@ -49,10 +50,20 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     handleIndex(db, url, pathSegments, request, response);
                     break;
                 case 'sign-in':
-                    handleSignIn(db, url, pathSegments, request, response);
+                    if (request.method === 'GET'){
+                        handleSignIn(db, url, pathSegments, request, response);
+                    } else if (request.method === 'POST'){
+                        UserManager.signINUP(db, 'sign-in', request, response);
+                        console.log('cock');
+                    }
                     break;
                 case 'sign-up':
-                    handleSignUp(db, url, pathSegments, request, response);
+                    if (request.method === 'GET'){
+                        handleSignUp(db, url, pathSegments, request, response);
+                    } else if (request.method === 'POST'){
+                        UserManager.signINUP(db, 'sign-up', request, response);
+                        console.log('and balls');
+                    }
                     break;
                 case 'splash':
                     handleSplash(db, url, pathSegments, request, response);

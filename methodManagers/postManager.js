@@ -100,11 +100,13 @@ class PostManager {
                     : Methods.XSSProtectionHandler(splash.splashContent)
                 }</p>`;
                 
-            let media = (this.generateMediaHTML(splash) === undefined || this.generateMediaHTML(splash) === null)
-                ? `<p class="content special-case">Error getting media (image or video)</p>`
-                : this.generateMediaHTML(splash);
-
-
+            let media = this.generateMediaHTML(splash);
+            if (media === undefined){
+                media = `<p class="content special-case">Error getting media (image or video)</p>`
+            } else if (splash.media.source === null){
+                media = ``;
+            }
+                
             let ifSingular = singular ? 'singular' : '';
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
             let post = `
@@ -151,7 +153,7 @@ class PostManager {
      */
     static generateMediaHTML(splash) {
         let media = splash.media;
-        if (media.mime === 'text' && (media.content === false || media.page === '')) {
+        if (media.mime === 'none' && (media.content === false || media.page === '')) {
             return '';
         }
         try {
@@ -421,7 +423,7 @@ class PostManager {
      * @static
      * @async
      * @param {Db} db - MongoDB database object.
-     * @param {*} params - Parameters to construct the object.
+     * @param {URLSearchParams} params - Parameters to construct the object.
      * @returns {Object} - Post object.
      */
     static async getPostObject(db, params) {
@@ -436,28 +438,7 @@ class PostManager {
                 }
             }
             let mediaResult = await this.mediaAnalyzer(params);
-
-            // Logic for getting available id.
-            let id = 0;
-            {
-                let postId = (parseInt(params.get('post'))) - (parseInt(params.get('post')) / 3);
-                let idArray = [
-                    await this.getActualSplashId(db, parseInt(postId), 'forward'),
-                    await this.getActualSplashId(db, parseInt(postId), 'backward')
-                ];
-                let forwardId = idArray[0][0];
-                let forwardIterations = idArray[0][1];
-                let backwardId = idArray[1][0];
-                let backwardIterations = idArray[1][1];
-
-                if (forwardIterations > backwardIterations) {
-                    id = backwardId;
-                } else if (forwardIterations < backwardIterations) {
-                    id = forwardId;
-                } else {
-                    id = backwardId;
-                }
-            }
+            let id = await this.idExtraction(db, params);
 
             let post = {
                 author: params.get('author'),
@@ -478,13 +459,13 @@ class PostManager {
      * 
      * @static
      * @async
-     * @param {*} params - Parameters to construct the object.
+     * @param {URLSearchParams} params - Parameters to construct the object.
      * @returns {Object} - Media object.
      */
     static async mediaAnalyzer(params) {
         try {
             let media = {
-                content: 'none',
+                content: false,
                 mime: 'none',
                 fileSource: null,
                 source: null,
@@ -566,6 +547,39 @@ class PostManager {
             return 'text';
         } catch (error) {
             ResponseManager.sendError('postManager.mimeMediaAnalyzer, Analyzing', error);
+        }
+    }
+
+    /**
+     * Method responsible of extracting and getting best suited post id.
+     * 
+     * @param {Db} db - MongoDB database object.
+     * @param {URLSearchParams} params - Parameter to analyze and extract partial information.
+     * @returns {number} - Id of best suited post.
+     */
+    static async idExtraction(db, params){
+        try {
+            let id = 0;
+            let postId = (parseInt(params.get('post'))) - (parseInt(params.get('post')) / 3);
+            let idArray = [
+                await this.getActualSplashId(db, parseInt(postId), 'forward'),
+                await this.getActualSplashId(db, parseInt(postId), 'backward')
+            ];
+            let forwardId = idArray[0][0];
+            let forwardIterations = idArray[0][1];
+            let backwardId = idArray[1][0];
+            let backwardIterations = idArray[1][1];
+    
+            if (forwardIterations > backwardIterations) {
+                id = backwardId;
+            } else if (forwardIterations < backwardIterations) {
+                id = forwardId;
+            } else {
+                id = backwardId;
+            }
+            return id;
+        } catch (error) {
+            ResponseManager.sendError('postManager.idExtraction(), Id extraction', error);
         }
     }
 
