@@ -82,11 +82,27 @@ class PostManager {
      */
     static getSplashHTML(splash, singular = false) {
         try {
-            let author = `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
-            let subjects = `<div class="subject-container">${this.generatePostSubjectHTML(splash.splashSubject)}<span>Tide</span></div>`;
-            let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
-            let content = `<p class="content">${Methods.XSSProtectionHandler(splash.splashContent)}</p>`;
-            let media = this.generateMediaHTML(splash);
+            let author = (splash.author === undefined || splash.author === null)
+                ? `<p class="content special-case">Error getting author.</p>`
+                : `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
+                
+            let subjects = (splash.splashSubject === undefined || splash.splashSubject === null)
+                ? `<div class="subject-container special-case">Error getting tides.<span>Tide</span></div>`
+                : `<div class="subject-container">${this.generatePostSubjectHTML(splash.splashSubject)}<span>Tide</span></div>`;
+
+            let date = `<span class="date">Made a splash: 
+                ${(splash.date === undefined || splash.date === null) 
+                    ? "Error getting date." : Methods.formatDate(splash.date)}</span>`;
+
+            let content = `<p class="content">${(splash.splashContent === undefined || splash.splashContent === null)
+                    ? "Error loading content."
+                    : Methods.XSSProtectionHandler(splash.splashContent)
+                }</p>`;
+                
+            let media = (this.generateMediaHTML(splash) === undefined || this.generateMediaHTML(splash) === null)
+                ? `<p class="content special-case">Error getting media (image or video)</p>`
+                : this.generateMediaHTML(splash);
+
 
             let ifSingular = singular ? 'singular' : '';
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
@@ -277,7 +293,7 @@ class PostManager {
             if (typeof media === 'object') {
                 source = media.source;
             } else if (typeof media === 'string') {
-                if (media.split(' ') && (media.match(urlPattern) === null) || media.match(urlPattern) === false){
+                if (media.split(' ') && (media.match(urlPattern) === null) || media.match(urlPattern) === false) {
                     return mediaInfo;
                 }
                 source = media;
@@ -329,7 +345,7 @@ class PostManager {
                     ]
                 }
             ];
-            
+
 
             for (let i = 0; i < patternsForInfo.length; i++) {
                 let patternInfo = patternsForInfo[i];
@@ -353,7 +369,7 @@ class PostManager {
                 }
             }
             return mediaInfo; // If no match is found
-            
+
         } catch (error) {
             ResponseManager.sendError('postManager.mediaInfoExtractor, Analyzing media', error);
             return 0;
@@ -429,7 +445,7 @@ class PostManager {
                 let forwardIterations = idArray[0][1];
                 let backwardId = idArray[1][0];
                 let backwardIterations = idArray[1][1];
-    
+
                 if (forwardIterations > backwardIterations) {
                     id = backwardId;
                 } else if (forwardIterations < backwardIterations) {
@@ -527,7 +543,7 @@ class PostManager {
                 { pattern: /\.mp4$/, mimeType: 'video/mp4' },
                 { pattern: /\.webm$/, mimeType: 'video/webm' }
             ];
-    
+
             let analyzeInput = this.mediaInfoExtractor(input);
             switch (analyzeInput.format) {
                 case 'gif':

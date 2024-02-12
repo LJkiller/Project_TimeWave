@@ -101,3 +101,8 @@ main section#main-content section.main-part .post.singular p.content{
     margin: 1rem 0 1rem var(--content-margin-left);
     font-size: var(--large-font-size);
 }
+
+main section#main-content section.main-part .post .special-case{
+    font-weight: bold;
+    text-shadow: var(--standard-text-shadow);
+}
