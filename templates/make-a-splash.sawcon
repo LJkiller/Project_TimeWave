@@ -58,7 +58,7 @@
                     <label for="author">Author</label>
                     <input type="hidden" name="post" value="DEEZ%latestId%NUTS">
                     <select name="author" id="author" required>
-                        <option value="N/A" disabled selected>Select yourself</option>
+                        <option value="" disabled selected>Select yourself</option>
                         DEEZ%authorListOptions%NUTS
                     </select>
                     <br>
@@ -79,6 +79,7 @@
                     <br>
                     <label for="media-link">Link a media (text):</label>
                     <br>
+                    <label for="media-link">For a better overview: try youtube video links or tiktok videos.</label>
                     <input type="text" name="media-link" class="media">
                     <br>
                     <br>

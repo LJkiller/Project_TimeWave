@@ -85,7 +85,7 @@ class PostManager {
             let author = `<a class="author" href="/user/${splash.author.toLowerCase()}">@${Methods.capitalizeFirstLetter(splash.author)}</a>`;
             let subjects = `<div class="subject-container">${this.generatePostSubjectHTML(splash.splashSubject)}<span>Tide</span></div>`;
             let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
-            let content = `<p class="content">${this.checkForLinkedContent(splash.splashContent)}</p>`;
+            let content = `<p class="content">${Methods.XSSProtectionHandler(splash.splashContent)}</p>`;
 
             let ifSingular = singular ? 'singular' : '';
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
@@ -206,23 +206,6 @@ class PostManager {
     }
 
     /**
-     * Method responsible for checking splash content for links and
-     * act accordingly.
-     * 
-     * @static
-     * @param {string} content - String of the MongoDB object splash.splashContent.
-     * @returns {string} - Updated content with encapsulated links.
-     */
-    static checkForLinkedContent(content) {
-        let urlPattern = /(https?:\/\/[^\s]+)/g;
-
-        let contentLink = content.replace(urlPattern, (url) => {
-            return `<a href="${url}" target="_blank">${url}</a>`;
-        });
-        return contentLink;
-    }
-
-    /**
      * Method responsible of creating embed path for media, videos.
      * Supports embedding videos of:
      * Youtube.
@@ -234,6 +217,10 @@ class PostManager {
     static embedPath(media) {
         try {
             let mediaInfo = this.mediaInfoExtractor(media);
+            if (mediaInfo.id.length > 30 && mediaInfo.page === 'reddit') {
+                let newId = mediaInfo.id.split('%');
+                mediaInfo.id = newId[4];
+            }
             if (media.mime === 'video') {
                 switch (media.page) {
                     case 'youtube':
@@ -283,14 +270,13 @@ class PostManager {
     static mediaInfoExtractor(media) {
         try {
             let source;
-            if (typeof media === 'object') { 
+            if (typeof media === 'object') {
                 source = media.source;
             } else if (typeof media === 'string') {
                 source = media;
             }
-            
+
             let mediaInfo = { id: 0, format: '', page: '' };
-    
             let patternsForInfo = [
                 {
                     page: 'youtube',
@@ -304,13 +290,17 @@ class PostManager {
                     page: 'reddit',
                     regex: [
                         /(?:https?:\/\/(?:www\.)?reddit\.com\/(?:media\?url=)?|https?:\/\/(?:preview\.)?redd\.it\/)([^\/?&]+)\.([a-zA-Z0-9]+)/,
-                        /https:\/\/i\.redd\.it\/(\w+)\.([a-zA-Z0-9]+)/
+                        /https:\/\/i\.redd\.it\/(\w+)\.([a-zA-Z0-9]+)/,
+                        /https:\/\/www\.reddit\.com\/media\?url=https%3A%2F%2F(?:i\.redd\.it|preview\.redd\.it)%2F[^%]+%2F([^%]+)\.jpeg%3F/
                     ]
                 },
                 {
                     page: 'imgflip',
                     regex: [
-                        /https:\/\/i\.imgflip\.com\/(\w+)\.([a-zA-Z0-9]+)/
+                        /https:\/\/i\.imgflip\.com\/(\w+)\.(jpg|png|gif|jpeg)/,
+                        /https:\/\/i\.imgflip\.com\/(\w+)\)/,
+                        /https:\/\/imgflip\.com\/i\/(\w+)/,
+                        /https:\/\/imgflip\.com\/i\/([a-zA-Z0-9]+)/
                     ]
                 },
                 {
@@ -339,7 +329,7 @@ class PostManager {
                     ]
                 }
             ];
-            
+
             for (let i = 0; i < patternsForInfo.length; i++) {
                 for (let j = 0; j < patternsForInfo[i].regex.length; j++) {
                     if (source === null) {
@@ -348,8 +338,18 @@ class PostManager {
                         let match = source.match(patternsForInfo[i].regex[j]);
                         if (match && match[1]) {
                             mediaInfo.id = match[1];
-                            mediaInfo.format = match[2];
                             mediaInfo.page = patternsForInfo[i].page;
+                            switch (mediaInfo.page) {
+                                case 'imgflip':
+                                    mediaInfo.format = 'jpg';
+                                    break;
+                                case 'reddit':
+                                    mediaInfo.format = 'jpg';
+                                    break;
+                                default:
+                                    mediaInfo.format = match[2];
+                                    break;
+                            }
                             return mediaInfo;
                         }
                     }
@@ -360,9 +360,9 @@ class PostManager {
             return 0;
         }
     }
-    
+
     // #endregion
-    
+
     // #region Posting
 
     /**
@@ -409,7 +409,7 @@ class PostManager {
         try {
             let tidesResult = await db.collection('tides').find().toArray();
             let tidesArray = await TidesManager.getAvailableTides(tidesResult);
-    
+
             let splashSubjects = [];
             for (let [keyParam, value] of params) {
                 if (tidesArray.includes(keyParam)) {
@@ -417,13 +417,32 @@ class PostManager {
                 }
             }
             let mediaResult = await this.mediaAnalyzer(params);
-    
+
+            let id = 0;
+            let postId = (parseInt(params.get('post'))) - (parseInt(params.get('post')) / 3);
+            let idArray = [
+                await this.getActualSplashId(db, parseInt(postId), 'forward'),
+                await this.getActualSplashId(db, parseInt(postId), 'backward')
+            ];
+            let forwardId = idArray[0][0];
+            let forwardIterations = idArray[0][1];
+            let backwardId = idArray[1][0];
+            let backwardIterations = idArray[1][1];
+
+            if (forwardIterations > backwardIterations) {
+                id = backwardId;
+            } else if (forwardIterations < backwardIterations) {
+                id = forwardId;
+            } else {
+                id = backwardId;
+            }
+
             let post = {
                 author: params.get('author'),
                 splashDate: Methods.getCurrentUTCDate(),
                 splashContent: params.get('content'),
                 splashSubject: splashSubjects,
-                splashId: (await this.getActualSplashId(db, parseInt(params.get('post')))),
+                splashId: id,
                 media: mediaResult
             }
             return post;
@@ -450,10 +469,9 @@ class PostManager {
                 page: 'none'
             }
             let mediaExists = {};
-
             for (let [keyParam, value] of params) {
                 let content = false;
-    
+
                 if (keyParam.includes('media-file') && value !== '') {
                     let mediaFileMime = await this.mimeMediaAnalyzer(value);
                     content = true;
@@ -463,7 +481,7 @@ class PostManager {
                         fileSource: value,
                         source: null,
                         page: 'none'
-                    }                
+                    }
                 } else if (keyParam.includes('media-link') && value !== '') {
                     let mediaLinkMime = await this.mimeMediaAnalyzer(value);
                     let mediaInfo = this.mediaInfoExtractor(value);
@@ -508,8 +526,14 @@ class PostManager {
         ];
 
         let analyzeInput = this.mediaInfoExtractor(input);
-        if (typeof analyzeInput === 'object') {
-            return 'video';
+        switch (analyzeInput.page) {
+            case 'imgflip':
+            case 'reddit':
+                return 'image';
+            case 'youtube':
+                return 'video';
+            default:
+                break;
         }
         for (let i = 0; i < patterns.length; i++) {
             if (patterns[i].pattern.test(input.toLowerCase())) {
@@ -518,7 +542,7 @@ class PostManager {
             }
         }
 
-        return 'text/plain';
+        return 'text';
     }
 
     /**
@@ -543,22 +567,29 @@ class PostManager {
     }
 
     /**
-     * Method responsible of actually getting latest id to avoid multiple of same id.
-     * Working recursively.
+     * Method responsible for actually getting the latest or earliest id to avoid multiple of the same id.
+     * Works recursively.
      * 
      * @static
      * @async
      * @param {Db} db - MongoDB database object. 
      * @param {Number} splashId - Splash id, to be handled and set a proper value.
-     * @returns {Number} - The actual available id.
+     * @param {String} direction - Direction of search ('forward' or 'backward').
+     * @returns {Array} - The actual available id and number of iterations.
      */
-    static async getActualSplashId(db, splashId) {
+    static async getActualSplashId(db, splashId, direction, iteration = 0) {
         if (await db.collection('splashes').findOne({ "splashId": splashId })) {
-            return this.getActualSplashId(db, splashId + 1);
+            iteration++;
+            if (direction === 'forward') {
+                return this.getActualSplashId(db, splashId + 1, direction, iteration);
+            } else if (direction === 'backward') {
+                return this.getActualSplashId(db, splashId - 1, direction, iteration);
+            }
         } else {
-            return splashId;
+            return [splashId, iteration];
         }
     }
+
 
     // #endregion
 
