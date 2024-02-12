@@ -25,6 +25,7 @@ export async function handleHome(db, url, pathSegments, request, response){
     try{
         let template = (await fs.readFile('templates/home.sawcon')).toString();
         let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
+        let leftBottomHTML = (await fs.readFile('templates/htmlTemplates/bottom-left-aside.sawcon')).toString();
         let result = await db.collection('splashes').find().toArray();
         let posts = await PostManager.generateSplashes(result, db, pathSegments, url);
     
@@ -32,6 +33,7 @@ export async function handleHome(db, url, pathSegments, request, response){
             .replaceAll('DEEZ%splashes%NUTS', posts)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+            .replaceAll('DEEZ%bottomLeftAside%NUTS', leftBottomHTML)
         ;
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);

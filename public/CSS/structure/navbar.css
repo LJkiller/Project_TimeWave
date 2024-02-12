@@ -142,10 +142,10 @@ main aside#aside-left #account-dropdown a {
     display: block;
     color: var(--text-link-color);
 }
-main aside#aside-left #account-dropdown:hover {
+main aside#aside-left #account-dropdown a:hover {
     background-color: var(--text-link-color);
 }
-main aside#aside-left #account-dropdown:hover a {
+main aside#aside-left #account-dropdown a:hover {
     text-shadow: var(--standard-text-shadow);
     color: var(--text-link-highlight-color);
 }

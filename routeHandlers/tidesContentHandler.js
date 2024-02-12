@@ -28,6 +28,7 @@ export async function handleTidesContent(db, url, pathSegments, request, respons
     try{
         let template = (await fs.readFile('templates/tides-content.sawcon')).toString();
         let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
+        let leftBottomHTML = (await fs.readFile('templates/htmlTemplates/bottom-left-aside.sawcon')).toString();
         let result = await db.collection('splashes').find().toArray();
         let posts = await PostManager.generateSplashes(result, db, pathSegments);
         
@@ -36,6 +37,7 @@ export async function handleTidesContent(db, url, pathSegments, request, respons
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%tideType%NUTS', contentBody)
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+            .replaceAll('DEEZ%bottomLeftAside%NUTS', leftBottomHTML)
         ;
 
         

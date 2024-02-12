@@ -25,6 +25,7 @@ export async function handleTides(db, url, pathSegments, request, response){
     try{
         let template = (await fs.readFile('templates/tides.sawcon')).toString();
         let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
+        let leftBottomHTML = (await fs.readFile('templates/htmlTemplates/bottom-left-aside.sawcon')).toString();
         let result = await db.collection('tides').find().toArray();
         let tides = TidesManager.generateTides(result);
         
@@ -32,6 +33,7 @@ export async function handleTides(db, url, pathSegments, request, response){
             .replaceAll('DEEZ%tides%NUTS', tides)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+            .replaceAll('DEEZ%bottomLeftAside%NUTS', leftBottomHTML)
         ;  
 
         

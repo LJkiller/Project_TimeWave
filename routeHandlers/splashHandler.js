@@ -26,14 +26,16 @@ export async function handleSplash(db, url, pathSegments, request, response){
         let template = (await fs.readFile('templates/splash.sawcon')).toString();
         let splashId = parseInt(url.searchParams.get('post'));
         let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
+        let leftBottomHTML = (await fs.readFile('templates/htmlTemplates/bottom-left-aside.sawcon')).toString();
         let result = await db.collection('splashes').findOne({ "splashId": splashId });
         let post = await PostManager.generateSplashes(result, db, pathSegments, url, true);
-    
+        
         template = template
             .replaceAll('DEEZ%specificSplash%NUTS', post)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%splashId%NUTS', `Splash-${splashId}`)
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+            .replaceAll('DEEZ%bottomLeftAside%NUTS', leftBottomHTML)
         ;
     
         

@@ -26,6 +26,7 @@ export async function handleMakeASplash(db, url, pathSegments, request, response
     try {
         let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();
         let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
+        let leftBottomHTML = (await fs.readFile('templates/htmlTemplates/bottom-left-aside.sawcon')).toString();
         let tidesResult = await db.collection('tides').find().toArray();
         let userResult = await db.collection('accounts').find().toArray();
         let latestSplash = await PostManager.getLatestSplash(db);
@@ -42,6 +43,7 @@ export async function handleMakeASplash(db, url, pathSegments, request, response
             .replaceAll('DEEZ%authorListOptions%NUTS', userOption)
             .replaceAll('DEEZ%subjectLists%NUTS', checklist)
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+            .replaceAll('DEEZ%bottomLeftAside%NUTS', leftBottomHTML)
         ;
         
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);

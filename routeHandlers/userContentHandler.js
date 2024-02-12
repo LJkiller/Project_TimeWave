@@ -27,6 +27,7 @@ export async function handleUserContent(db, url, pathSegments, request, response
     try{
         let template = (await fs.readFile('templates/user-content.sawcon')).toString();
         let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
+        let leftBottomHTML = (await fs.readFile('templates/htmlTemplates/bottom-left-aside.sawcon')).toString();
         let postResult = await db.collection('splashes').find().toArray();
         let posts = await PostManager.generateSplashes(postResult, db, pathSegments);
         let joinDate = await UserManager.generateJoinDate(db, pathSegments);
@@ -36,6 +37,7 @@ export async function handleUserContent(db, url, pathSegments, request, response
             .replaceAll('DEEZ%joinDate%NUTS', joinDate)
             .replaceAll('DEEZ%username%NUTS', user)
             .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+            .replaceAll('DEEZ%bottomLeftAside%NUTS', leftBottomHTML)
         ;
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);

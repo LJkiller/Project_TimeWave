@@ -32,14 +32,7 @@
                 </ul>
             </nav>
 
-            <a id="account-toggler" onclick="toggleDropdown()">
-                <img id="nav-profile-picture" src="/public/assets/images/defaultProfile.png"
-                    alt="Image of the user's profile picture">
-                <span id="nav-username">DEEZ%loggedInUser%NUTS</span>
-            </a>
-            <div id="account-dropdown">
-                <a href="/sign-out">Sign Out <i class="fa-solid fa-right-from-bracket"></i></a>
-            </div>
+            DEEZ%bottomLeftAside%NUTS
         </aside>
 
         <h2 class="page-display">Users</h2>
