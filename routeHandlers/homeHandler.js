@@ -23,16 +23,23 @@ export async function handleHome(db, url, pathSegments, request, response){
     let contentHead = Methods.pageReflection(route);
 
     try{
-        let template = (await fs.readFile('templates/home.sawcon')).toString();    
+        let template = (await fs.readFile('templates/home.sawcon')).toString();
+        let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
         let result = await db.collection('splashes').find().toArray();
         let posts = await PostManager.generateSplashes(result, db, pathSegments, url);
     
         template = template
             .replaceAll('DEEZ%splashes%NUTS', posts)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
+            .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
         ;
 
-        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        if (Methods.locationRedirection(db, pathSegments) === true){
+            response.writeHead(302, { 'Location': '/home' });
+            response.end();
+        } else {
+            ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        }
         return;
     } catch(error){
         ResponseManager.sendError('Reading file', error);

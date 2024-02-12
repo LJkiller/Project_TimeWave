@@ -24,12 +24,14 @@ export async function handleUser(db, url, pathSegments, request, response){
        
     try{
         let template = (await fs.readFile('templates/user.sawcon')).toString();
+        let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
         let result = await db.collection('accounts').find().toArray();
         let users = UserManager.generateUsers(result);
-    
+        
         template = template
             .replaceAll('DEEZ%users%NUTS', users)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
+            .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
         ;  
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       

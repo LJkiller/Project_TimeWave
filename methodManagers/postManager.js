@@ -86,6 +86,7 @@ class PostManager {
             let subjects = `<div class="subject-container">${this.generatePostSubjectHTML(splash.splashSubject)}<span>Tide</span></div>`;
             let date = `<span class="date">Made a splash: ${Methods.formatDate(splash)}</span>`;
             let content = `<p class="content">${Methods.XSSProtectionHandler(splash.splashContent)}</p>`;
+            let media = this.generateMediaHTML(splash);
 
             let ifSingular = singular ? 'singular' : '';
             let splashId = !singular ? `<a class="id-display" href="/splash?post=${splash.splashId}">SplashID-${splash.splashId}</a>` : '';
@@ -98,7 +99,7 @@ class PostManager {
                     ${splashId}
                     ${date}
                     ${content}
-                    ${this.generateMediaHTML(splash)}
+                    ${media}
                 </article>
             `;
             return post;
@@ -132,11 +133,11 @@ class PostManager {
      * @returns {string} - HTML structure: media container, or empty string for error.
      */
     static generateMediaHTML(splash) {
-        if (splash.media.content !== true) {
+        let media = splash.media;
+        if (media.mime === 'text' && (media.content === false || media.page === '')) {
             return '';
         }
         try {
-            let media = splash.media;
             let mediaInfo = this.mediaInfoExtractor(media);
             if (media.mime === 'image') {
                 return `
@@ -217,18 +218,21 @@ class PostManager {
     static embedPath(media) {
         try {
             let mediaInfo = this.mediaInfoExtractor(media);
-            if (mediaInfo.id.length > 30 && mediaInfo.page === 'reddit') {
-                let newId = mediaInfo.id.split('%');
-                mediaInfo.id = newId[4];
+            if (media.mime !== 'video' && media.mime !== 'image') {
+                return '';
+            }
+
+            // Usual for image and video.
+            switch (media.page) {
+                case 'instagram':
+                    return `https://www.instagram.com/p/${mediaInfo.id}/embed/`;
+                case 'twitter':
+                    return `https://twitter.com/i/status/${mediaInfo.id}`;
             }
             if (media.mime === 'video') {
                 switch (media.page) {
                     case 'youtube':
                         return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(mediaInfo.id)}?start=0&autoplay=0&autohide=1`;
-                    case 'instagram':
-                        return `https://www.instagram.com/p/${mediaInfo.id}/embed/`;
-                    case 'twitter':
-                        return `https://twitter.com/i/status/${mediaInfo.id}`;
                     case 'facebook':
                         return `https://www.facebook.com/video/embed?video_id=${mediaInfo.id}`;
                     case 'tiktok':
@@ -236,26 +240,24 @@ class PostManager {
                     default: // Default to avoid problems.
                         return '';
                 }
-            } else if (media.mime === 'image') {
+            }
+            if (media.mime === 'image') {
                 switch (media.page) {
                     case 'reddit':
                         return `https://i.redd.it/${mediaInfo.id}.${mediaInfo.format}`;
                     case 'imgflip':
+                        if (mediaInfo.format === 'gif') {
+                            return `https://imgflip.com/embed/${mediaInfo.id}`;
+                        }
                         return `https://i.imgflip.com/${mediaInfo.id}.${mediaInfo.format}`;
-                    case 'instagram':
-                        return `https://www.instagram.com/p/${mediaInfo.id}/embed/`;
-                    case 'twitter':
-                        return `https://twitter.com/i/status/${mediaInfo.id}`;
                     default: // Default to avoid problems.
                         return '';
                 }
-            } else {
-                return '';
             }
         } catch (error) {
             ResponseManager.sendError('postManager.embedPath(), Embedding media source', error);
-            return '';
         }
+        return '';
     }
 
     /**
@@ -274,8 +276,8 @@ class PostManager {
             let source;
             if (typeof media === 'object') {
                 source = media.source;
-            } else if (typeof media === 'string' && media.match(urlPattern)) {
-                if (media.split(' ')){
+            } else if (typeof media === 'string') {
+                if (media.split(' ') && (media.match(urlPattern) === null) || media.match(urlPattern) === false){
                     return mediaInfo;
                 }
                 source = media;
@@ -285,33 +287,27 @@ class PostManager {
                 {
                     page: 'youtube',
                     regex: [
-                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-                        /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
-                        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)([a-zA-Z0-9_-]{11})/
+                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v(?:ideos)?|embed)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
                     ]
                 },
                 {
                     page: 'reddit',
                     regex: [
-                        /(?:https?:\/\/(?:www\.)?reddit\.com\/(?:media\?url=)?|https?:\/\/(?:preview\.)?redd\.it\/)([^\/?&]+)\.([a-zA-Z0-9]+)/,
-                        /https:\/\/i\.redd\.it\/(\w+)\.([a-zA-Z0-9]+)/,
+                        /(?:https?:\/\/(?:www\.)?reddit\.com\/(?:media\?url=)?|https?:\/\/(?:preview\.)?redd\.it\/|https:\/\/i\.redd\.it\/)([^\/?&]+)\.([a-zA-Z0-9]+)/,
                         /https:\/\/www\.reddit\.com\/media\?url=https%3A%2F%2F(?:i\.redd\.it|preview\.redd\.it)%2F[^%]+%2F([^%]+)\.jpeg%3F/
                     ]
                 },
                 {
                     page: 'imgflip',
                     regex: [
-                        /https:\/\/i\.imgflip\.com\/(\w+)\.(jpg|png|gif|jpeg)/,
-                        /https:\/\/i\.imgflip\.com\/(\w+)\)/,
-                        /https:\/\/imgflip\.com\/i\/(\w+)/,
-                        /https:\/\/imgflip\.com\/i\/([a-zA-Z0-9]+)/
+                        /https?:\/\/(?:i\.)?imgflip\.com\/(?:\w+\/)?(\w+)\.(jpg|png|gif|jpeg)/,
+                        /https:\/\/imgflip\.com\/(?:i|gif)\/([a-zA-Z0-9]+)/
                     ]
                 },
                 {
                     page: 'instagram',
                     regex: [
-                        /https?:\/\/(?:www\.)?instagram\.com\/p\/([^\/?#&]+)/,
-                        /https?:\/\/(?:www\.)?instagr\.am\/p\/([^\/?#&]+)/
+                        /https?:\/\/(?:www\.)?instagram\.com\/p\/([^\/?#&]+)/
                     ]
                 },
                 {
@@ -333,32 +329,31 @@ class PostManager {
                     ]
                 }
             ];
+            
 
             for (let i = 0; i < patternsForInfo.length; i++) {
-                for (let j = 0; j < patternsForInfo[i].regex.length; j++) {
-                    if (source === null) {
-                        return mediaInfo;
-                    } else {
-                        let match = source.match(patternsForInfo[i].regex[j]);
-                        if (match && match[1]) {
-                            mediaInfo.id = match[1];
-                            mediaInfo.page = patternsForInfo[i].page;
-                            switch (mediaInfo.page) {
-                                case 'imgflip':
-                                    mediaInfo.format = 'jpg';
-                                    break;
-                                case 'reddit':
-                                    mediaInfo.format = 'jpg';
-                                    break;
-                                default:
-                                    mediaInfo.format = match[2];
-                                    break;
-                            }
-                            return mediaInfo;
+                let patternInfo = patternsForInfo[i];
+                for (let j = 0; j < patternInfo.regex.length; j++) {
+                    let regex = patternInfo.regex[j];
+                    let match = source.match(regex);
+                    if (match && match[1]) {
+                        mediaInfo.id = match[1];
+                        mediaInfo.page = patternInfo.page;
+                        switch (mediaInfo.page) {
+                            case 'imgflip':
+                            case 'reddit':
+                                mediaInfo.format = mediaInfo.page === 'imgflip' && source.split('/')[3] === 'gif' ? 'gif' : 'jpg';
+                                break;
+                            default:
+                                mediaInfo.format = match[2];
+                                break;
                         }
+                        return mediaInfo;
                     }
                 }
             }
+            return mediaInfo; // If no match is found
+            
         } catch (error) {
             ResponseManager.sendError('postManager.mediaInfoExtractor, Analyzing media', error);
             return 0;
@@ -422,23 +417,26 @@ class PostManager {
             }
             let mediaResult = await this.mediaAnalyzer(params);
 
+            // Logic for getting available id.
             let id = 0;
-            let postId = (parseInt(params.get('post'))) - (parseInt(params.get('post')) / 3);
-            let idArray = [
-                await this.getActualSplashId(db, parseInt(postId), 'forward'),
-                await this.getActualSplashId(db, parseInt(postId), 'backward')
-            ];
-            let forwardId = idArray[0][0];
-            let forwardIterations = idArray[0][1];
-            let backwardId = idArray[1][0];
-            let backwardIterations = idArray[1][1];
-
-            if (forwardIterations > backwardIterations) {
-                id = backwardId;
-            } else if (forwardIterations < backwardIterations) {
-                id = forwardId;
-            } else {
-                id = backwardId;
+            {
+                let postId = (parseInt(params.get('post'))) - (parseInt(params.get('post')) / 3);
+                let idArray = [
+                    await this.getActualSplashId(db, parseInt(postId), 'forward'),
+                    await this.getActualSplashId(db, parseInt(postId), 'backward')
+                ];
+                let forwardId = idArray[0][0];
+                let forwardIterations = idArray[0][1];
+                let backwardId = idArray[1][0];
+                let backwardIterations = idArray[1][1];
+    
+                if (forwardIterations > backwardIterations) {
+                    id = backwardId;
+                } else if (forwardIterations < backwardIterations) {
+                    id = forwardId;
+                } else {
+                    id = backwardId;
+                }
             }
 
             let post = {
@@ -470,7 +468,7 @@ class PostManager {
                 mime: 'none',
                 fileSource: null,
                 source: null,
-                page: 'none'
+                page: null
             }
             let mediaExists = {};
             for (let [keyParam, value] of params) {
@@ -515,38 +513,40 @@ class PostManager {
      * @returns {string} - Wheter it's an image or video.
      */
     static async mimeMediaAnalyzer(input) {
-        let patterns = [
-            { pattern: /\.jpg$|\.jpeg$/, mimeType: 'image/jpeg' },
-            { pattern: /\.png$/, mimeType: 'image/png' },
-            { pattern: /\.gif$/, mimeType: 'image/gif' },
-            { pattern: /\.bmp$/, mimeType: 'image/bmp' },
-            { pattern: /\.webp$/, mimeType: 'image/webp' },
-            { pattern: /\.svg$/, mimeType: 'image/svg+xml' },
-            { pattern: /\.tiff$/, mimeType: 'image/tiff' },
-            { pattern: /\.ico$/, mimeType: 'image/x-icon' },
-            { pattern: /\.psd$/, mimeType: 'image/vnd.adobe.photoshop' },
-            { pattern: /\.mp4$/, mimeType: 'video/mp4' },
-            { pattern: /\.webm$/, mimeType: 'video/webm' }
-        ];
-
-        let analyzeInput = this.mediaInfoExtractor(input);
-        switch (analyzeInput.page) {
-            case 'imgflip':
-            case 'reddit':
-                return 'image';
-            case 'youtube':
-                return 'video';
-            default:
-                break;
-        }
-        for (let i = 0; i < patterns.length; i++) {
-            if (patterns[i].pattern.test(input.toLowerCase())) {
-                let mimeType = patterns[i].mimeType.split('/');
-                return mimeType[0];
+        try {
+            let patterns = [
+                { pattern: /\.jpg$|\.jpeg$/, mimeType: 'image/jpeg' },
+                { pattern: /\.png$/, mimeType: 'image/png' },
+                { pattern: /\.gif$/, mimeType: 'image/gif' },
+                { pattern: /\.bmp$/, mimeType: 'image/bmp' },
+                { pattern: /\.webp$/, mimeType: 'image/webp' },
+                { pattern: /\.svg$/, mimeType: 'image/svg+xml' },
+                { pattern: /\.tiff$/, mimeType: 'image/tiff' },
+                { pattern: /\.ico$/, mimeType: 'image/x-icon' },
+                { pattern: /\.psd$/, mimeType: 'image/vnd.adobe.photoshop' },
+                { pattern: /\.mp4$/, mimeType: 'video/mp4' },
+                { pattern: /\.webm$/, mimeType: 'video/webm' }
+            ];
+    
+            let analyzeInput = this.mediaInfoExtractor(input);
+            switch (analyzeInput.format) {
+                case 'gif':
+                case 'jpg':
+                case 'jpeg':
+                    return 'image';
+                default:
+                    break;
             }
+            for (let i = 0; i < patterns.length; i++) {
+                if (patterns[i].pattern.test(input.toLowerCase())) {
+                    let mimeType = patterns[i].mimeType.split('/');
+                    return mimeType[0];
+                }
+            }
+            return 'text';
+        } catch (error) {
+            ResponseManager.sendError('postManager.mimeMediaAnalyzer, Analyzing', error);
         }
-
-        return 'text';
     }
 
     /**
@@ -563,7 +563,7 @@ class PostManager {
             if (latestSplash.length > 0) {
                 return latestSplash;
             } else {
-                return null; // Or any appropriate default value if there are no splashes
+                return null;
             }
         } catch (error) {
             PostManager.sendError('postManager.getLatestSplash(), Getting latest splash', error);
@@ -593,7 +593,6 @@ class PostManager {
             return [splashId, iteration];
         }
     }
-
 
     // #endregion
 

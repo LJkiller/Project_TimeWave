@@ -25,6 +25,7 @@ export async function handleSplash(db, url, pathSegments, request, response){
     try{
         let template = (await fs.readFile('templates/splash.sawcon')).toString();
         let splashId = parseInt(url.searchParams.get('post'));
+        let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
         let result = await db.collection('splashes').findOne({ "splashId": splashId });
         let post = await PostManager.generateSplashes(result, db, pathSegments, url, true);
     
@@ -32,9 +33,15 @@ export async function handleSplash(db, url, pathSegments, request, response){
             .replaceAll('DEEZ%specificSplash%NUTS', post)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
             .replaceAll('DEEZ%splashId%NUTS', `Splash-${splashId}`)
+            .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
         ;
     
-        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        if (Methods.locationRedirection(db, pathSegments) === true){
+            response.writeHead(302, { 'Location': '/home' });
+            response.end();
+        } else {
+            ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        }
         return;
     } catch(error){
         ResponseManager.sendError('Reading file', error);

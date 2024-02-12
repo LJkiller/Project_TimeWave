@@ -58,8 +58,8 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     }
                     break;
                 default:
-                    // Invalid route.
-                    ResponseManager.sendWebPageResponse(response, 404, 'text/plain', '404 Not Found');
+                    response.writeHead(302, { 'Location': '/home' });
+                    response.end();
                     return;
             }
         }

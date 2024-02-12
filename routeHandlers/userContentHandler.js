@@ -26,17 +26,24 @@ export async function handleUserContent(db, url, pathSegments, request, response
 
     try{
         let template = (await fs.readFile('templates/user-content.sawcon')).toString();
+        let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
         let postResult = await db.collection('splashes').find().toArray();
         let posts = await PostManager.generateSplashes(postResult, db, pathSegments);
         let joinDate = await UserManager.generateJoinDate(db, pathSegments);
-
+        
         template = template
             .replaceAll('DEEZ%splashes%NUTS', posts)
             .replaceAll('DEEZ%joinDate%NUTS', joinDate)
             .replaceAll('DEEZ%username%NUTS', user)
+            .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
         ;
 
-        ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       
+        if (Methods.locationRedirection(db, pathSegments) === true){
+            response.writeHead(302, { 'Location': '/home' });
+            response.end();
+        } else {
+            ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
+        } 
         return;
     } catch(error){
         ResponseManager.sendError('Reading file', error);

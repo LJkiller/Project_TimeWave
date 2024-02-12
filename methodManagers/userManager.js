@@ -124,7 +124,7 @@ class UserManager {
                     return true;
                 }
             }
-            return false; // If none of the elements were found
+            return false; // If none of the elements were found.
         } else {
             return false;
         }

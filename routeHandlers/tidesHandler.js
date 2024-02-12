@@ -24,12 +24,14 @@ export async function handleTides(db, url, pathSegments, request, response){
        
     try{
         let template = (await fs.readFile('templates/tides.sawcon')).toString();
+        let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
         let result = await db.collection('tides').find().toArray();
         let tides = TidesManager.generateTides(result);
-    
+        
         template = template
             .replaceAll('DEEZ%tides%NUTS', tides)
             .replaceAll('DEEZ%pageReflector%NUTS', contentHead)
+            .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
         ;  
 
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);       

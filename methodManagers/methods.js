@@ -1,4 +1,8 @@
 
+import TidesManager from "./tidesManager.js";
+import UserManager from "./userManager.js";
+
+
 /**
  * Utility class, containing static methods for various tasks in the web server.
  * and retrieving request body content (getBody).
@@ -84,7 +88,6 @@ class Methods {
         return input;
     }
     
-
     /**
      * Method responsible of formating the date from a MongoDB object into
      * a standardized string format.
@@ -162,7 +165,6 @@ class Methods {
         });
     }
 
-
     /**
      * Method responsible of getting the current UTCDate.
      * 
@@ -180,5 +182,23 @@ class Methods {
         let date = { year, month, day, hour, minute, second };
         return date;
     }
+
+    static async locationRedirection(db, pathSegments) {
+        let tidesComparison = await db.collection('tides').find().toArray();
+        let usersComparison = await db.collection('accounts').find().toArray();
+        let tidesArray = (await TidesManager.getAvailableTides(tidesComparison));
+        let usersArray = (await UserManager.getAvailableUsers(usersComparison));
+    
+        let availableEndpoints = ['create-post', 'home', 'index', 'tides', 'user'];
+    
+        if (!tidesArray.includes(pathSegments[1]) 
+            && !usersArray.includes(pathSegments[1])
+            && !availableEndpoints.includes(pathSegments[0])) {
+            return false;
+        }
+        return true;
+    }
+    
+
 }
 export default Methods;

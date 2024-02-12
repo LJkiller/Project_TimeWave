@@ -24,24 +24,26 @@ export async function handleMakeASplash(db, url, pathSegments, request, response
     ResponseManager.sendPageRoute(route);
 
     try {
-        let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();;
+        let template = (await fs.readFile('templates/make-a-splash.sawcon')).toString();
+        let rightAsideHTML = (await fs.readFile('templates/htmlTemplates/right-aside.sawcon')).toString();
         let tidesResult = await db.collection('tides').find().toArray();
         let userResult = await db.collection('accounts').find().toArray();
         let latestSplash = await PostManager.getLatestSplash(db);
-
+        
         let newPostId = latestSplash[0].splashId + 1;
         let checklist = TidesManager.generateTides(tidesResult, true);
         let userOption = UserManager.generateUsers(userResult, true);
-
+        
         // let loggedInUser = ;
         // let userResult = await db.collection('accounts').findeOne({ "": loggedInUser });
-
+        
         template = template
             .replaceAll('DEEZ%latestId%NUTS', newPostId)
             .replaceAll('DEEZ%authorListOptions%NUTS', userOption)
             .replaceAll('DEEZ%subjectLists%NUTS', checklist)
-            ;
-
+            .replaceAll('DEEZ%rightAsideHTML%NUTS', rightAsideHTML)
+        ;
+        
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
 
