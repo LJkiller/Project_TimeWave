@@ -15,7 +15,7 @@ import ResponseManager from '../methodManagers/responseManager.js';
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
 export async function handleSignIn(db, url, pathSegments, request, response){
-    let route = 'tides';
+    let route = 'sign-in';
     ResponseManager.sendPageRoute(route);
        
     try{
