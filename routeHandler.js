@@ -3,7 +3,8 @@ import ResponseManager from './methodManagers/responseManager.js';
 import PostManager from './methodManagers/postManager.js';
 import UserManager from './methodManagers/userManager.js';
 
-// Handlers
+
+// #region Handlers
 import { handleHome } from './routeHandlers/homeHandler.js';
 import { handleIndex } from './routeHandlers/indexHandler.js';
 import { handleMakeASplash } from './routeHandlers/makeASplashHandler.js';
@@ -14,6 +15,8 @@ import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
 import { handleTOS } from './routeHandlers/tosHandler.js';
 import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
 import { handleStatusCode } from './routeHandlers/statusCodeHandler.js';
+
+// #endregion
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -28,8 +31,8 @@ import { handleStatusCode } from './routeHandlers/statusCodeHandler.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} Promise that resolves when the routing and handling are complete.
  */
-export async function handleRoute (db, url, pathSegments, request, response) {
-    try{
+export async function handleRoute(db, url, pathSegments, request, response) {
+    try {
         if (pathSegments.length === 0) {
             handleIndex(db, url, pathSegments, request, response);
         }
@@ -37,9 +40,9 @@ export async function handleRoute (db, url, pathSegments, request, response) {
             // Handle other routes based on first segment of pathSegments.
             switch (pathSegments[0]) {
                 case 'create-post':
-                    if (request.method === 'GET'){
+                    if (request.method === 'GET') {
                         handleMakeASplash(db, url, pathSegments, request, response);
-                    } else if (request.method === 'POST'){
+                    } else if (request.method === 'POST') {
                         PostManager.makeASplash(db, request, response);
                     }
                     break;
@@ -50,19 +53,17 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     handleIndex(db, url, pathSegments, request, response);
                     break;
                 case 'sign-in':
-                    if (request.method === 'GET'){
+                    if (request.method === 'GET') {
                         handleSignIn(db, url, pathSegments, request, response);
-                    } else if (request.method === 'POST'){
+                    } else if (request.method === 'POST') {
                         UserManager.signINUP(db, 'sign-in', request, response);
-                        console.log('cock');
                     }
                     break;
                 case 'sign-up':
-                    if (request.method === 'GET'){
+                    if (request.method === 'GET') {
                         handleSignUp(db, url, pathSegments, request, response);
-                    } else if (request.method === 'POST'){
+                    } else if (request.method === 'POST') {
                         UserManager.signINUP(db, 'sign-up', request, response);
-                        console.log('and balls');
                     }
                     break;
                 case 'splash':

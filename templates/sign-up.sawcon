@@ -13,6 +13,7 @@
 
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+    <script src="/public/JavaScript/userChecker.js"></script>
 </head>
 
 <body>

@@ -1,4 +1,6 @@
 
+import ResponseManager from "./responseManager.js";
+
 /**
  * Utility class, containing static methods for various tasks in the web server.
  * and retrieving request body content (getBody).
@@ -177,6 +179,29 @@ class Methods {
 
         let date = { year, month, day, hour, minute, second };
         return date;
+    }
+
+    /**
+     * Method responsible of redirecting user to different pages depending on information.
+     * 
+     * @static
+     * @async
+     * @param {http.ServerResponse} response - HTTP response.
+     * @param {string} location - Page redirection.
+     * @param {string} query - Terms for additional redirection. (query & typeOfError.
+     * @param {string} value - Value for query string.
+     */
+    static async pageRedirection(response, location, query = '', value = ''){
+        try {
+            let queryString = '';
+            if (query !== '' && value !== ''){
+                queryString = `?${query}=${value}`;
+            }
+            response.writeHead(302, { 'Location': `/${location}${queryString}` });
+            response.end();
+        } catch (error){
+            ResponseManager.sendError('methods.pageRedirection(), Sending location', error);
+        }
     }
 
 }

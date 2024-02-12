@@ -140,7 +140,7 @@ class UserManager {
 
     // #endregion
 
-    // #region
+    // #region User handling
 
     /**
      * Method responsible of creating or logging users in comparing MongoDB with params.
@@ -151,7 +151,6 @@ class UserManager {
      * @param {string} INUP - In or up, that is cum question.
      * @param {http.IncomingMessage} request - HTTP request.
      * @param {http.ServerResponse} response - HTTP response.
-     * @returns Noting.
      */
     static async signINUP(db, INUP, request, response) {
         try {
@@ -159,34 +158,24 @@ class UserManager {
             let params = new URLSearchParams(data);
             let accountConnection = await db.collection('accounts');
 
+            let testObject = await this.getUserObject(params);
             let userObject = await this.getUserObject(params);
-            console.log(userObject);
             let username = userObject.username;
 
             try {
-                let existingUser = await accountConnection.findOne({ username });
-                console.log(existingUser);
-
-                INUP = 'e';
-                if (INUP === 'sign-in'){
-                    if (!existingUser){
-
-                    }
-                    // Do something here
-                } else if (INUP === 'sign-up'){
-                    if (!existingUser){
-                        await accountConnection.insertOne(userObject);
-                    }
-                    // Do something here
-                } else{
-                    console.log('It is done');
+                let existingUser = await accountConnection.findOne({ "username": username });
+                switch (INUP){
+                    case 'sign-in':
+                        await this.handleSignInOutcome(existingUser, userObject, accountConnection, response);
+                        break;
+                    default: 
+                        await this.handleSignUpOutcome(existingUser, userObject, accountConnection, response);
+                        break;
                 }
             } catch (error) {
+                ResponseManager.sendWebPageResponse(response);
                 ResponseManager.sendError('userManager.signINUP(), MongoDB connection', error);
             }
-            // User redirection to login or home.
-            // response.writeHead(302, { 'Location': `/splash?post=${post.splashId}` });
-            // response.end();
             return;
         } catch (error) {
             ResponseManager.sendWebPageResponse(response);
@@ -205,47 +194,68 @@ class UserManager {
     static async getUserObject(params){
         try {
             let userObject = {};
-            let userInfo = this.userQueryStringExtractor(params);
-            let username = userInfo.username;
-            let password = userInfo.password;
+            let username = params.get('username');
+            let password = params.get('password');
 
             let snortingRounds = parseInt(process.env.HASHING_ROUNDS);
             let hashedPassword = await bcrypt.hash(password, snortingRounds);
-            let userJoinDate = Methods.getCurrentUTCDate();
-            let uuid = crypto.randomUUID();
+            console.log(hashedPassword);
 
             userObject = {
                 "username": username,
-                "password": hashedPassword,
-                joinDate : userJoinDate,
-                "userUuid": uuid
+                "password": hashedPassword
             };
             return userObject;
         } catch (error) {
             ResponseManager.sendError('userManager.getUserObject(), Constructing user object', error);
         }
     }
+    /**
+     * Method responsible of handling sign in outcome.
+     * 
+     * @param {Object} existingUser - Found MongoDB user object.
+     * @param {Object} userObject - User object to compare with existing one.
+     * @param {mongodb.Collection} accountConnection - The MongoDB connection to account collection.
+     * @param {http.ServerResponse} response - HTTP response.
+     */
+    static async handleSignInOutcome(existingUser, userObject, accountConnection, response){
+        try{
+            if (!existingUser){
+                await Methods.pageRedirection(response, 'sign-in', 'error', 'username_404');
+            } else {
+                let passwordMatching = await bcrypt.compare(userObject.password, existingUser.password);
+                if (passwordMatching){
+                    console.log('Whaza');
+                } else {
+                    await Methods.pageRedirection(response, 'sign-in', 'error', 'password_404');
+                }
+            }
+        } catch (error){
+            ResponseManager.sendWebPageResponse(response);
+            ResponseManager.sendError('userManager.handleSignInOutcome(), MongoDB connection', error);
+        }
+    }
 
     /**
-     * Method responsible of etracting information of user queryStrings.
+     * Method responsible of handling sign up outcome.
      * 
-     * @static
-     * @param {URLSearchParams} params - Parameters to analyze.
-     * @returns {Object} - Information containing extracted value for username and password.
+     * @param {Object} existingUser - Found MongoDB user object.
+     * @param {Object} userObject - User object to compare with existing one.
+     * @param {mongodb.Collection} accountConnection - The MongoDB connection to account collection.
+     * @param {http.ServerResponse} response - HTTP response.
      */
-    static userQueryStringExtractor(params){
-        let usernameValue;
-        let passwordValue;
-        for (let [key, value] of params) {
-            if (key === 'username') {
-                usernameValue = value.toLowerCase();
-            } else if (key === 'password') {
-                passwordValue = value;
+    static async handleSignUpOutcome(existingUser, userObject, accountConnection, response){
+        try{
+            if (!existingUser){
+                await accountConnection.insertOne(userObject);
+                await Methods.pageRedirection(response, 'sign-in');
             } else {
-                return {};
+                await Methods.pageRedirection(response, 'sign-up', 'error', 'username_taken');
             }
+        } catch (error){
+            ResponseManager.sendWebPageResponse(response);
+            ResponseManager.sendError('userManager.handleSignUpOutcome(), MongoDB connection', error);
         }
-        return { username: usernameValue, password: passwordValue };
     }
 
     // #endregion
