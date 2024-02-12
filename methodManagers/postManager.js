@@ -269,14 +269,18 @@ class PostManager {
      */
     static mediaInfoExtractor(media) {
         try {
+            let mediaInfo = { id: 0, format: '', page: '' };
+            let urlPattern = /\b((?:https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/;
             let source;
             if (typeof media === 'object') {
                 source = media.source;
-            } else if (typeof media === 'string') {
+            } else if (typeof media === 'string' && media.match(urlPattern)) {
+                if (media.split(' ')){
+                    return mediaInfo;
+                }
                 source = media;
             }
 
-            let mediaInfo = { id: 0, format: '', page: '' };
             let patternsForInfo = [
                 {
                     page: 'youtube',
