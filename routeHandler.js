@@ -3,13 +3,15 @@ import ResponseManager from './methodManagers/responseManager.js';
 import PostManager from './methodManagers/postManager.js';
 
 // Handlers
-import { handleIndex } from './routeHandlers/indexHandler.js';
 import { handleHome } from './routeHandlers/homeHandler.js';
-import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
-import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
-import { handleTOS } from './routeHandlers/tosHandler.js';
-import { handleSplash } from './routeHandlers/splashHandler.js';
+import { handleIndex } from './routeHandlers/indexHandler.js';
 import { handleMakeASplash } from './routeHandlers/makeASplashHandler.js';
+import { handleSignIn } from './routeHandlers/signInHandler.js';
+import { handleSignUp } from './routeHandlers/signUpHandler.js';
+import { handleSplash } from './routeHandlers/splashHandler.js';
+import { handleTidesRoute } from './routeHandlers/tidesRouteHandler.js';
+import { handleTOS } from './routeHandlers/tosHandler.js';
+import { handleUserRoute } from './routeHandlers/userRouteHandler.js';
 
 /**
  * Method responsible of handling routes for HTTP requests. 
@@ -32,11 +34,24 @@ export async function handleRoute (db, url, pathSegments, request, response) {
         else {
             // Handle other routes based on first segment of pathSegments.
             switch (pathSegments[0]) {
-                case 'index':
-                    handleIndex(db, url, pathSegments, request, response);
+                case 'create-post':
+                    if (request.method === 'GET'){
+                        handleMakeASplash(db, url, pathSegments, request, response);
+                    } else if (request.method === 'POST'){
+                        PostManager.makeASplash(db, request, response);
+                    }
                     break;
                 case 'home':
                     handleHome(db, url, pathSegments, request, response);
+                    break;
+                case 'index':
+                    handleIndex(db, url, pathSegments, request, response);
+                    break;
+                case 'sign-in':
+                    handleSignIn(db, url, pathSegments, request, response);
+                    break;
+                case 'sign-up':
+                    handleSignUp(db, url, pathSegments, request, response);
                     break;
                 case 'splash':
                     handleSplash(db, url, pathSegments, request, response);
@@ -49,13 +64,6 @@ export async function handleRoute (db, url, pathSegments, request, response) {
                     break;
                 case 'user':
                     handleUserRoute(db, url, pathSegments, request, response);
-                    break;
-                case 'create-post':
-                    if (request.method === 'GET'){
-                        handleMakeASplash(db, url, pathSegments, request, response);
-                    } else if (request.method === 'POST'){
-                        PostManager.makeASplash(db, request, response);
-                    }
                     break;
                 default:
                     console.log('You went beyond the boundary.');

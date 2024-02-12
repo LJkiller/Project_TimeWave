@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeWave</title>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="/public/CSS/structure/style.css">
+    <link rel="stylesheet" href="/public/CSS/index.css">
+    <link rel="stylesheet" href="/public/CSS/tos.css">
+
+    <!--JavaScript-->
+    <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <main>
+        <section id="main-content">
+            <form action="/sign-in" method="post">
+                
+                <button type="submit">Sign up!</button>
+            </form>
+        </section>
+    </main>
+
+</body>
+
+</html>
