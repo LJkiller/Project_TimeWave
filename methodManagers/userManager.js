@@ -199,17 +199,21 @@ class UserManager {
 
             let snortingRounds = parseInt(process.env.HASHING_ROUNDS);
             let hashedPassword = await bcrypt.hash(password, snortingRounds);
-            console.log(hashedPassword);
+            let userJoinDate = Methods.getCurrentUTCDate();
+            let uuid = crypto.randomUUID();
 
             userObject = {
                 "username": username,
-                "password": hashedPassword
+                "password": hashedPassword,
+                joinDate : userJoinDate,
+                "userUuid": uuid
             };
             return userObject;
         } catch (error) {
             ResponseManager.sendError('userManager.getUserObject(), Constructing user object', error);
         }
     }
+
     /**
      * Method responsible of handling sign in outcome.
      * 
