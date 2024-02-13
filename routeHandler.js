@@ -7,6 +7,7 @@ import UserManager from './methodManagers/userManager.js';
 // #region Handlers
 import { handleHome } from './routeHandlers/homeHandler.js';
 import { handleIndex } from './routeHandlers/indexHandler.js';
+import { handleLogin } from './routeHandlers/loginHandler.js';
 import { handleMakeASplash } from './routeHandlers/makeASplashHandler.js';
 import { handleSignIn } from './routeHandlers/signInHandler.js';
 import { handleSignUp } from './routeHandlers/signUpHandler.js';
@@ -51,6 +52,9 @@ export async function handleRoute(db, url, pathSegments, request, response) {
                     break;
                 case 'index':
                     handleIndex(db, url, pathSegments, request, response);
+                    break;
+                case 'login':
+                    handleLogin(db, url, pathSegments, request, response);
                     break;
                 case 'sign-in':
                     if (request.method === 'GET') {

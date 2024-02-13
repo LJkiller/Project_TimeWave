@@ -13,7 +13,7 @@ import { handleStaticFileRoute } from './staticFileHandler.js';
 // Establishing MongoDB Connection.
 let mongoConn;
 try{
-    mongoConn = await mongoDB.MongoClient.connect(process.env.MONGODB_CONNECTIONSTING);
+    mongoConn = await mongoDB.MongoClient.connect(process.env.MONGODB_CONNECTIONSTRING);
 } catch (error){
     ResponseManager.sendError('MongoDB connection', error);
     console.log('Further uses of application will be downgraded.');

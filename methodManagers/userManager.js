@@ -166,7 +166,7 @@ class UserManager {
                 let existingUser = await accountConnection.findOne({ "username": username });
                 switch (INUP){
                     case 'sign-in':
-                        await this.handleSignInOutcome(existingUser, userObject, accountConnection, response);
+                        await this.handleSignInOutcome(existingUser, params, response);
                         break;
                     default: 
                         await this.handleSignUpOutcome(existingUser, userObject, accountConnection, response);
@@ -218,18 +218,17 @@ class UserManager {
      * Method responsible of handling sign in outcome.
      * 
      * @param {Object} existingUser - Found MongoDB user object.
-     * @param {Object} userObject - User object to compare with existing one.
-     * @param {mongodb.Collection} accountConnection - The MongoDB connection to account collection.
+     * @param {URLSearchParams} params - Parameter to construct user object.
      * @param {http.ServerResponse} response - HTTP response.
      */
-    static async handleSignInOutcome(existingUser, userObject, accountConnection, response){
+    static async handleSignInOutcome(existingUser, params, response){
         try{
             if (!existingUser){
                 await Methods.pageRedirection(response, 'sign-in', 'error', 'username_404');
             } else {
-                let passwordMatching = await bcrypt.compare(userObject.password, existingUser.password);
+                let passwordMatching = await bcrypt.compare((params.get('password')), existingUser.password);
                 if (passwordMatching){
-                    console.log('Whaza');
+                    await Methods.pageRedirection(response, 'login');
                 } else {
                     await Methods.pageRedirection(response, 'sign-in', 'error', 'password_404');
                 }

@@ -3,8 +3,8 @@ import fs from 'fs/promises';
 import ResponseManager from '../methodManagers/responseManager.js';
 
 /**
- * Method responsible of handling the tos page request. 
- * Logging the route, reading tos template, replacing placeholders with content, 
+ * Method responsible of handling the login page request. 
+ * Logging the route, reading login template, replacing placeholders with content, 
  * and sending web page response.
  *
  * @async
@@ -15,12 +15,12 @@ import ResponseManager from '../methodManagers/responseManager.js';
  * @param {http.ServerResponse} response - HTTP response.
  * @returns {Promise<void>} - A Promise that resolves when the handling is complete.
  */
-export async function handleTOS(db, url, pathSegments, request, response){
-    let route = 'tos';
+export async function handleLogin(db, url, pathSegments, request, response){
+    let route = 'login';
     ResponseManager.sendPageRoute(route);
 
     try{
-        let template = (await fs.readFile('templates/tos.sawcon')).toString();
+        let template = (await fs.readFile('templates/login.sawcon')).toString();
         ResponseManager.sendWebPageResponse(response, 200, 'text/html', template);
         return;
     } catch (error) {

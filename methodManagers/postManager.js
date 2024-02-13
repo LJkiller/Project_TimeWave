@@ -538,6 +538,13 @@ class PostManager {
                 default:
                     break;
             }
+            switch (analyzeInput.page){
+                case 'youtube':
+                case 'tiktok':
+                    return 'video';
+                default:
+                    break;
+            }
             for (let i = 0; i < patterns.length; i++) {
                 if (patterns[i].pattern.test(input.toLowerCase())) {
                     let mimeType = patterns[i].mimeType.split('/');

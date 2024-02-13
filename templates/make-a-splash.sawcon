@@ -70,9 +70,12 @@
                     <!--This thing is stupid, but I did too much work to just remove this one.-->
                     <input disabled type="file" name="media-file" class="media" accept="image/*,video/*">
                     <br>
+                    <br>
                     <label for="media-link">Link a media (text):</label>
                     <br>
                     <label for="media-link">For a better overview: try youtube video links or tiktok videos.</label>
+                    <br>
+                    <label for="media-link">Or try imgflip images.</label>
                     <input type="text" name="media-link" class="media">
                     <br>
                     <br>
