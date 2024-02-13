@@ -11,11 +11,12 @@
     <link rel="stylesheet" href="/public/CSS/structure/navbar.css">
     <link rel="stylesheet" href="/public/CSS/structure/page-information.css">
     <link rel="stylesheet" href="/public/CSS/structure/main.css">
-    <link rel="stylesheet" href="/public/CSS/tides.css">
+    <link rel="stylesheet" href="/public/CSS/make-a-splash.css">
 
     <!--JavaScript-->
     <script src="https://kit.fontawesome.com/180268d8b3.js" crossorigin="anonymous"></script>
     <script defer src="/public/JavaScript/openProfileOptions.js"></script>
+    <script defer src="/public/JavaScript/alerts.js"></script>
 </head>
 
 <body>
@@ -26,25 +27,33 @@
             <nav>
                 <ul>
                     <li><a id="home" href="/home"><i class="fa-solid fa-house"></i> <span>Home</span></a></li>
-                    <li class="active"><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
+                    <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
                     <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
-                    <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i> <span>Make a Splash!</span></a></li>
+                    <li><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i>
+                        <span>Make a Splash!</span></a></li=>
                 </ul>
             </nav>
 
             DEEZ%bottomLeftAside%NUTS
         </aside>
 
-        <h2 class="page-display">Tides</h2>
+        <h2 class="page-display">Tide</h2>
         <section id="main-content">
             <div class="main-top">
-                <a href="/create-post" class="create-post">
-                    <h3><i class="fa-solid fa-droplet"></i> Make a Splash!</h3>
-                </a>
+                <div class="splash-displayer">
+                    <h3><i class="fa-solid fa-water"></i> Create new tide!</h3>
+                </div>
             </div>
-            <section id="tides" class="main-part">
-                <h2><span>DEEZ%pageReflector%NUTS</span><a href="/create-tide"> Add tide</a></h2>
-                DEEZ%tides%NUTS
+            <section id="post" class="main-part">
+                <form action="/create-tide" method="post">
+                    <br>
+                    <label for="new-tide">Tide name.</label>
+                    <br>
+                    <input type="text" name="new-tide" id="new-tide" placeholder="New tide">
+                    <br>
+                    <br>
+                    <button type="submit">Create new tide!</button>
+                </form>
             </section>
         </section>
 

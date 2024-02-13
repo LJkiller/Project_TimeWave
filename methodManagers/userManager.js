@@ -59,9 +59,9 @@ class UserManager {
             let users = '';
             let user = Methods.capitalizeFirstLetter(userObject);
             if (isOption === false) {
-                users += `<a class="user" href="/user/${user.toLowerCase()}">${user}</a>`;
+                users += `<a class="user" href="/user/${user.toLowerCase()}">${Methods.XSSProtectionHandler(user)}</a>`;
             } else {
-                users += `<option value="${user.toLowerCase()}">${user}</option>`;
+                users += `<option value="${user.toLowerCase()}">${Methods.XSSProtectionHandler(user)}</option>`;
             }
             return users;
         } catch (error) {
@@ -160,6 +160,11 @@ class UserManager {
             let userObject = await this.getUserObject(params);
             let username = userObject.username;
 
+            if (Methods.analyzeInputForDanger(username)){
+                Methods.pageRedirection(response, 'sign-up', 'error', 'username_403');
+                return;
+            }
+
             try {
                 let existingUser = await accountConnection.findOne({ "username": username });
                 switch (INUP){
@@ -230,19 +235,23 @@ class UserManager {
                 if (passwordMatching){
                     let newHash = userObject.password;
                     let newUuid = userObject.userUuid;
+                    let existingJoinDate = existingUser.joinDate;
                     let username = existingUser.username;
                     try {
                         await accountConnection.updateOne(
                             { "username": username},
                             {
                                 $set: {
+                                    "username": username,
                                     "password": newHash,
+                                    joinDate: existingJoinDate,
                                     "userUuid": newUuid
                                 }
                             }
                         );
                         await Methods.pageRedirection(response, 'login');
                     } catch (error) {
+                        // This should not be publicaly declared to users, because of safety concern.
                         ResponseManager.sendError('userManager.handleSignInOutcome(), Updating information', error);
                         await Methods.pageRedirection(response, 'sign-in', 'error', 'password_500');
                     }

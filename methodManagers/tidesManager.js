@@ -1,6 +1,5 @@
 
 import Methods from './methods.js';
-import PostManager from './postManager.js';
 import ResponseManager from './responseManager.js';
 
 /**
@@ -14,6 +13,8 @@ import ResponseManager from './responseManager.js';
  * @class TidesManager
  */
 class TidesManager {
+
+    // #region Tides Generation
 
     /**
      * Method responsible of generating links from MongoDB in an HTML format.
@@ -53,9 +54,9 @@ class TidesManager {
         for (let i = 0; i < tideArray.length; i++){
             let tide = Methods.capitalizeFirstLetter(tideArray[i]);
             if (isCheckList === false){
-                tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${tide}</a>`;
+                tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${Methods.XSSProtectionHandler(tide)}</a>`;
             } else {
-                tides += `<li><input type="checkbox" name="${tide.toLowerCase()}" id="${tide.toLowerCase()}"> ${tide}</li>`;
+                tides += `<li><input type="checkbox" name="${tide.toLowerCase()}" id="${tide.toLowerCase()}"> ${Methods.XSSProtectionHandler(tide)}</li>`;
             }
         }
         return tides;
@@ -93,7 +94,68 @@ class TidesManager {
         }
         return false;
     }
+
+    // #endregion
     
+    // #region Creating Tides
+
+    /**
+     * Method responsible of creating new tides to MongoDB from analyzing url params.
+     * 
+     * @static
+     * @async
+     * @param {Db} db - MongoDB database object.
+     * @param {http.IncomingMessage} request - HTTP request.
+     * @param {http.ServerResponse} response - HTTP response.
+     */
+    static async createATide(db, request, response) {
+        try {
+            let data = await Methods.getBody(request);
+            let params = new URLSearchParams(data);
+            let newTide = params.get('new-tide');
+            let tidesConnection = await db.collection('tides').find().toArray();
+            let tideObject = tidesConnection[0];
+
+            // Check if array has that value already.
+            for (let i = 0; i < tideObject.availableTides.length; i++){
+                console.log(tideObject.availableTides[i]);
+                if (newTide === tideObject.availableTides[i]){
+                    Methods.pageRedirection(response, 'create-tide', 'error', 'tides_409');
+                    return;
+                }
+            }
+
+            if (Methods.analyzeInputForDanger(newTide)){
+                Methods.pageRedirection(response, 'create-tide', 'error', 'tides_403');
+                return;
+            }
+
+            tideObject.availableTides.push(newTide);
+            let newTidesArray = tideObject.availableTides;
+
+            try {
+                await db.collection('tides').updateOne(
+                    { _id: tideObject._id },
+                    {
+                        $set: {
+                            "availableTides": newTidesArray
+                        }
+                    }
+                );
+            } catch (error) {
+                ResponseManager.sendError('tidesManager.createATide(), Creating tide', error);
+            }
+            // User redirection to created splash.
+            response.writeHead(302, { 'Location': `/tides/${newTide}` });
+            response.end();
+            return;
+        } catch (error) {
+            ResponseManager.sendWebPageResponse(response);
+            ResponseManager.sendError('postManager.makeASplash(), Making splash', error);
+        }
+    }
+
+    // #endregion
 
 }
 export default TidesManager;

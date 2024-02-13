@@ -394,7 +394,6 @@ class PostManager {
      * @param {Db} db - MongoDB database object.
      * @param {http.IncomingMessage} request - HTTP request.
      * @param {http.ServerResponse} response - HTTP response.
-     * @returns Noting.
      */
     static async makeASplash(db, request, response) {
         try {

@@ -1,4 +1,12 @@
 
+main section#main-content section#tides h2 a{
+    display: inline;
+    color: var(--standard-text-color);
+    text-shadow: var(--large-text-shadow);
+}
+main section#main-content section#tides h2 a:hover{
+    color: var(--text-link-color);
+}
 main section#main-content section#tides a.tide{
     margin-left: var(--content-margin-left);
     max-width: var(--content-max-width);

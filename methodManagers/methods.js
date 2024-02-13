@@ -204,5 +204,21 @@ class Methods {
         }
     }
 
+    /**
+     * Method responsible of analyzing a string for dangerous characters, returns true or false.
+     * 
+     * @param {string} input - String to be analyzed. 
+     * @returns {boolean} - True or false depending if dangerousCharacter found.
+     */
+    static analyzeInputForDanger(input){
+        let dangerousCharacters = ['&', '<', '>', '"', '`', '\\', '/', '=', '(', ')'];
+        for (let i = 0; i < input.length; i++){
+            if (dangerousCharacters.includes(input[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 export default Methods;

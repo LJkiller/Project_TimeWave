@@ -31,7 +31,7 @@
                     <li><a id="tides" href="/tides"><i class="fa-solid fa-water"></i> <span>Tides</span></a></li>
                     <li><a id="user" href="/user"><i class="fa-solid fa-user"></i> <span>Profile</span></a></li>
                     <li class="active"><a id="create-post" href="/create-post"><i class="fa-solid fa-droplet"></i>
-                            <span>Make a Splash!</span></a></li=>
+                        <span>Make a Splash!</span></a></li=>
                 </ul>
             </nav>
 

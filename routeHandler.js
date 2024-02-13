@@ -1,10 +1,12 @@
 
-import ResponseManager from './methodManagers/responseManager.js';
 import PostManager from './methodManagers/postManager.js';
+import ResponseManager from './methodManagers/responseManager.js';
+import TidesManager from './methodManagers/tidesManager.js';
 import UserManager from './methodManagers/userManager.js';
 
 
 // #region Handlers
+import { handleCreateATide } from './routeHandlers/createATideHandler.js';
 import { handleHome } from './routeHandlers/homeHandler.js';
 import { handleIndex } from './routeHandlers/indexHandler.js';
 import { handleLogin } from './routeHandlers/loginHandler.js';
@@ -45,6 +47,13 @@ export async function handleRoute(db, url, pathSegments, request, response) {
                         handleMakeASplash(db, url, pathSegments, request, response);
                     } else if (request.method === 'POST') {
                         PostManager.makeASplash(db, request, response);
+                    }
+                    break;
+                case 'create-tide':
+                    if (request.method === 'GET') {
+                        handleCreateATide(db, url, pathSegments, request, response);
+                    } else if (request.method === 'POST') {
+                        TidesManager.createATide(db, request, response);
                     }
                     break;
                 case 'home':
