@@ -3,9 +3,6 @@ let urlParams = new URLSearchParams(window.location.search);
 let error = urlParams.get('error');
 
 switch (error){
-    case 'username_taken':
-        alert(`Username is already taken. Please choose a different username.`);
-        break;
     case 'username_400':
         alert(`Username cannot contain spaces.`);
         break;
@@ -15,6 +12,8 @@ switch (error){
     case 'username_404':
         alert(`Username is not found => user do not exist. Are you sure you've written correct username?`);
         break;
+    case 'username_409':
+        alert(`Username is already taken. Please choose a different username.`);
     case 'username_413':
         alert(`Username is too long! (Max 20 characters)`);
         break;

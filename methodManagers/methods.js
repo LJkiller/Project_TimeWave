@@ -1,5 +1,6 @@
 
 import ResponseManager from "./responseManager.js";
+import 'dotenv/config';
 
 /**
  * Utility class, containing static methods for various tasks in the web server.
@@ -181,6 +182,76 @@ class Methods {
         return date;
     }
 
+    // Absolute horse shit.
+    // /**
+    //  * Method responsible of analyzing input for alerts.
+    //  * 
+    //  * @static
+    //  * @async
+    //  * @param {http.ServerResponse} response - HTTP response.
+    //  * @param {string} input - Input to be analyzed.
+    //  * @param {string} page - Which page function is calling upon.
+    //  * @param {Array} analyticalArray - Array for tides.
+    //  */
+    // static async analyzeForRedirection(response, input, page, analyticalArray) {
+    //     let containSpaces = false;
+    //     let containDanger = false;
+    //     let containDoubles = false;
+    //     let inputTooBig = false;
+    //     let spaces = input.split(' ');
+
+    //     if (spaces.length > 1) {
+    //         containSpaces = true;
+    //     }
+    //     if (Methods.analyzeInputForDanger(input)) {
+    //         containDanger = true;
+    //     }
+    //     for (let i = 0; i < analyticalArray.length; i++) {
+    //         if (input !== analyticalArray[i]) {
+    //             containDoubles = false;
+    //             break;
+    //         }
+    //     }
+
+    //     if (page === 'create-tide') {
+    //         if (input.length > parseInt(process.env.MAX_TIDES_CHARS)) {
+    //             inputTooBig = true;
+    //         }
+    //     } else if (page === 'sign-up') {
+    //         if (input.length > parseInt(process.env.MAX_USERNAME_CHARS)) {
+    //             inputTooBig = true;
+    //         }
+    //     }
+
+    //     switch (page) {
+    //         case 'create-tide':
+    //             if (containSpaces) {
+    //                 await this.pageRedirection(response, 'create-tide', 'error', 'tides_400');
+    //             } else if (containDanger) {
+    //                 await this.pageRedirection(response, 'create-tide', 'error', 'tides_403');
+    //             } else if (containDoubles) {
+    //                 await this.pageRedirection(response, 'create-tide', 'error', 'tides_409');
+    //             } else if (inputTooBig) {
+    //                 await this.pageRedirection(response, 'create-tide', 'error', 'tides_413');
+    //             }
+    //             break;
+    //         case 'sign-up':
+    //             if (containSpaces) {
+    //                 await this.pageRedirection(response, 'sign-up', 'error', 'username_400');
+    //             } else if (containDanger) {
+    //                 await this.pageRedirection(response, 'sign-up', 'error', 'username_403');
+    //             } else if (containDoubles) {
+    //                 await this.pageRedirection(response, 'sign-up', 'error', 'username_409');
+    //             } else if (inputTooBig) {
+    //                 await this.pageRedirection(response, 'sign-up', 'error', 'username_413');
+    //             }
+    //             return true;
+    //         default:
+    //             break;
+    //     }
+    //     return false;
+    // }
+
     /**
      * Method responsible of redirecting user to different pages depending on information.
      * 
@@ -191,16 +262,16 @@ class Methods {
      * @param {string} query - Terms for additional redirection. (query & typeOfError.
      * @param {string} value - Value for query string.
      */
-    static async pageRedirection(response, location, query = '', value = ''){
+    static async pageRedirection(response, location, query = '', value = '') {
         try {
             let queryString = '';
-            if (query !== '' && value !== ''){
+            if (query !== '' && value !== '') {
                 queryString = `?${query}=${value}`;
             }
             response.writeHead(302, { 'Location': `/${location}${queryString}` });
             response.end();
             return;
-        } catch (error){
+        } catch (error) {
             ResponseManager.sendError('methods.pageRedirection(), Sending location', error);
         }
     }
@@ -211,15 +282,15 @@ class Methods {
      * @param {string} input - String to be analyzed. 
      * @returns {boolean} - True or false depending if dangerousCharacter found.
      */
-    static analyzeInputForDanger(input){
+    static analyzeInputForDanger(input) {
         let dangerousCharacters = [
-            '&', '<', '>', '"', '`', '\\', '/', '=', '(', ')', 
-            '!', '?', '§', '*', '+', '-', '[', ']', '{', '}', 
-            '|', ';', ':', ',', '.', '~', '@', '#', '$', '%', 
+            '&', '<', '>', '"', '`', '\\', '/', '=', '(', ')',
+            '!', '?', '§', '*', '+', '-', '[', ']', '{', '}',
+            '|', ';', ':', ',', '.', '~', '@', '#', '$', '%',
             '^', '_', '\''
         ];
 
-        for (let i = 0; i < input.length; i++){
+        for (let i = 0; i < input.length; i++) {
             if (dangerousCharacters.includes(input[i])) {
                 return true;
             }

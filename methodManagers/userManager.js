@@ -160,6 +160,16 @@ class UserManager {
             let userObject = await this.getUserObject(params);
             let username = userObject.username;
 
+            // Also horse shit.
+            // let account = await accountConnection.find().toArray();
+            // let accountArray = [];
+            // for (let i = 0; i < account.length; i++) {
+            //     accountArray.push(account[i].username);
+            // }
+            // if (Methods.analyzeForRedirection(response, username, 'sign-up', accountArray)){
+            //     return;
+            // }
+
             let spaces = username.split(' ');
             if (spaces.length > 1){
                 Methods.pageRedirection(response, 'sign-up', 'error', 'username_400');
@@ -289,7 +299,7 @@ class UserManager {
                 await accountConnection.insertOne(userObject);
                 await Methods.pageRedirection(response, 'sign-in');
             } else {
-                await Methods.pageRedirection(response, 'sign-up', 'error', 'username_taken');
+                await Methods.pageRedirection(response, 'sign-up', 'error', 'username_409');
             }
         } catch (error){
             ResponseManager.sendWebPageResponse(response);

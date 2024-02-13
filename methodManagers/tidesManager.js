@@ -115,10 +115,22 @@ class TidesManager {
         try {
             let data = await Methods.getBody(request);
             let params = new URLSearchParams(data);
-            let newTide = params.get('new-tide');
+            let newTide = params.get('new-tide').toLowerCase();
             let tidesConnection = await db.collection('tides').find().toArray();
             let tideObject = tidesConnection[0];
 
+            // Should've worked, horse shit.
+            // let tidesArray = tideObject.availableTides;
+            // if (Methods.analyzeForRedirection(response, newTide, 'create-tide', tidesArray)) {
+            //     return;
+            // }
+
+            for (let i = 0; i < tideObject.availableTides.length; i++){
+                if (newTide === tideObject.availableTides[i]){
+                    Methods.pageRedirection(response, 'create-tide', 'error', 'tides_409');
+                    return;
+                }
+            }
             let spaces = newTide.split(' ');
             if (spaces.length > 1){
                 Methods.pageRedirection(response, 'create-tide', 'error', 'tides_400');
@@ -132,12 +144,6 @@ class TidesManager {
             if (Methods.analyzeInputForDanger(newTide)){
                 Methods.pageRedirection(response, 'create-tide', 'error', 'tides_403');
                 return;
-            }
-            for (let i = 0; i < tideObject.availableTides.length; i++){
-                if (newTide === tideObject.availableTides[i]){
-                    Methods.pageRedirection(response, 'create-tide', 'error', 'tides_409');
-                    return;
-                }
             }
 
             tideObject.availableTides.push(newTide);
