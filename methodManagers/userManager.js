@@ -157,8 +157,6 @@ class UserManager {
             let data = await Methods.getBody(request);
             let params = new URLSearchParams(data);
             let accountConnection = await db.collection('accounts');
-
-            let testObject = await this.getUserObject(params);
             let userObject = await this.getUserObject(params);
             let username = userObject.username;
 
@@ -166,7 +164,7 @@ class UserManager {
                 let existingUser = await accountConnection.findOne({ "username": username });
                 switch (INUP){
                     case 'sign-in':
-                        await this.handleSignInOutcome(existingUser, params, response);
+                        await this.handleSignInOutcome(existingUser, userObject, accountConnection, params, response);
                         break;
                     default: 
                         await this.handleSignUpOutcome(existingUser, userObject, accountConnection, response);
@@ -218,17 +216,36 @@ class UserManager {
      * Method responsible of handling sign in outcome.
      * 
      * @param {Object} existingUser - Found MongoDB user object.
+     * @param {Object} userObject - User object to compare with existing one.
+     * @param {mongodb.Collection} accountConnection - The MongoDB connection to account collection.
      * @param {URLSearchParams} params - Parameter to construct user object.
      * @param {http.ServerResponse} response - HTTP response.
      */
-    static async handleSignInOutcome(existingUser, params, response){
+    static async handleSignInOutcome(existingUser, userObject, accountConnection, params, response){
         try{
             if (!existingUser){
                 await Methods.pageRedirection(response, 'sign-in', 'error', 'username_404');
             } else {
                 let passwordMatching = await bcrypt.compare((params.get('password')), existingUser.password);
                 if (passwordMatching){
-                    await Methods.pageRedirection(response, 'login');
+                    let newHash = userObject.password;
+                    let newUuid = userObject.userUuid;
+                    let username = existingUser.username;
+                    try {
+                        await accountConnection.updateOne(
+                            { "username": username},
+                            {
+                                $set: {
+                                    "password": newHash,
+                                    "userUuid": newUuid
+                                }
+                            }
+                        );
+                        await Methods.pageRedirection(response, 'login');
+                    } catch (error) {
+                        ResponseManager.sendError('userManager.handleSignInOutcome(), Updating information', error);
+                        await Methods.pageRedirection(response, 'sign-in', 'error', 'password_500');
+                    }
                 } else {
                     await Methods.pageRedirection(response, 'sign-in', 'error', 'password_404');
                 }

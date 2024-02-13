@@ -13,4 +13,7 @@ if (error === 'username_taken') {
 } else if (error === 'password_404'){
     alert(`Password is incorrect.`);
     history.replaceState({}, document.title, window.location.pathname);
+} else if (error === 'password_500'){
+    alert(`Trouble logging in, please try again later.`);
+    history.replaceState({}, document.title, window.location.pathname);
 }
