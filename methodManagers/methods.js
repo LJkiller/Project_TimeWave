@@ -199,6 +199,7 @@ class Methods {
             }
             response.writeHead(302, { 'Location': `/${location}${queryString}` });
             response.end();
+            return;
         } catch (error){
             ResponseManager.sendError('methods.pageRedirection(), Sending location', error);
         }
@@ -211,7 +212,13 @@ class Methods {
      * @returns {boolean} - True or false depending if dangerousCharacter found.
      */
     static analyzeInputForDanger(input){
-        let dangerousCharacters = ['&', '<', '>', '"', '`', '\\', '/', '=', '(', ')'];
+        let dangerousCharacters = [
+            '&', '<', '>', '"', '`', '\\', '/', '=', '(', ')', 
+            '!', '?', '§', '*', '+', '-', '[', ']', '{', '}', 
+            '|', ';', ':', ',', '.', '~', '@', '#', '$', '%', 
+            '^', '_', '\''
+        ];
+
         for (let i = 0; i < input.length; i++){
             if (dangerousCharacters.includes(input[i])) {
                 return true;

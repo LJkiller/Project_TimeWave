@@ -1,6 +1,7 @@
 
 import Methods from './methods.js';
 import ResponseManager from './responseManager.js';
+import 'dotenv/config';
 
 /**
  * Class responsible of managing tides generation by communicating
@@ -50,9 +51,11 @@ class TidesManager {
      * @returns {string} - HTML structure: tide links.
      */
     static generateAvailableTidesHTML(tideArray, isCheckList = false) {
+        let alphabeticalOrder = tideArray.sort((a, b) => a.localeCompare(b));
+        let result = alphabeticalOrder;
         let tides = '';
-        for (let i = 0; i < tideArray.length; i++){
-            let tide = Methods.capitalizeFirstLetter(tideArray[i]);
+        for (let i = 0; i < result.length; i++){
+            let tide = Methods.capitalizeFirstLetter(result[i]);
             if (isCheckList === false){
                 tides += `<a class="tide" href="/tides/${tide.toLowerCase()}">${Methods.XSSProtectionHandler(tide)}</a>`;
             } else {
@@ -116,18 +119,25 @@ class TidesManager {
             let tidesConnection = await db.collection('tides').find().toArray();
             let tideObject = tidesConnection[0];
 
-            // Check if array has that value already.
+            let spaces = newTide.split(' ');
+            if (spaces.length > 1){
+                Methods.pageRedirection(response, 'create-tide', 'error', 'tides_400');
+                return;
+            }
+            // Remember if you change MAX_TIDES_CHARS, you need to correct alert.js.
+            if (newTide.length > parseInt(process.env.MAX_TIDES_CHARS)){
+                Methods.pageRedirection(response, 'create-tide', 'error', 'tides_413');
+                return;
+            }
+            if (Methods.analyzeInputForDanger(newTide)){
+                Methods.pageRedirection(response, 'create-tide', 'error', 'tides_403');
+                return;
+            }
             for (let i = 0; i < tideObject.availableTides.length; i++){
-                console.log(tideObject.availableTides[i]);
                 if (newTide === tideObject.availableTides[i]){
                     Methods.pageRedirection(response, 'create-tide', 'error', 'tides_409');
                     return;
                 }
-            }
-
-            if (Methods.analyzeInputForDanger(newTide)){
-                Methods.pageRedirection(response, 'create-tide', 'error', 'tides_403');
-                return;
             }
 
             tideObject.availableTides.push(newTide);
@@ -151,7 +161,7 @@ class TidesManager {
             return;
         } catch (error) {
             ResponseManager.sendWebPageResponse(response);
-            ResponseManager.sendError('postManager.makeASplash(), Making splash', error);
+            ResponseManager.sendError('tidesManager.createATide(), Creating splash', error);
         }
     }
 

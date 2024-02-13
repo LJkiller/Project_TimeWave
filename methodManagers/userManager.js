@@ -160,6 +160,16 @@ class UserManager {
             let userObject = await this.getUserObject(params);
             let username = userObject.username;
 
+            let spaces = username.split(' ');
+            if (spaces.length > 1){
+                Methods.pageRedirection(response, 'sign-up', 'error', 'username_400');
+                return;
+            }
+            // Remember if you change MAX_USERNAME_CHARS, you need to correct alert.js.
+            if (username.length > parseInt(process.env.MAX_USERNAME_CHARS)){
+                Methods.pageRedirection(response, 'sign-up', 'error', 'username_413');
+                return;
+            }
             if (Methods.analyzeInputForDanger(username)){
                 Methods.pageRedirection(response, 'sign-up', 'error', 'username_403');
                 return;
